@@ -38,8 +38,8 @@ Route::post('/signin', function () {
     if ( ! $token = JWTAuth::attempt($credentials)) {
         return Response::json(false, HttpResponse::HTTP_UNAUTHORIZED);
     }
-
-    return Response::json(compact('token', 'email'));
+    $user = User::where('email', $email)->first();
+    return Response::json(compact('token', 'email', 'user'));
 });
 
 Route::get('/restricted', [
@@ -48,10 +48,14 @@ Route::get('/restricted', [
         $token = JWTAuth::getToken();
         $user = JWTAuth::toUser($token);
 
+        $current = User::where('email', $user->email)->first();
+
         return Response::json([
             'data' => [
-                'email' => $user->email,
-                'registered_at' => $user->created_at->toDateTimeString()
+                'name' => $current->name,
+                'lastname' => $current->lastname,
+                'email' => $current->email,
+                'registered_at' => $current->created_at->toDateTimeString()
             ]
         ]);
     }
