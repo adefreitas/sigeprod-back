@@ -152,6 +152,10 @@ return [
 
 
         'Barryvdh\Cors\CorsServiceProvider',
+        /*
+         * Role handling package
+         */
+        'Bican\Roles\RolesServiceProvider',
 	],
 
 	/*
