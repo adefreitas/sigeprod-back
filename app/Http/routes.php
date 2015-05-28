@@ -34,12 +34,13 @@ Route::post('/signup', function () {
 
 Route::post('/signin', function () {
     $credentials = Input::only('email', 'password');
-    $email = Input::get('email');
+    $email = Input::only('email');
     if ( ! $token = JWTAuth::attempt($credentials)) {
         return Response::json(false, HttpResponse::HTTP_UNAUTHORIZED);
     }
     $user = User::where('email', $email)->first();
-    return Response::json(compact('token', 'email', 'user'));
+    $roles = $user->getRoles();
+    return Response::json(compact('token', 'user', 'roles'));
 });
 
 Route::get('/restricted', [
