@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Centro extends Model {
+class Profesor extends Model {
 
-    protected $table = 'centros';
+	protected $table = 'profesores';
 
 }

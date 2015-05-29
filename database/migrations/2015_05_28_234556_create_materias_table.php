@@ -18,10 +18,11 @@ class CreateMateriasTable extends Migration {
             $table->string('nombre');
             $table->integer('creditos');
             $table->integer('semestre');
+            $table->integer('centro_id')->nullable()->references('id')->on('centros')->onDelete('cascade');
 			$table->timestamps();
 		});
 
-        Schema::create('materias_prelaciones', function(Blueprint $table){
+        Schema::create('materia_prelacion', function(Blueprint $table){
             $table->integer('materia_id')->unsigned()->index();
             $table->foreign('materia_id')->references('id')->on('materias')->onDelete('cascade');
             $table->integer('prelacion_id')->unsigned()->index();
