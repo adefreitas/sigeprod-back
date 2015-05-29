@@ -37,6 +37,7 @@ class CreateMateriasTable extends Migration {
 	 */
 	public function down()
 	{
+		Schema::drop('materia_prelacion');
 		Schema::drop('materias');
 	}
 

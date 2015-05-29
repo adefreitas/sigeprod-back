@@ -34,6 +34,7 @@ class CreateCentrosTable extends Migration {
 	 */
 	public function down()
 	{
+		Schema::drop('centro_materia');
 		Schema::drop('centros');
 	}
 

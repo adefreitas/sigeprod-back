@@ -50,6 +50,9 @@ class CreateProfesorsTable extends Migration {
 	 */
 	public function down()
 	{
+		Schema::drop('profesor_materia');
+		Schema::drop('coordinador_materia');
+		Schema::drop('coordinador_centro');
 		Schema::drop('profesors');
 	}
 
