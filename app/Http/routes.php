@@ -40,6 +40,7 @@ Route::post('/signin', function () {
     }
     $user = User::where('email', $email)->first();
     $roles = $user->getRoles();
+    //var_dump($roles);
     return Response::json(compact('token', 'user', 'roles'));
 });
 
