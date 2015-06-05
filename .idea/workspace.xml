@@ -28,12 +28,12 @@
       <file leaf-file-name="UserTableSeeder.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/database/seeds/UserTableSeeder.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.8827586" vertical-offset="2310" max-vertical-offset="4752">
-              <caret line="32" column="24" selection-start-line="32" selection-start-column="24" selection-end-line="32" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.6068966" vertical-offset="2706" max-vertical-offset="4818">
+              <caret line="142" column="47" selection-start-line="142" selection-start-column="38" selection-end-line="142" selection-end-column="47" />
               <folding>
-                <marker date="1433441856490" expanded="true" signature="715:891" placeholder="..." />
-                <marker date="1433441856490" expanded="true" signature="1820:1965" placeholder="..." />
-                <marker date="1433441856490" expanded="true" signature="2001:2389" placeholder="..." />
+                <marker date="1433466606466" expanded="true" signature="715:891" placeholder="..." />
+                <marker date="1433466606466" expanded="true" signature="1820:1965" placeholder="..." />
+                <marker date="1433466606466" expanded="true" signature="2001:2389" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -72,7 +72,7 @@
       <file leaf-file-name="Centro.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Centro.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.230769" vertical-offset="0" max-vertical-offset="484">
+            <state vertical-scroll-proportion="0.0" vertical-offset="110" max-vertical-offset="484">
               <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
               <folding />
             </state>
@@ -82,7 +82,7 @@
       <file leaf-file-name="Materia.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Materia.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.230769" vertical-offset="0" max-vertical-offset="572">
+            <state vertical-scroll-proportion="0.0" vertical-offset="110" max-vertical-offset="572">
               <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
               <folding />
             </state>
@@ -92,7 +92,7 @@
       <file leaf-file-name="2015_05_28_234633_create_centros_table.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database/migrations/2015_05_28_234633_create_centros_table.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.230769" vertical-offset="256" max-vertical-offset="858">
+            <state vertical-scroll-proportion="0.0" vertical-offset="256" max-vertical-offset="858">
               <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
               <folding />
             </state>
@@ -102,7 +102,7 @@
       <file leaf-file-name="MateriaTableSeeder.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database/seeds/MateriaTableSeeder.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-25.384615" vertical-offset="0" max-vertical-offset="1540">
+            <state vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="1540">
               <caret line="30" column="33" selection-start-line="30" selection-start-column="33" selection-end-line="30" selection-end-column="33" />
               <folding>
                 <element signature="e#7#23#0#PHP" expanded="true" />
@@ -146,7 +146,6 @@
         <option value="$PROJECT_DIR$/config/cors.php" />
         <option value="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" />
         <option value="$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" />
-        <option value="$PROJECT_DIR$/database/seeds/UserTableSeeder.php" />
         <option value="$PROJECT_DIR$/app/Http/routes.php" />
         <option value="$PROJECT_DIR$/database/migrations/2015_05_28_234556_create_materias_table.php" />
         <option value="$PROJECT_DIR$/app/Notificacion.php" />
@@ -157,6 +156,7 @@
         <option value="$PROJECT_DIR$/app/Materia.php" />
         <option value="$PROJECT_DIR$/app/Centro.php" />
         <option value="$PROJECT_DIR$/database/migrations/2015_05_28_234633_create_centros_table.php" />
+        <option value="$PROJECT_DIR$/database/seeds/UserTableSeeder.php" />
       </list>
     </option>
   </component>
@@ -197,6 +197,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -327,7 +328,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -785,7 +785,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/database/seeds/MateriaTableSeeder.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-25.384615" vertical-offset="0" max-vertical-offset="1540">
+        <state vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="1540">
           <caret line="30" column="33" selection-start-line="30" selection-start-column="33" selection-end-line="30" selection-end-column="33" />
           <folding>
             <element signature="e#7#23#0#PHP" expanded="true" />
@@ -795,7 +795,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Materia.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.230769" vertical-offset="0" max-vertical-offset="572">
+        <state vertical-scroll-proportion="0.0" vertical-offset="110" max-vertical-offset="572">
           <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
           <folding />
         </state>
@@ -803,7 +803,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Centro.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.230769" vertical-offset="0" max-vertical-offset="484">
+        <state vertical-scroll-proportion="0.0" vertical-offset="110" max-vertical-offset="484">
           <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
           <folding />
         </state>
@@ -811,7 +811,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/database/migrations/2015_05_28_234633_create_centros_table.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.230769" vertical-offset="256" max-vertical-offset="858">
+        <state vertical-scroll-proportion="0.0" vertical-offset="256" max-vertical-offset="858">
           <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding />
         </state>
@@ -819,12 +819,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/database/seeds/UserTableSeeder.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.8827586" vertical-offset="2310" max-vertical-offset="4752">
-          <caret line="32" column="24" selection-start-line="32" selection-start-column="24" selection-end-line="32" selection-end-column="24" />
+        <state vertical-scroll-proportion="0.6068966" vertical-offset="2706" max-vertical-offset="4818">
+          <caret line="142" column="47" selection-start-line="142" selection-start-column="38" selection-end-line="142" selection-end-column="47" />
           <folding>
-            <marker date="1433441856490" expanded="true" signature="715:891" placeholder="..." />
-            <marker date="1433441856490" expanded="true" signature="1820:1965" placeholder="..." />
-            <marker date="1433441856490" expanded="true" signature="2001:2389" placeholder="..." />
+            <marker date="1433466606466" expanded="true" signature="715:891" placeholder="..." />
+            <marker date="1433466606466" expanded="true" signature="1820:1965" placeholder="..." />
+            <marker date="1433466606466" expanded="true" signature="2001:2389" placeholder="..." />
           </folding>
         </state>
       </provider>
