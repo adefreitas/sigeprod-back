@@ -15,16 +15,10 @@ class CreateCentrosTable extends Migration {
 		Schema::create('centros', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->timestamps();
             $table->string('name');
+			$table->timestamps();
 		});
 
-        Schema::create('centro_materia', function(Blueprint $table){
-            $table->integer('centro_id')->unsigned()->index();
-            $table->foreign('centro_id')->references('id')->on('centros')->onDelete('cascade');
-            $table->integer('materia_id')->unsigned()->index();
-            $table->foreign('materia_id')->references('id')->on('materias')->onDelete('cascade');
-        });
 	}
 
 	/**
@@ -34,7 +28,6 @@ class CreateCentrosTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('centro_materia');
 		Schema::drop('centros');
 	}
 

@@ -18,11 +18,11 @@ class CreateProfesorsTable extends Migration {
 			$table->timestamps();
 		});
 
-        Schema::create('profesor_materia', function(Blueprint $table){
-            $table->integer('profesor_id')->unsigned()->index();
-            $table->foreign('profesor_id')->references('id')->on('profesors')->onDelete('cascade');
+        Schema::create('materia_profesor', function(Blueprint $table){
             $table->integer('materia_id')->unsigned()->index();
             $table->foreign('materia_id')->references('id')->on('materias')->onDelete('cascade');
+            $table->integer('profesor_id')->unsigned()->index();
+            $table->foreign('profesor_id')->references('id')->on('profesors')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -34,12 +34,12 @@ class CreateProfesorsTable extends Migration {
             $table->timestamps();
         });
 
-        Schema::create('coordinador_centro', function(Blueprint $table){
-            $table->integer('profesor_id')->unsigned()->index();
-            $table->foreign('profesor_id')->references('id')->on('profesors')->onDelete('cascade');
+        Schema::create('centro_coordinador', function(Blueprint $table){
             $table->integer('centro_id')->unsigned()->index();
             $table->foreign('centro_id')->references('id')->on('centros')->onDelete('cascade');
             $table->timestamps();
+            $table->integer('profesor_id')->unsigned()->index();
+            $table->foreign('profesor_id')->references('id')->on('profesors')->onDelete('cascade');
         });
 	}
 
@@ -50,9 +50,9 @@ class CreateProfesorsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('profesor_materia');
+		Schema::drop('materia_profesor');
 		Schema::drop('coordinador_materia');
-		Schema::drop('coordinador_centro');
+		Schema::drop('centro_coordinador');
 		Schema::drop('profesors');
 	}
 
