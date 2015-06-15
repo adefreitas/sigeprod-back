@@ -1,11 +1,11 @@
 <?php
 
-use App\Centro;
+use App\Center;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Bican\Roles\Models\Role;
 
-class CentroTableSeeder extends Seeder {
+class CenterTableSeeder extends Seeder {
 
     /**
      * Run the database seeds.
@@ -14,39 +14,39 @@ class CentroTableSeeder extends Seeder {
      */
     public function run()
     {
-        DB::table('centros')->delete();
+        DB::table('centers')->delete();
 
-        Centro::create([
+        Center::create([
             'id' => '11',
             'name' => 'CICORE'
         ]);
 
-        Centro::create([
+        Center::create([
             'id' => '22',
             'name' => 'CCG'
         ]);
 
-        Centro::create([
+        Center::create([
             'id' => '33',
             'name' => 'CISI'
         ]);
 
-        Centro::create([
+        Center::create([
             'id' => '44',
             'name' => 'CCPD'
         ]);
 
-        Centro::create([
+        Center::create([
             'id' => '55',
             'name' => 'CCCT'
         ]);
 
-        Centro::create([
+        Center::create([
             'id' => '66',
             'name' => 'ISYS'
         ]);
 
-        Centro::create([
+        Center::create([
             'id' => '77',
             'name' => 'CIOMMA'
         ]);

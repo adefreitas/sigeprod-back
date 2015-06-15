@@ -15,10 +15,6 @@ use App\User;
 use Illuminate\Http\Response as HttpResponse;
 
 
-Route::get('/', 'WelcomeController@index');
-
-Route::get('home', 'HomeController@index');
-
 Route::post('/signup', function(){
 
     $credentials = Input::only('email', 'password');
@@ -69,3 +65,27 @@ Route::get('/profile', ['before' => 'jwt-auth',
         ]);
     }
 ]);
+
+Route::resource('professors', 'ProfessorController');
+
+Route::resource('centers', 'CenterController');
+
+Route::resource('center_coordinators', 'CenterCoordinatorController');
+
+Route::resource('contests', 'ContestController');
+
+Route::resource('courses', 'CourseController');
+
+Route::resource('course_coordinators', 'CourseCoordinatorController');
+
+Route::resource('preferences', 'PreferenceController');
+
+Route::resource('professors', 'ProfessorController');
+
+Route::resource('propositions', 'PropositionController');
+
+Route::resource('students', 'StudentController');
+
+Route::resource('teacher_assistants', 'TeacherAssistantController');
+
+Route::resource('teacher_helpers', 'TeacherHelperController');
