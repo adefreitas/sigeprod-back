@@ -30,55 +30,55 @@ class UserTableSeeder extends Seeder {
 
         $role_admin_escuela = Role::create([
             'name' => 'Administrador de Escuela',
-            'slug' => 'administrador',
+            'slug' => 'administrator',
             'description' => 'Administrador de Escuela' // optional
         ]);
 
         $role_jefe = Role::create([
             'name' => 'Jefe',
-            'slug' => 'jefe',
+            'slug' => 'departmenthead',
             'description' => 'Jefe de Departamento' // optional
         ]);
 
         $role_cc = Role::create([
             'name' => 'Coordinador de Centro',
-            'slug' => 'cc',
+            'slug' => 'centercoordinator',
             'description' => 'Coordinador de Centro' // optional
         ]);
 
         $role_cm = Role::create([
             'name' => 'Coordinador de Materia',
-            'slug' => 'cm',
+            'slug' => 'coursecoordinator',
             'description' => 'Coordinador de Materia' // optional
         ]);
 
         $role_profesor = Role::create([
             'name' => 'Profesor',
-            'slug' => 'profesor',
+            'slug' => 'professor',
             'description' => 'Profesor' // optional
         ]);
 
         $role_preparador = Role::create([
             'name' => 'Prepa',
-            'slug' => 'prepa',
+            'slug' => 'teacherhelper',
             'description' => 'Preparador' // optional
         ]);
 
         $role_auxiliar = Role::create([
             'name' => 'Auxiliar',
-            'slug' => 'auxiliar',
+            'slug' => 'teacherassistant',
             'description' => 'Auxiliar Docente' // optional
         ]);
 
         $role_secretaria_dpto = Role::create([
             'name' => 'Secretaria de Dpto',
-            'slug' => 'secredpto',
+            'slug' => 'departmentsecretary',
             'description' => 'Secretaria de Departamento' // optional
         ]);
 
         $role_secretaria_dir = Role::create([
             'name' => 'Secretaria de Dir',
-            'slug' => 'secredir',
+            'slug' => 'directionsecretary',
             'description' => 'Secretaria de Direccion' // optional
         ]);
 

@@ -25,10 +25,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="UserTableSeeder.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="UserTableSeeder.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/database/seeds/UserTableSeeder.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="69.51852" vertical-offset="3371" max-vertical-offset="3942">
+            <state vertical-scroll-proportion="0.7793345" vertical-offset="1049" max-vertical-offset="3942">
               <caret line="86" column="45" selection-start-line="86" selection-start-column="38" selection-end-line="86" selection-end-column="45" />
               <folding />
             </state>
@@ -65,10 +65,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CourseTableSeeder.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CourseTableSeeder.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database/seeds/CourseTableSeeder.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33333334" vertical-offset="361" max-vertical-offset="1260">
+            <state vertical-scroll-proportion="-2.9344263" vertical-offset="361" max-vertical-offset="1260">
               <caret line="30" column="29" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="29" />
               <folding>
                 <element signature="e#7#22#0#PHP" expanded="true" />
@@ -476,7 +476,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="27" width="1366" height="741" extended-state="7" />
+    <frame x="0" y="27" width="1366" height="741" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -871,14 +871,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/database/seeds/UserTableSeeder.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="69.51852" vertical-offset="3371" max-vertical-offset="3942">
-          <caret line="86" column="45" selection-start-line="86" selection-start-column="38" selection-end-line="86" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/database/seeds/DatabaseSeeder.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-12.0" vertical-offset="0" max-vertical-offset="504">
@@ -901,11 +893,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/database/seeds/CourseTableSeeder.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="361" max-vertical-offset="1260">
+        <state vertical-scroll-proportion="-2.9344263" vertical-offset="361" max-vertical-offset="1260">
           <caret line="30" column="29" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="29" />
           <folding>
             <element signature="e#7#22#0#PHP" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/database/seeds/UserTableSeeder.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7793345" vertical-offset="1049" max-vertical-offset="3942">
+          <caret line="86" column="45" selection-start-line="86" selection-start-column="38" selection-end-line="86" selection-end-column="45" />
+          <folding />
         </state>
       </provider>
     </entry>
