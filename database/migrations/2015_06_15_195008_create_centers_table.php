@@ -27,6 +27,8 @@ class CreateCentersTable extends Migration {
 	 */
 	public function down()
 	{
+		Schema::dropIfExists('contests');
+		Schema::dropIfExists('contests_observations');
 		Schema::drop('centers');
 	}
 

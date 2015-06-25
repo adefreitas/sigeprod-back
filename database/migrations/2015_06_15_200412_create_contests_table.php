@@ -16,6 +16,51 @@ class CreateContestsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->timestamps();
+
+			//ID del profesor que solicito el concurso
+			$table->integer('professor_id')->unsigned()->index();
+			$table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade');
+
+			//ID del centro al que pertenece la materia
+			$table->integer('center_id')->unsigned()->index();
+			$table->foreign('center_id')->references('id')->on('centers')->onDelete('cascade');
+
+			//ID de la materia que hace referencia al concurso
+			$table->integer('course_id')->unsigned()->index();
+			$table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
+
+			//Cantidad de Preparadores 2
+			$table->integer('teacher_helpers_2');
+
+			//Cantidad de Preparadores 1
+			$table->integer('teacher_helpers_1');
+
+			/*
+				Estado de la solicitud
+				1 = Solicitud enviada
+				2 = Solicitud aceptada
+				3 = Solicitud rechazada
+				4 = Concurso finalizado
+			*/
+
+			$table->integer('status');
+
+		});
+
+		Schema::create('contests_observations', function(Blueprint $table)
+		{
+			$table->timestamps();
+
+			//ID referente al concurso
+			$table->integer('contest_id')->unsigned()->index();
+			$table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');
+
+			//Autor de la observacion
+			$table->integer('author_id')->unsigned()->index();
+			$table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
+
+			//Descripcion de la observacion
+			$table->longText('description');
 		});
 	}
 
@@ -26,6 +71,8 @@ class CreateContestsTable extends Migration {
 	 */
 	public function down()
 	{
+		Schema::drop('contests_observations');
+
 		Schema::drop('contests');
 	}
 
