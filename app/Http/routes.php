@@ -66,26 +66,29 @@ Route::get('/profile', ['before' => 'jwt-auth',
     }
 ]);
 
-Route::resource('professors', 'ProfessorController');
+// Route::group(['middleware' => 'jwt-auth'], function()
+// {
+  Route::resource('professors', 'ProfessorController');
 
-Route::resource('centers', 'CenterController');
+  Route::resource('centers', 'CenterController');
 
-Route::resource('center_coordinators', 'CenterCoordinatorController');
+  Route::resource('center_coordinators', 'CenterCoordinatorController');
 
-Route::resource('contests', 'ContestController');
+  Route::resource('contests', 'ContestController');
 
-Route::resource('courses', 'CourseController');
+  Route::resource('courses', 'CourseController');
 
-Route::resource('course_coordinators', 'CourseCoordinatorController');
+  Route::resource('course_coordinators', 'CourseCoordinatorController');
 
-Route::resource('preferences', 'PreferenceController');
+  Route::resource('preferences', 'PreferenceController');
 
-Route::resource('professors', 'ProfessorController');
+  Route::resource('professors', 'ProfessorController');
 
-Route::resource('propositions', 'PropositionController');
+  Route::resource('propositions', 'PropositionController');
 
-Route::resource('students', 'StudentController');
+  Route::resource('students', 'StudentController');
 
-Route::resource('teacher_assistants', 'TeacherAssistantController');
+  Route::resource('teacher_assistants', 'TeacherAssistantController');
 
-Route::resource('teacher_helpers', 'TeacherHelperController');
+  Route::resource('teacher_helpers', 'TeacherHelperController');
+// });

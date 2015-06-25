@@ -3,10 +3,16 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ContestController extends Controller {
 
+	// public function __construct(){
+	// 	$this->middleware('jwt-auth');
+	// }
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -16,24 +22,25 @@ class ContestController extends Controller {
 	{
 
 		try {
+			JWTAuth::parseToken();
 			$token = JWTAuth::getToken();
 		} catch (Exception $e){
-				return Response::json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
 		$tokenOwner = JWTAuth::toUser($token);
 
-		$user = User::where('email', $user->email)->first();
+		$user = User::where('email', $tokenOwner->email)->first();
 
 		if($user->is('coursecoordinator')){
-			return Response::json([
+			return response()->json([
 					'data' => [
 						'message' => 'Coordinador de materia'
 						]
 			]);
 		}
 		else{
-			return Response::json([
+			return response()->json([
 					'data' => [
 						'message' => 'No coordinador de materia'
 						]
