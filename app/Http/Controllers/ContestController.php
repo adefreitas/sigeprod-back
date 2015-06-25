@@ -14,7 +14,33 @@ class ContestController extends Controller {
 	 */
 	public function index()
 	{
-		//
+
+		try {
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return Response::json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $user->email)->first();
+
+		if($user->is('coursecoordinator')){
+			return Response::json([
+					'data' => [
+						'message' => 'Coordinador de materia'
+						]
+			]);
+		}
+		else{
+			return Response::json([
+					'data' => [
+						'message' => 'No coordinador de materia'
+						]
+			]);
+		}
+
+
 	}
 
 	/**
