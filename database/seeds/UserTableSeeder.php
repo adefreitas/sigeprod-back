@@ -17,71 +17,82 @@ class UserTableSeeder extends Seeder {
     {
         DB::table('users')->delete();
 
+        /**********************************************************
+        ************************** Roles **************************
+        ***********************************************************/
+
+
         $role_admin_system = Role::create([
             'name' => 'Admin',
             'slug' => 'admin',
-            'description' => 'Administrador del Sistema' // optional
+            'description' => 'Administrador del Sistema'
         ]);
 
         $role_director = Role::create([
             'name' => 'Director',
             'slug' => 'director',
-            'description' => 'Director de Escuela' // optional
+            'description' => 'Director de Escuela'
         ]);
 
         $role_admin_escuela = Role::create([
             'name' => 'Administrador de Escuela',
             'slug' => 'administrator',
-            'description' => 'Administrador de Escuela' // optional
+            'description' => 'Administrador de Escuela'
         ]);
 
         $role_jefe = Role::create([
             'name' => 'Jefe',
             'slug' => 'departmenthead',
-            'description' => 'Jefe de Departamento' // optional
+            'description' => 'Jefe de Departamento'
         ]);
 
         $role_cc = Role::create([
             'name' => 'Coordinador de Centro',
             'slug' => 'centercoordinator',
-            'description' => 'Coordinador de Centro' // optional
+            'description' => 'Coordinador de Centro'
         ]);
 
         $role_cm = Role::create([
             'name' => 'Coordinador de Materia',
             'slug' => 'coursecoordinator',
-            'description' => 'Coordinador de Materia' // optional
+            'description' => 'Coordinador de Materia'
         ]);
 
         $role_profesor = Role::create([
             'name' => 'Profesor',
             'slug' => 'professor',
-            'description' => 'Profesor' // optional
+            'description' => 'Profesor'
         ]);
 
         $role_preparador = Role::create([
             'name' => 'Prepa',
             'slug' => 'teacherhelper',
-            'description' => 'Preparador' // optional
+            'description' => 'Preparador'
         ]);
 
         $role_auxiliar = Role::create([
             'name' => 'Auxiliar',
             'slug' => 'teacherassistant',
-            'description' => 'Auxiliar Docente' // optional
+            'description' => 'Auxiliar Docente'
         ]);
 
         $role_secretaria_dpto = Role::create([
             'name' => 'Secretaria de Dpto',
             'slug' => 'departmentsecretary',
-            'description' => 'Secretaria de Departamento' // optional
+            'description' => 'Secretaria de Departamento'
         ]);
 
         $role_secretaria_dir = Role::create([
             'name' => 'Secretaria de Dir',
             'slug' => 'directionsecretary',
-            'description' => 'Secretaria de Direccion' // optional
+            'description' => 'Secretaria de Direccion'
         ]);
+
+
+        /**********************************************************
+        ********************** Super Usuario **********************
+        ***********************************************************/
+
 
         User::create([
             'email' => 'sudo@ciens.ucv.ve',
@@ -90,12 +101,22 @@ class UserTableSeeder extends Seeder {
             'lastname' => 'del Sistema'
         ]) -> attachRole($role_admin_system);
 
+
+        /**********************************************************
+        ************************* Director ************************
+        ***********************************************************/
+
         User::create([
             'email' => 'dir@ciens.ucv.ve',
             'password' => Hash::make('director'),
             'name' => 'Director',
             'lastname' => 'de Escuela'
         ]) -> attachRole($role_director);
+
+
+        /**********************************************************
+        ******************* Jefe de Departamento ******************
+        ***********************************************************/
 
         $user = User::create([
             'email' => 'jefe@ciens.ucv.ve',
@@ -114,12 +135,21 @@ class UserTableSeeder extends Seeder {
 
         $user -> attachRole($role_jefe);
 
+        /**********************************************************
+        *************** Administrador de la Escuela ***************
+        ***********************************************************/
+
         User::create([
             'email' => 'escuela@ciens.ucv.ve',
             'password' => Hash::make('escuela'),
             'name' => 'Administrador',
             'lastname' => 'de Escuela'
         ]) -> attachRole($role_admin_escuela);
+
+
+        /**********************************************************
+        ***************** Coordinador de Centro 11 ****************
+        ***********************************************************/
 
         $user = User::create([
             'email' => 'cc11@ciens.ucv.ve',
@@ -138,6 +168,10 @@ class UserTableSeeder extends Seeder {
 
         $user -> attachRole($role_cc);
 
+        /**********************************************************
+        ***************** Coordinador de Centro 11 ****************
+        ***********************************************************/
+
         $user = User::create([
             'email' => 'cc22@ciens.ucv.ve',
             'password' => Hash::make('centro22'),
@@ -154,6 +188,10 @@ class UserTableSeeder extends Seeder {
         );
 
         $user -> attachRole($role_cc);
+
+        /**********************************************************
+        **************** Coordinador de Materia 111 ***************
+        ***********************************************************/
 
         $user = User::create([
             'email' => 'cm111@ciens.ucv.ve',
@@ -172,6 +210,10 @@ class UserTableSeeder extends Seeder {
 
         $user -> attachRole($role_cm);
 
+        /**********************************************************
+        **************** Coordinador de Materia 112 ***************
+        ***********************************************************/
+
         $user = User::create([
             'email' => 'cm112@ciens.ucv.ve',
             'password' => Hash::make('centro112'),
@@ -188,6 +230,11 @@ class UserTableSeeder extends Seeder {
         );
 
         $user -> attachRole($role_cm);
+
+
+        /**********************************************************
+        ******************* Profesor Materia 221 ******************
+        ***********************************************************/
 
         $user = User::create([
             'email' => 'prof1m221@ciens.ucv.ve',
@@ -207,6 +254,10 @@ class UserTableSeeder extends Seeder {
         $user->attachRole($role_profesor);
         $user->attachRole($role_cm);
 
+        /**********************************************************
+        ******************* Profesor Materia 222 ******************
+        ***********************************************************/
+
         $user = User::create([
             'email' => 'prof2m222@ciens.ucv.ve',
             'password' => Hash::make('prof2m222'),
@@ -223,6 +274,10 @@ class UserTableSeeder extends Seeder {
         );
 
         $user -> attachRole($role_profesor);
+
+        /**********************************************************
+        *********************** Preparadores **********************
+        ***********************************************************/
 
         User::create([
             'email' => 'prepa1m111@ciens.ucv.ve',
@@ -245,6 +300,10 @@ class UserTableSeeder extends Seeder {
             'lastname' => '1'
         ]) -> attachRole($role_preparador);
 
+        /**********************************************************
+        ********************* Auxiliar Docente ********************
+        ***********************************************************/
+
         User::create([
             'email' => 'aux1@ciens.ucv.ve',
             'password' => Hash::make('aux1'),
@@ -259,12 +318,21 @@ class UserTableSeeder extends Seeder {
             'lastname' => 'Docente'
         ]) -> attachRole($role_auxiliar);
 
+
+        /**********************************************************
+        **************** Secretaria de Departamento ***************
+        ***********************************************************/
+
         User::create([
             'email' => 'sdep@ciens.ucv.ve',
             'password' => Hash::make('sdeppwd'),
             'name' => 'Secretaria',
             'lastname' => 'de Departamento'
         ]) -> attachRole($role_secretaria_dpto);
+
+        /**********************************************************
+        ***************** Secretarias de Direccion ****************
+        ***********************************************************/
 
         User::create([
             'email' => 'sdir1@ciens.ucv.ve',

@@ -16,8 +16,9 @@ class CreateCenterCoordinatorsTable extends Migration {
 		{
             $table->integer('center_id')->unsigned()->index();
             $table->foreign('center_id')->references('id')->on('centers')->onDelete('cascade');
-			$table->increments('id');
-			$table->timestamps();
+						$table->integer('professor_id')->unsigned()->index();
+            $table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade');
+						$table->timestamps();
 		});
 	}
 

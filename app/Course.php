@@ -10,4 +10,8 @@ class Course extends Model {
 		return $this->belongsToMany('App\Professor');
 	}
 
+	public function coordinator(){
+		return $this->belongsToMany('App\CourseCoordinator');
+	}
+
 }

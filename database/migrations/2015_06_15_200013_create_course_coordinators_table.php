@@ -16,8 +16,9 @@ class CreateCourseCoordinatorsTable extends Migration {
 		{
             $table->integer('course_id')->unsigned()->index();
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
-			$table->increments('id');
-			$table->timestamps();
+						$table->integer('professor_id')->unsigned()->index();
+            $table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade');
+						$table->timestamps();
 		});
 
 	}
