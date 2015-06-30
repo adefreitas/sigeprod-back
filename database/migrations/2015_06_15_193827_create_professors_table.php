@@ -14,12 +14,15 @@ class CreateProfessorsTable extends Migration {
 	{
 		Schema::create('professors', function(Blueprint $table)
 		{
-            $table->increments('id');
-            $table->string('dedication');
-            $table->integer('center_id')->nullable()->references('id')->on('centers')->onDelete('cascade');
-            $table->string('status');
-            $table->timestamps();
+		    $table->increments('id');
+		    $table->string('dedication');
+		    $table->integer('center_id')->nullable()->references('id')->on('centers')->onDelete('cascade');
+		    $table->string('status');
+				$table->integer('user_id')->nullable()->references('id')->on('users')->onDelete('cascade');
+		    $table->timestamps();
 		});
+
+
 	}
 
 	/**

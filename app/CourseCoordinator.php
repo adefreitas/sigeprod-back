@@ -9,7 +9,7 @@ class CourseCoordinator extends Model {
 	}
 
 	public function course(){
-		return $this->belongsToMany('App\Course');
+		return $this->belongsToMany('App\Course')->withTimestamps();;
 	}
 
 }

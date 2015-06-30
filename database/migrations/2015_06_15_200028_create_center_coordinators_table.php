@@ -12,13 +12,13 @@ class CreateCenterCoordinatorsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('center_coordinators', function(Blueprint $table)
+		Schema::create('center_center_coordinator', function(Blueprint $table)
 		{
-            $table->integer('center_id')->unsigned()->index();
-            $table->foreign('center_id')->references('id')->on('centers')->onDelete('cascade');
-						$table->integer('professor_id')->unsigned()->index();
-            $table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade');
-						$table->timestamps();
+				$table->timestamps();
+				$table->integer('center_id')->unsigned()->index();
+				$table->foreign('center_id')->references('id')->on('centers')->onDelete('cascade');
+				$table->integer('center_coordinator_id')->unsigned()->index();
+				$table->foreign('center_coordinator_id')->references('id')->on('professors')->onDelete('cascade');
 		});
 	}
 
@@ -29,7 +29,7 @@ class CreateCenterCoordinatorsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('center_coordinators');
+		Schema::drop('center_center_coordinator');
 	}
 
 }

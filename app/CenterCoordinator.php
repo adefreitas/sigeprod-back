@@ -9,7 +9,7 @@ class CenterCoordinator extends Model {
 	}
 
 	public function center(){
-		return $this->belongsToMany('App\Center');
+		return $this->belongsToMany('App\Center')->withTimestamps();
 	}
 
 }

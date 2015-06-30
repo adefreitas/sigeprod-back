@@ -9,11 +9,11 @@ class Course extends Model {
 	}
 
 	public function professor(){
-		return $this->belongsToMany('App\Professor');
+		return $this->belongsToMany('App\Professor')->withTimestamps();
 	}
 
 	public function courseCoordinator(){
-		return $this->belongsToMany('App\CourseCoordinator');
+		return $this->belongsToMany('App\CourseCoordinator')->withTimestamps();
 	}
 
 }

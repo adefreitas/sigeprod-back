@@ -34,7 +34,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	protected $hidden = ['password', 'remember_token'];
 
 	public function professor(){
-		return $this->belongsTo('App\Professor');
+		return $this->hasOne('App\Professor');
 	}
 
 }

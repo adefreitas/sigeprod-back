@@ -1,7 +1,9 @@
 <?php
 
-use App\Course;
+use App\User;
 use App\Center;
+use App\Course;
+use App\Professor;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Bican\Roles\Models\Role;
@@ -17,6 +19,10 @@ class CourseTableSeeder extends Seeder {
     {
 
         DB::table('courses')->delete();
+
+        /**********************************************************
+        ************************* Materias ************************
+        ***********************************************************/
 
         Center::find(33)
           ->courses()->save(
@@ -67,6 +73,28 @@ class CourseTableSeeder extends Seeder {
                 'semester' => '5'
             ])
         );
+
+        /**********************************************************
+        ***************** Coordinadores de Centro *****************
+        ***********************************************************/
+
+        // Center::find(33)
+        //   ->centerCoordinator()->attach(
+        //     User::where('email', '==', 'cc33@ciens.ucv.ve')->firstOrFail()->professor()
+        // );
+        //
+        // Center::find(11)
+        //   ->centerCoordinator()->attach(
+        //     User::where('email', '==', 'cc11@ciens.ucv.ve')->firstOrFail()->professor()
+        // );
+
+        /**********************************************************
+        **************** Coordinadores de Materia *****************
+        ***********************************************************/
+
+        /**********************************************************
+        ************************ Profesores ***********************
+        ***********************************************************/
 
     }
 
