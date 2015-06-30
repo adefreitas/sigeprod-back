@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 class CourseCoordinator extends Model {
 
 	public function professor(){
-		return $this->belongsToMany('App\Professor');
+		return $this->belongsToOne('App\Professor');
 	}
 
 	public function course(){

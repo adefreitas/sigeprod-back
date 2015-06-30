@@ -4,13 +4,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model {
 
-	//
+	public function center(){
+		return $this->belongsTo('App\Center');
+	}
 
 	public function professor(){
 		return $this->belongsToMany('App\Professor');
 	}
 
-	public function coordinator(){
+	public function courseCoordinator(){
 		return $this->belongsToMany('App\CourseCoordinator');
 	}
 
