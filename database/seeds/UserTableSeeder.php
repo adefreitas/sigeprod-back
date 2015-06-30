@@ -226,7 +226,7 @@ class UserTableSeeder extends Seeder {
 
         $user = User::create([
             'email' => 'cm112@ciens.ucv.ve',
-            'password' => Hash::make('centro112'),
+            'password' => Hash::make('cm112'),
             'name' => 'Coordinador',
             'lastname' => 'de Materia'
         ]);
@@ -235,7 +235,7 @@ class UserTableSeeder extends Seeder {
 
         $professor =  Professor::create([
           'dedication' => 'Contratado',
-          'center_id' => '55',
+          'center_id' => '11',
           'status' => 'Activo'
         ]);
 
