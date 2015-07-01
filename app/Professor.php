@@ -17,11 +17,11 @@ class Professor extends Model {
 	}
 
 	public function courseCoordinator(){
-		return $this->belongsToMany('App\courseCoordinator')->withTimestamps();
+		return $this->belongsToMany('App\CourseCoordinator')->withTimestamps();
 	}
 
 	public function centerCoordinator(){
-		return $this->belongsToMany('App\centerCoordinator')->withTimestamps();
+		return $this->belongsToMany('App\CenterCoordinator')->withTimestamps();
 	}
 
 }

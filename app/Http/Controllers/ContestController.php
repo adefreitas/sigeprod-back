@@ -4,13 +4,15 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\User;
+use App\Contest;
+use App\CourseCoordinator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ContestController extends Controller {
 
-	
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -43,11 +45,17 @@ class ContestController extends Controller {
      *  Si el usuario es coordinador de Materia se envian las propuestas
      *  que corresponden a las materias que coordina
      */
-		else if($user->is('coursecoordinator')){
-			return response()->json([
-                'message' => 'Coordinador de materia'
-			]);
-		}
+	else if($user->is('coursecoordinator')){
+
+		$professor = $user->professor;
+
+
+		$course = $professor->courseCoordinator;
+
+		return response()->json([
+            'message' => $course
+		]);
+	}
 
     /*
      *  Si el usuario es coordinador de Centro se envian las propuestas que corresponden a su centro
@@ -70,9 +78,12 @@ class ContestController extends Controller {
      *  Si el usuario es jefe de departamento se envian todas las propuestas existentes
      */
     else if($user->is('departmenthead')){
+		$departmentHead = Contest::get();
+
         return response()->json([
-            'message' => 'Jefe de departamento'
-        ]);
+			'departmentHead' => $departmentHead
+		]);
+
     }
 
 		else{

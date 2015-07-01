@@ -92,15 +92,21 @@ class CourseTableSeeder extends Seeder {
         **************** Coordinadores de Materia *****************
         ***********************************************************/
 
-        Course::find(6303)
-          ->courseCoordinator()->attach(
+        $course = Course::find(6303);
+
+        $course->courseCoordinator()->attach(
             User::where('email', '=', 'cm111@ciens.ucv.ve')->firstOrFail()->professor
         );
 
-        Course::find(6003)
-          ->courseCoordinator()->attach(
-            User::where('email', '=', 'cm112@ciens.ucv.ve')->firstOrFail()->professor
+        $course->save();
+
+        $course = Course::find(6003);
+
+        $course->courseCoordinator()->attach(
+          User::where('email', '=', 'cm112@ciens.ucv.ve')->firstOrFail()->professor
         );
+
+        $course->save();
 
         /**********************************************************
         ************************ Profesores ***********************
