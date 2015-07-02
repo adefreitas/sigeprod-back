@@ -3,6 +3,7 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App/Course;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller {
@@ -14,7 +15,11 @@ class CourseController extends Controller {
 	 */
 	public function index()
 	{
-		//
+		$courses = Course::get();
+
+        return response()->json([
+			'courses' => $courses
+		]);
 	}
 
 	/**
