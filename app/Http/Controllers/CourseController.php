@@ -3,7 +3,7 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App/Course;
+use App\Course;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller {
@@ -18,7 +18,7 @@ class CourseController extends Controller {
 		$courses = Course::get();
 
         return response()->json([
-			'courses' => $courses
+			"courses" => $courses->toArray()
 		]);
 	}
 

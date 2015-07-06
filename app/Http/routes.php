@@ -66,8 +66,6 @@ Route::get('/profile', ['before' => 'jwt-auth',
     }
 ]);
 
-// Route::group(['middleware' => 'jwt-auth'], function()
-// {
   Route::resource('professors', 'ProfessorController');
 
   Route::resource('centers', 'CenterController');
