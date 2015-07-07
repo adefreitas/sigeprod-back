@@ -9,7 +9,7 @@ class Center extends Model {
 	}
 
 	public function centerCoordinator(){
-		return $this->belongsToMany('App\CenterCoordinator')->withTimestamps();
+		return $this->belongsToMany('App\Professor', 'center_center_coordinator')->withTimestamps();
 	}
 
 	public function courses(){
