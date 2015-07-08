@@ -20,7 +20,9 @@ class Course extends Model {
 	 */
 	protected $hidden = [];
 
-
+	public function id(){
+		return 1;
+	}
 	public function center(){
 		return $this->belongsTo('App\Center');
 	}
@@ -31,6 +33,10 @@ class Course extends Model {
 
 	public function courseCoordinator(){
 		return $this->belongsToMany('App\Professor', 'course_course_coordinator')->withTimestamps();
+	}
+
+	public function contests(){
+		return $this->belongsToMany('App\Contest')->withTimestamps();
 	}
 
 }

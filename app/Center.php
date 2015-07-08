@@ -16,4 +16,8 @@ class Center extends Model {
 		return $this->hasMany('App\Course');
 	}
 
+	public function contests(){
+		return $this->belongsToMany('App\Contest')->withTimestamps();
+	}
+
 }

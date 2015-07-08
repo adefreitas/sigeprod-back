@@ -4,6 +4,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\User;
+use App\Course;
 use App\Contest;
 use App\CourseCoordinator;
 use Illuminate\Http\Request;
@@ -49,11 +50,40 @@ class ContestController extends Controller {
 
 		$professor = $user->professor;
 
+		$professor_id = $professor->id;
 
-		$course = $professor->courseCoordinator;
+		$courses = $professor->courseCoordinator;
+
+		$courses_ids = array();
+
+		$courses_contests = array();
+		foreach($courses as $course){
+
+			array_push($courses_ids, $course->id);
+
+			array_push($courses_contests, $course->contests);
+
+		}
+
+		$courses = array();
+		foreach($courses_ids as $course_id){
+			echo $course_id + '\n';
+		}
+		foreach($courses_ids as $course_id){
+			echo $course_id;
+			echo "\n";
+			array_push($courses, Course::find($course_id));
+		}
+		// $materia = Course::find($courses[0]->id);
+
+		// $contestses = $materia->contests;
+		// $contest = $course;
 
 		return response()->json([
-            'message' => $course
+			'professor_id' => $professor_id,
+			'courses' => $courses,
+			// 'materia' => $materia,
+			'contestses' => $courses_contests,
 		]);
 	}
 
