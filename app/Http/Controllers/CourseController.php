@@ -15,7 +15,7 @@ class CourseController extends Controller {
 	 */
 	public function index()
 	{
-		$courses = Course::get();
+		$courses = Course::orderBy('semester')->get();
 
         return response()->json([
 			"courses" => $courses->toArray()

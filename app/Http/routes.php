@@ -80,8 +80,6 @@ Route::get('/profile', ['before' => 'jwt-auth',
 
   Route::resource('preferences', 'PreferenceController');
 
-  Route::resource('professors', 'ProfessorController');
-
   Route::resource('propositions', 'PropositionController');
 
   Route::resource('students', 'StudentController');
