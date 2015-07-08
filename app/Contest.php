@@ -7,11 +7,11 @@ class Contest extends Model {
 	protected $table = 'contests';
 
 	public function center(){
-		return $this->belongsToMany('App\Center');
+		return $this->belongsToMany('App\Center')->withTimestamps();
 	}
 
 	public function course(){
-		return $this->belongsToMany('App\Course');
+		return $this->belongsToMany('App\Course')->withTimestamps();
 	}
 
 }

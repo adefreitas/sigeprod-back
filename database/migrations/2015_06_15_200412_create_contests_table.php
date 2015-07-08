@@ -15,7 +15,6 @@ class CreateContestsTable extends Migration {
 		Schema::create('contests', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->timestamps();
 
 			//ID del profesor que solicito el concurso
 			$table->integer('professor_id')->unsigned()->index();
@@ -44,7 +43,7 @@ class CreateContestsTable extends Migration {
 			*/
 
 			$table->integer('status');
-
+			$table->timestamps();
 		});
 
 		Schema::create('contest_course', function(Blueprint $table)
@@ -67,8 +66,6 @@ class CreateContestsTable extends Migration {
 
 		Schema::create('contests_observations', function(Blueprint $table)
 		{
-			$table->timestamps();
-
 			//ID referente al concurso
 			$table->integer('contest_id')->unsigned()->index();
 			$table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');
@@ -79,6 +76,8 @@ class CreateContestsTable extends Migration {
 
 			//Descripcion de la observacion
 			$table->longText('description');
+
+			$table->timestamps();
 		});
 	}
 

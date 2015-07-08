@@ -127,8 +127,10 @@ class ContestController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store($request)
+	public function store(Request $request)
 	{
+
+
 		try {
 			JWTAuth::parseToken();
 			$token = JWTAuth::getToken();
@@ -141,7 +143,18 @@ class ContestController extends Controller {
 		$user = User::where('email', $tokenOwner->email)->first();
 
 		if($user->is('coursecoordinator') || $user->is('centercoordinator')){
-				$this->createContest($request);
+			$contest = new Contest();
+			$contest->professor_id = $request->professor_id;
+			$contest->teacher_helpers_1 = $request->teacher_helpers_1;
+			$contest->teacher_helpers_2 = $request->teacher_helpers_2;
+			$contest->status = $request->status;
+			$contest->save();
+
+			$contest->course()->attach($request->course_id);
+
+			$contest->save();
+			return response()->json(['id' => $contest->id]);
+				// $this->createContest($request);
 		}
 	}
 	/**
