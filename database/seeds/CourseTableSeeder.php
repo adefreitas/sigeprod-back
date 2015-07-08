@@ -74,6 +74,36 @@ class CourseTableSeeder extends Seeder {
             ])
         );
 
+        Course::create([
+                'id' => '6106',
+                'name' => 'Matemáticas Discretas I',
+                'credits' => '4',
+                'semester' => '1'
+        ]);
+
+        Course::create([
+                'id' => '6201',
+                'name' => 'Algoritmos y Programación',
+                'credits' => '6',
+                'semester' => '1'
+        ]);
+
+        Course::create([
+                'id' => '6301',
+                'name' => 'Introducción a la Informática',
+                'credits' => '4',
+                'semester' => '1'
+        ]);
+
+        Course::create([
+                'id' => '6202',
+                'name' => 'Algoritmos y Estructuras de Datos',
+                'credits' => '5',
+                'semester' => '2'
+        ]);
+
+
+
         /**********************************************************
         ***************** Coordinadores de Centro *****************
         ***********************************************************/
