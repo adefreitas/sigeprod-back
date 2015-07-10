@@ -144,15 +144,29 @@ class ContestController extends Controller {
 
 		if($user->is('coursecoordinator') || $user->is('centercoordinator')){
 			$contest = new Contest();
-			$contest->professor_id = $request->professor_id;
+			$contest->professor_id = $user->Professor->id;
+			$contest->status = 1;
 			$contest->teacher_helpers_1 = $request->teacher_helpers_1;
 			$contest->teacher_helpers_2 = $request->teacher_helpers_2;
-			$contest->status = $request->status;
+
+			if(!$request->teacher_helpers_1){
+				$contest->teacher_helpers_1 = 0;
+			}
+			if(!$request->teacher_helpers_2){
+				$contest->teacher_helpers_2 = 1;
+			}
+
 			$contest->save();
 
-			$contest->course()->attach($request->course_id);
+			if($request->course_id){
+				$contest->course()->attach($request->course_id);
+			}
+			if($request->center_id){
+				$contest->center()->attach($request->center_id);
+			}
 
 			$contest->save();
+
 			return response()->json(['id' => $contest->id]);
 				// $this->createContest($request);
 		}
