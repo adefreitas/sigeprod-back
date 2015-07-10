@@ -4,6 +4,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Proposition;
+use App\Professor;
 use Illuminate\Http\Request;
 
 class PropositionController extends Controller {
@@ -40,6 +41,10 @@ class PropositionController extends Controller {
 	public function store(Request $request)
 	{
 		$proposition = new Proposition();
+
+		$professor = Professor::where('user_id', $request->user_id)->first();
+
+		$proposition->professor_id = $professor['id'];
 
 		$proposition->course_option_1 = $request->course1;
 
