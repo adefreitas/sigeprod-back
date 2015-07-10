@@ -41,7 +41,7 @@ class PropositionController extends Controller {
 	{
 		$proposition = new Proposition();
 
-		$proposition->subject_option_1 = $request->course1;
+		$proposition->course_option_1 = $request->course1;
 
 		if($request->mode1[0]) {
 			$proposition->mode_option_1 = 'coordination';
@@ -56,7 +56,7 @@ class PropositionController extends Controller {
 			$proposition->mode_option_1 = 'laboratory';
 		}
 
-		$proposition->subject_option_2 = $request->course2;
+		$proposition->course_option_2 = $request->course2;
 
 		if($request->mode2[0]) {
 			$proposition->mode_option_2 = 'coordination';
@@ -71,7 +71,7 @@ class PropositionController extends Controller {
 			$proposition->mode_option_2 = 'laboratory';
 		}
 
-		$proposition->subject_option_3 = $request->course3;
+		$proposition->course_option_3 = $request->course3;
 
 		if($request->mode3[0]) {
 			$proposition->mode_option_3 = 'coordination';

@@ -16,18 +16,18 @@ class CreatePropositionsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('professor_id')->nullable()->references('id')->on('professors')->onDelete('cascade');
-			$table->string('subject_option_1');
-			$table->enum('mode_option_1', array('coordination', 'theory', 'practice', 'laboratory'));
-			$table->string('schedule_1_option_1');
-			$table->string('schedule_2_option_1');
-			$table->string('subject_option_2');
-			$table->enum('mode_option_2', array('coordination', 'theory', 'practice', 'laboratory'));
-			$table->string('schedule_1_option_2');
-			$table->string('schedule_2_option_2');
-			$table->string('subject_option_3');
-			$table->enum('mode_option_3', array('coordination', 'theory', 'practice', 'laboratory'));
-			$table->string('schedule_1_option_3');
-			$table->string('schedule_2_option_3');
+			$table->string('course_option_1');
+			$table->enum('mode_option_1', array('coordination', 'theory', 'practice', 'laboratory'))->nullable();
+			$table->string('schedule_1_option_1')->nullable();
+			$table->string('schedule_2_option_1')->nullable();
+			$table->string('course_option_2');
+			$table->enum('mode_option_2', array('coordination', 'theory', 'practice', 'laboratory'))->nullable();
+			$table->string('schedule_1_option_2')->nullable();
+			$table->string('schedule_2_option_2')->nullable();
+			$table->string('course_option_3');
+			$table->enum('mode_option_3', array('coordination', 'theory', 'practice', 'laboratory'))->nullable();
+			$table->string('schedule_1_option_3')->nullable();
+			$table->string('schedule_2_option_3')->nullable();
 			$table->timestamps();
 		});
 	}
