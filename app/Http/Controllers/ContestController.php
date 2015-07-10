@@ -37,8 +37,9 @@ class ContestController extends Controller {
      *  Si el usuario es coordinador de materia y coordinador de centro
      */
     if($user->is('coursecoordinator') && $user->is('centercoordinator')){
+        $contests = Contest::get();
         return response()->json([
-            'message' => 'Coordinador de materia y de centro'
+            'Contests' => $contests
         ]);
     }
 
@@ -92,27 +93,28 @@ class ContestController extends Controller {
      */
 
     else if($user->is('centercoordinator')){
+        $contests = Contest::get();
         return response()->json([
-            'message' => 'Coordinador de centro'
+            'Contests' => $contests
         ]);
     }
     /*
      *  Si el usuario es jefe de departamento se envian todas las propuestas existentes
      */
     else if($user->is('coursecoordinator') && $user->is('departmenthead')){
+        $contests = Contest::get();
         return response()->json([
-            'message' => 'Coordinador de Materia y Jefe de departamento'
+            'Contests' => $contests
         ]);
     }
     /*
      *  Si el usuario es jefe de departamento se envian todas las propuestas existentes
      */
     else if($user->is('departmenthead')){
-		$departmentHead = Contest::get();
-
+        $contests = Contest::get();
         return response()->json([
-			'departmentHead' => $departmentHead
-		]);
+            'Contests' => $contests
+        ]);
 
     }
 
