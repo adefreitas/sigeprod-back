@@ -58,33 +58,26 @@ class ContestController extends Controller {
 		$courses_ids = array();
 
 		$courses_contests = array();
+
 		foreach($courses as $course){
 
 			array_push($courses_ids, $course->id);
-
 			array_push($courses_contests, $course->contests);
 
 		}
 
 		$courses = array();
+
 		foreach($courses_ids as $course_id){
-			echo $course_id + '\n';
-		}
-		foreach($courses_ids as $course_id){
-			echo $course_id;
-			echo "\n";
+			
 			array_push($courses, Course::find($course_id));
 		}
-		// $materia = Course::find($courses[0]->id);
-
-		// $contestses = $materia->contests;
-		// $contest = $course;
 
 		return response()->json([
-			'professor_id' => $professor_id,
-			'courses' => $courses,
-			// 'materia' => $materia,
-			'contestses' => $courses_contests,
+			'courseContests' => [
+				'contests' => $courses_contests,
+				'courses' => $courses,
+			]
 		]);
 	}
 
