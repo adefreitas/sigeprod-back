@@ -69,8 +69,9 @@ class ContestController extends Controller {
 		$courses = array();
 
 		foreach($courses_ids as $course_id){
-			
+
 			array_push($courses, Course::find($course_id));
+			
 		}
 
 		return response()->json([
