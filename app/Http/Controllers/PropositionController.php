@@ -94,8 +94,8 @@ class PropositionController extends Controller {
 		$proposition->save();
 
 		return response()->json([
-				"msg" => "success",
-				"id" => $proposition->id
+				'msg' => "success",
+				'id' => $proposition->id
 			]);
 		
 	}

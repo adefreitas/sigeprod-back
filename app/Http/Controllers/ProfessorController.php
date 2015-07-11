@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\User;
 use App\Professor;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProfessorController extends Controller {
@@ -18,7 +17,7 @@ class ProfessorController extends Controller {
 	 */
 	public function index()
 	{
-		/*try {
+		try {
 			JWTAuth::parseToken();
 			$token = JWTAuth::getToken();
 		} catch (Exception $e){
@@ -27,17 +26,17 @@ class ProfessorController extends Controller {
 
 		$tokenOwner = JWTAuth::toUser($token);
 
-		$user = User::where('email', $tokenOwner->email)->first();*/
+		$user = User::where('email', $tokenOwner->email)->first();
 
 		//var_dump($user->Professor->id);
 
-		$professor = Professor::where('user_id', 6)->first();
+		$professor = Professor::where('id', $user->Professor->id)->first();
 
-		var_dump($professor->id);
+		//var_dump($professor->id);
 
 		return response()->json([
 				"msg" => "success",
-				"sent" => $professor->id
+				"sent" => $professor->proposition_sent
 			]);
 	}
 
@@ -69,11 +68,12 @@ class ProfessorController extends Controller {
 	 */
 	public function show($id)
 	{
-		$professors = Professor::where('user_id', $id);
+		$professor = Professor::where('user_id', $id)->first();
 
 		return response()->json([
 
-				"sent" => $professors->id
+				"msg" => "success",
+				"sent" => $professor->id
 
 			]);
 	}
@@ -97,7 +97,13 @@ class ProfessorController extends Controller {
 	 */
 	public function update($id)
 	{
-		//
+		$professor = Professor::where('user_id', $id)->update(['proposition_sent' => true]);
+
+		return response()->json([
+
+				"msg" => "success"
+
+			]);
 	}
 
 	/**
