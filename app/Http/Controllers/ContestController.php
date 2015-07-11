@@ -108,7 +108,7 @@ class ContestController extends Controller {
 
 		foreach($centers_ids as $center_id){
 
-			array_push($centers, Course::find($center_id));
+			array_push($centers, Center::find($center_id));
 
 		}
 
@@ -132,9 +132,18 @@ class ContestController extends Controller {
      *  Si el usuario es jefe de departamento se envian todas las propuestas existentes
      */
     else if($user->is('departmenthead')){
+
         $contests = Contest::get();
+
+        $contests_full = array();
+
+        foreach($contests as $contest){
+        	array_push($contests_full, $contest->course);
+        }
+
         return response()->json([
-            'Contests' => $contests
+            'courses' => $contests_full,
+            'contests' => $contests,
         ]);
 
     }
@@ -166,6 +175,7 @@ class ContestController extends Controller {
 		$user = User::where('email', $tokenOwner->email)->first();
 
 		if($user->is('coursecoordinator') || $user->is('centercoordinator')){
+			
 			$contest = new Contest();
 			$contest->professor_id = $user->Professor->id;
 			$contest->status = 1;
@@ -176,10 +186,12 @@ class ContestController extends Controller {
 				$contest->teacher_helpers_1 = 0;
 			}
 			if(!$request->teacher_helpers_2){
-				$contest->teacher_helpers_2 = 1;
+				$contest->teacher_helpers_2 = 0;
 			}
 
 			$contest->save();
+
+			
 
 			if($request->course_id){
 				$contest->course()->attach($request->course_id);

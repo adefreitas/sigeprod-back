@@ -35,7 +35,7 @@ class Course extends Model {
 		return $this->belongsToMany('App\Professor', 'course_course_coordinator')->withTimestamps();
 	}
 
-	public function contests(){
+	public function contest(){
 		return $this->belongsToMany('App\Contest')->withTimestamps();
 	}
 
