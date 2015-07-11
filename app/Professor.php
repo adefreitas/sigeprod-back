@@ -4,6 +4,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Professor extends Model {
 
+	protected $table = 'professors';
+
+	/**
+	 * The attributes that are mass assignable.
+	 *
+	 * @var array
+	 */
+	protected $fillable = ['id', 'dedication', 'proposition_sent'];
+
+	/**
+	 * The attributes excluded from the model's JSON form.
+	 *
+	 * @var array
+	 */
+	protected $hidden = [];
+
+
 	public function user(){
 		return $this->belongsTo('App\User');
 	}

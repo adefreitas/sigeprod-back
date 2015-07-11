@@ -19,6 +19,7 @@ class CreateProfessorsTable extends Migration {
 		    $table->integer('center_id')->nullable()->references('id')->on('centers')->onDelete('cascade');
 		    $table->string('status');
 			$table->integer('user_id')->nullable()->references('id')->on('users')->onDelete('cascade');
+			$table->boolean('proposition_sent')->nullable();
 		    $table->timestamps();
 		});
 	}

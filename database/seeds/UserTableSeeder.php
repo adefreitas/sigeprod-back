@@ -130,7 +130,8 @@ class UserTableSeeder extends Seeder {
         $professor =   Professor::create([
             'dedication' => 'Completa',
             'center_id' => '11',
-            'status' => 'Activo'
+            'status' => 'Activo',
+            'proposition_sent' => false
         ]);
 
         $professor->user()->associate($user);
@@ -165,7 +166,8 @@ class UserTableSeeder extends Seeder {
         $professor = Professor::create([
           'dedication' => 'Completa',
           'center_id' => '11',
-          'status' => 'Activo'
+          'status' => 'Activo',
+          'proposition_sent' => false
         ]);
 
         $professor->user()->associate($user);
@@ -190,7 +192,8 @@ class UserTableSeeder extends Seeder {
         $professor = Professor::create([
             'dedication' => 'Medio Tiempo',
             'center_id' => '33',
-            'status' => 'Activo'
+            'status' => 'Activo',
+            'proposition_sent' => false
         ]);
 
         $professor->user()->associate($user);
@@ -213,7 +216,8 @@ class UserTableSeeder extends Seeder {
         $professor = Professor::create([
           'dedication' => 'Medio Tiempo',
           'center_id' => '33',
-          'status' => 'Activo'
+          'status' => 'Activo',
+          'proposition_sent' => false
         ]);
 
         $professor->user()->associate($user);
@@ -236,7 +240,8 @@ class UserTableSeeder extends Seeder {
         $professor =  Professor::create([
           'dedication' => 'Contratado',
           'center_id' => '11',
-          'status' => 'Activo'
+          'status' => 'Activo',
+          'proposition_sent' => false
         ]);
 
         $professor->user()->associate($user);
@@ -261,7 +266,8 @@ class UserTableSeeder extends Seeder {
         $professor = Professor::create([
           'dedication' => 'Contratado',
           'center_id' => '66',
-          'status' => 'Activo'
+          'status' => 'Activo',
+          'proposition_sent' => false
         ]);
 
         $professor->user()->associate($user);
@@ -284,7 +290,8 @@ class UserTableSeeder extends Seeder {
         $professor = Professor::create([
           'dedication' => 'Completa',
           'center_id' => '77',
-          'status' => 'Activo'
+          'status' => 'Activo',
+          'proposition_sent' => false
         ]);
 
         $professor->user()->associate($user);
