@@ -71,7 +71,7 @@ class ContestController extends Controller {
 		foreach($courses_ids as $course_id){
 
 			array_push($courses, Course::find($course_id));
-			
+
 		}
 
 		return response()->json([
@@ -87,10 +87,37 @@ class ContestController extends Controller {
      */
 
     else if($user->is('centercoordinator')){
-        $contests = Contest::get();
-        return response()->json([
-            'Contests' => $contests
-        ]);
+		$professor = $user->professor;
+
+		$professor_id = $professor->id;
+
+		$centers = $professor->centerCoordinator;
+
+		$centers_ids = array();
+
+		$centers_contests = array();
+
+		foreach($centers as $center){
+
+			array_push($centers_ids, $center->id);
+			array_push($centers_contests, $center->contests);
+
+		}
+
+		$centers = array();
+
+		foreach($centers_ids as $center_id){
+
+			array_push($centers, Course::find($center_id));
+
+		}
+
+		return response()->json([
+			'centerContests' => [
+				'contests' => $centers_contests,
+				'centers' => $centers,
+			]
+		]);
     }
     /*
      *  Si el usuario es jefe de departamento se envian todas las propuestas existentes
