@@ -28,11 +28,7 @@ class ProfessorController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
-		//var_dump($user->Professor->id);
-
 		$professor = Professor::where('id', $user->Professor->id)->first();
-
-		//var_dump($professor->id);
 
 		return response()->json([
 				"msg" => "success",
@@ -73,7 +69,7 @@ class ProfessorController extends Controller {
 		return response()->json([
 
 				"msg" => "success",
-				"sent" => $professor->id
+				"center" => $professor->center_id
 
 			]);
 	}

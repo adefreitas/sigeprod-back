@@ -70,6 +70,8 @@ Route::get('/profile', ['before' => 'jwt-auth',
 
   Route::resource('centers', 'CenterController');
 
+  Route::get('centers/{id}/professors', 'CenterController@professors');
+
   Route::resource('center_coordinators', 'CenterCoordinatorController');
 
   Route::resource('contests', 'ContestController');

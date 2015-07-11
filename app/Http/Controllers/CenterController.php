@@ -3,6 +3,8 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+
+use App\Professor;
 use Illuminate\Http\Request;
 
 class CenterController extends Controller {
@@ -45,7 +47,19 @@ class CenterController extends Controller {
 	 */
 	public function show($id)
 	{
-		//
+		
+	}
+
+	public function professors($id)
+	{
+		$professor = Professor::where('center_id', $id)->get();
+
+		return response()->json([
+
+				"msg" => "success",
+				"professors" => $professor->toArray()
+
+			]);
 	}
 
 	/**
