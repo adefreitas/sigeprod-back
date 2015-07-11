@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use App\Course;
 use App\Contest;
+use App\Professor;
 use App\CourseCoordinator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -137,6 +138,14 @@ class ContestController extends Controller {
 
         $contests_full = array();
 
+        // $professors = DB::table('users')
+				    //     ->join('professors', function($join)
+				    //     {
+				    //         $join->on('users.id', '=', 'professors.user_id')
+				    //              ->where('professors.id', '=', 'contests.professor_id');
+				    //     })
+				    //     ->get();
+
         foreach($contests as $contest){
         	array_push($contests_full, $contest->course);
         }
@@ -144,6 +153,7 @@ class ContestController extends Controller {
         return response()->json([
             'courses' => $contests_full,
             'contests' => $contests,
+            // 'professors' => $professors,
         ]);
 
     }
