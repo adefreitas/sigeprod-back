@@ -108,7 +108,14 @@ class PropositionController extends Controller {
 	 */
 	public function show($id)
 	{
-		//
+		$proposition = Proposition::where('professor_id', $id)->get()->first();
+
+		return response()->json([
+
+				"msg" => "success",
+				"proposition" => $proposition
+
+			]);
 	}
 
 	/**

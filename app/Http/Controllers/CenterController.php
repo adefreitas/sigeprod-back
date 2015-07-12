@@ -56,7 +56,7 @@ class CenterController extends Controller {
 		$professors = Professor::where('center_id', $id)
 						->where('proposition_sent', true)
 						->join('users', 'users.id', '=', 'professors.user_id')
-						->select('users.name', 'users.lastname','users.email')
+						->select('users.name', 'users.lastname','users.email','professors.id')
 						->get();
 
 		return response()->json([
