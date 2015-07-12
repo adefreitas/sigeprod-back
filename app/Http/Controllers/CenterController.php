@@ -53,14 +53,16 @@ class CenterController extends Controller {
 
 	public function professors($id)
 	{
-		$professor = Professor::where('center_id', $id)->get();
+		$professors = Professor::where('center_id', $id)->join('users', 'users.id', '=', 'professors.user_id')->select('users.name', 'users.lastname','users.email')->get();
 
 		return response()->json([
 
 				"msg" => "success",
-				"professors" => $professor->toArray()
+				"professors" => $professors
 
 			]);
+
+		
 	}
 
 	/**
