@@ -35,129 +35,129 @@ class ContestController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
-    /*
-     *  Si el usuario es coordinador de materia y coordinador de centro
-     */
-    if($user->is('coursecoordinator') && $user->is('centercoordinator')){
-        $contests = Contest::get();
-        return response()->json([
-            'Contests' => $contests
-        ]);
-    }
+	    /*
+	     *  Si el usuario es coordinador de materia y coordinador de centro
+	     */
+	    if($user->is('coursecoordinator') && $user->is('centercoordinator')){
+	        $contests = Contest::get();
+	        return response()->json([
+	            'Contests' => $contests
+	        ]);
+	    }
 
-    /*
-     *  Si el usuario es coordinador de Materia se envian las propuestas
-     *  que corresponden a las materias que coordina
-     */
-	else if($user->is('coursecoordinator')){
+	    /*
+	     *  Si el usuario es coordinador de Materia se envian las propuestas
+	     *  que corresponden a las materias que coordina
+	     */
+		else if($user->is('coursecoordinator')){
 
-		$professor = $user->professor;
+			$professor = $user->professor;
 
-		$professor_id = $professor->id;
+			$professor_id = $professor->id;
 
-		$courses = $professor->courseCoordinator;
+			$courses = $professor->courseCoordinator;
 
-		$courses_ids = array();
+			$courses_ids = array();
 
-		$courses_contests = array();
+			$courses_contests = array();
 
-		foreach($courses as $course){
+			foreach($courses as $course){
 
-			array_push($courses_ids, $course->id);
-			array_push($courses_contests, $course->contests);
+				array_push($courses_ids, $course->id);
+				array_push($courses_contests, $course->contests);
 
+			}
+
+			$courses = array();
+
+			foreach($courses_ids as $course_id){
+
+				array_push($courses, Course::find($course_id));
+
+			}
+
+			return response()->json([
+				'courseContests' => [
+					'contests' => $courses_contests,
+					'courses' => $courses,
+				]
+			]);
 		}
 
-		$courses = array();
+	    /*
+	     *  Si el usuario es coordinador de Centro se envian las propuestas que corresponden a su centro
+	     */
 
-		foreach($courses_ids as $course_id){
+	    else if($user->is('centercoordinator')){
+			$professor = $user->professor;
 
-			array_push($courses, Course::find($course_id));
+			$professor_id = $professor->id;
 
-		}
+			$centers = $professor->centerCoordinator;
 
-		return response()->json([
-			'courseContests' => [
-				'contests' => $courses_contests,
-				'courses' => $courses,
-			]
-		]);
-	}
+			$centers_ids = array();
 
-    /*
-     *  Si el usuario es coordinador de Centro se envian las propuestas que corresponden a su centro
-     */
+			$centers_contests = array();
 
-    else if($user->is('centercoordinator')){
-		$professor = $user->professor;
+			foreach($centers as $center){
 
-		$professor_id = $professor->id;
+				array_push($centers_ids, $center->id);
+				array_push($centers_contests, $center->contests);
 
-		$centers = $professor->centerCoordinator;
+			}
 
-		$centers_ids = array();
+			$centers = array();
 
-		$centers_contests = array();
+			foreach($centers_ids as $center_id){
 
-		foreach($centers as $center){
+				array_push($centers, Center::find($center_id));
 
-			array_push($centers_ids, $center->id);
-			array_push($centers_contests, $center->contests);
+			}
 
-		}
+			return response()->json([
+				'centerContests' => [
+					'contests' => $centers_contests,
+					'centers' => $centers,
+				]
+			]);
+	    }
+	    /*
+	     *  Si el usuario es jefe de departamento se envian todas las propuestas existentes
+	     */
+	    else if($user->is('coursecoordinator') && $user->is('departmenthead')){
+	        $contests = Contest::get();
+	        return response()->json([
+	            'Contests' => $contests
+	        ]);
+	    }
+	    /*
+	     *  Si el usuario es jefe de departamento se envian todas las propuestas existentes
+	     */
+	    else if($user->is('departmenthead')){
 
-		$centers = array();
+	        $contests = Contest::get();
 
-		foreach($centers_ids as $center_id){
+	        $contests_full = array();
 
-			array_push($centers, Center::find($center_id));
+	        // $professors = DB::table('users')
+					    //     ->join('professors', function($join)
+					    //     {
+					    //         $join->on('users.id', '=', 'professors.user_id')
+					    //              ->where('professors.id', '=', 'contests.professor_id');
+					    //     })
+					    //     ->get();
 
-		}
+	        foreach($contests as $contest){
+	        	array_push($contests_full, $contest->course);
+	        }
 
-		return response()->json([
-			'centerContests' => [
-				'contests' => $centers_contests,
-				'centers' => $centers,
-			]
-		]);
-    }
-    /*
-     *  Si el usuario es jefe de departamento se envian todas las propuestas existentes
-     */
-    else if($user->is('coursecoordinator') && $user->is('departmenthead')){
-        $contests = Contest::get();
-        return response()->json([
-            'Contests' => $contests
-        ]);
-    }
-    /*
-     *  Si el usuario es jefe de departamento se envian todas las propuestas existentes
-     */
-    else if($user->is('departmenthead')){
+	        return response()->json([
+	            'courses' => $contests_full,
+	            'contests' => $contests,
+	            // 'professors' => $professors,
+	        ]);
 
-        $contests = Contest::get();
-
-        $contests_full = array();
-
-        // $professors = DB::table('users')
-				    //     ->join('professors', function($join)
-				    //     {
-				    //         $join->on('users.id', '=', 'professors.user_id')
-				    //              ->where('professors.id', '=', 'contests.professor_id');
-				    //     })
-				    //     ->get();
-
-        foreach($contests as $contest){
-        	array_push($contests_full, $contest->course);
-        }
-
-        return response()->json([
-            'courses' => $contests_full,
-            'contests' => $contests,
-            // 'professors' => $professors,
-        ]);
-
-    }
+	    }
 
 		else{
         return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
@@ -236,8 +236,25 @@ class ContestController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show(Request $request, $id)
 	{
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
+		$request = $request->all();
+
+		$contest = Contest::find($id);
+
+		return response()->json(['contest' => $contest]);
+
 	}
 
 
@@ -249,9 +266,71 @@ class ContestController extends Controller {
 	 */
 	public function update(Request $request, $id)
 	{
-		Contest::find($id);
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
 
-		return response()->json(['id'=> $id, 'contest' => Contest::find($id), 'request'=> $request->all()]);
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+		// echo $request;
+		// echo '\n';
+
+
+
+		$contest = Contest::find($id);
+
+
+		if($user->is('coursecoordinator') || $user->is('centercoordinator') || $user->is('departmenthead')){
+			echo $request->observations;
+			if($request->observations){
+				$observation = new Observation();
+				$observation->description = $request->observations;
+				$observation->user_id = $user->Professor->id;
+
+				$contest->observations()->save($observation);
+
+				$observation->save();
+
+				$contest->save();
+
+
+				$contest->teacher_helpers_1 = $request->teacher_helpers_1;
+				$contest->teacher_helpers_2 = $request->teacher_helpers_2;
+
+				if( !$request->teacher_helpers_1 ){
+
+					$contest->teacher_helpers_1 = 0;
+
+				}
+
+				if( !$request->teacher_helpers_2 ){
+
+					$contest->teacher_helpers_2 = 0;
+
+				}
+
+				if( $user->is('departmenthead') ){
+
+					$contest->status = $request->status;
+
+				}
+
+				else if( $user->is('coursecoordinator') || $user->is('centercoordinator') ){
+					if( $request->status == 1 ){
+						$contest->status = $request->status;
+					}
+				}
+
+				$contest->save();
+
+				return response()->json(['contest' => $contest]);
+
+			}
+		}
 	}
 
 	/**
