@@ -49,46 +49,46 @@ class PropositionController extends Controller {
 		$proposition->course_option_1 = $request->course1;
 
 		if($request->mode1[0]) {
-			$proposition->mode_option_1 = 'coordination';
+			$proposition->mode_option_1 = 'Coordinador(a)';
 		}
 		elseif ($request->mode1[1]) {
-			$proposition->mode_option_1 = 'theory';
+			$proposition->mode_option_1 = 'Teoría';
 		}
 		elseif ($request->mode1[2]) {
-			$proposition->mode_option_1 = 'practice';
+			$proposition->mode_option_1 = 'Práctica';
 		}
 		elseif ($request->mode1[3]) {
-			$proposition->mode_option_1 = 'laboratory';
+			$proposition->mode_option_1 = 'Laboratorio';
 		}
 
 		$proposition->course_option_2 = $request->course2;
 
 		if($request->mode2[0]) {
-			$proposition->mode_option_2 = 'coordination';
+			$proposition->mode_option_2 = 'Coordinador(a)';
 		}
 		elseif ($request->mode2[1]) {
-			$proposition->mode_option_2 = 'theory';
+			$proposition->mode_option_2 = 'Teoría';
 		}
 		elseif ($request->mode2[2]) {
-			$proposition->mode_option_2 = 'practice';
+			$proposition->mode_option_2 = 'Práctica';
 		}
 		elseif ($request->mode2[3]) {
-			$proposition->mode_option_2 = 'laboratory';
+			$proposition->mode_option_2 = 'Laboratorio';
 		}
 
 		$proposition->course_option_3 = $request->course3;
 
 		if($request->mode3[0]) {
-			$proposition->mode_option_3 = 'coordination';
+			$proposition->mode_option_3 = 'Coordinador(a)';
 		}
 		elseif ($request->mode3[1]) {
-			$proposition->mode_option_3 = 'theory';
+			$proposition->mode_option_3 = 'Teoría';
 		}
 		elseif ($request->mode3[2]) {
-			$proposition->mode_option_3 = 'practice';
+			$proposition->mode_option_3 = 'Práctica';
 		}
 		elseif ($request->mode3[3]) {
-			$proposition->mode_option_3 = 'laboratory';
+			$proposition->mode_option_3 = 'Laboratorio';
 		}
 
 		$proposition->save();
