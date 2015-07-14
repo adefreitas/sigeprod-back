@@ -238,7 +238,6 @@ class ContestController extends Controller {
 	 */
 	public function show($id)
 	{
-		//
 	}
 
 
@@ -248,9 +247,11 @@ class ContestController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request, $id)
 	{
-		//
+		Contest::find($id);
+
+		return response()->json(['id'=> $id, 'contest' => Contest::find($id), 'request'=> $request->all()]);
 	}
 
 	/**
