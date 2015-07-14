@@ -139,13 +139,10 @@ class ContestController extends Controller {
 
         $contests_full = array();
 
-        // $professors = DB::table('users')
-				    //     ->join('professors', function($join)
-				    //     {
-				    //         $join->on('users.id', '=', 'professors.user_id')
-				    //              ->where('professors.id', '=', 'contests.professor_id');
-				    //     })
-				    //     ->get();
+        $professors = Professor::join('contests', 'contests.professor_id', '=', 'professors.id')
+						->join('users', 'users.id', '=', 'professors.user_id')
+						->select('users.name', 'users.lastname','users.email','professors.id')
+						->get();
 
         foreach($contests as $contest){
         	array_push($contests_full, $contest->course);
@@ -154,7 +151,7 @@ class ContestController extends Controller {
         return response()->json([
             'courses' => $contests_full,
             'contests' => $contests,
-            // 'professors' => $professors,
+            'professors' => $professors,
         ]);
 
     }
