@@ -7,6 +7,7 @@ use App\User;
 use App\Course;
 use App\Contest;
 use App\Professor;
+use App\Observation;
 use App\CourseCoordinator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -185,7 +186,7 @@ class ContestController extends Controller {
 		$user = User::where('email', $tokenOwner->email)->first();
 
 		if($user->is('coursecoordinator') || $user->is('centercoordinator')){
-			
+
 			$contest = new Contest();
 			$contest->professor_id = $user->Professor->id;
 			$contest->status = 1;
@@ -201,13 +202,26 @@ class ContestController extends Controller {
 
 			$contest->save();
 
-			
+
 
 			if($request->course_id){
 				$contest->course()->attach($request->course_id);
 			}
 			if($request->center_id){
 				$contest->center()->attach($request->center_id);
+			}
+
+			if($request->observations){
+
+				$observation = new Observation();
+				$observation->description = $request->observations;
+				$observation->user_id = $user->Professor->id;
+
+				$contest->observations()->save($observation);
+
+				$observation->save();
+
+				$observation->save();
 			}
 
 			$contest->save();

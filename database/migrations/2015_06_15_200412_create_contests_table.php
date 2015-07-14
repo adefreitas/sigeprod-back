@@ -64,21 +64,6 @@ class CreateContestsTable extends Migration {
 			$table->timestamps();
 		});
 
-		Schema::create('contests_observations', function(Blueprint $table)
-		{
-			//ID referente al concurso
-			$table->integer('contest_id')->unsigned()->index();
-			$table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');
-
-			//Autor de la observacion
-			$table->integer('author_id')->unsigned()->index();
-			$table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
-
-			//Descripcion de la observacion
-			$table->longText('description');
-
-			$table->timestamps();
-		});
 	}
 
 	/**
@@ -88,7 +73,6 @@ class CreateContestsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('contests_observations');
 		Schema::drop('contest_course');
 		Schema::drop('center_contest');
 		Schema::drop('contests');

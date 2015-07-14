@@ -14,4 +14,8 @@ class Contest extends Model {
 		return $this->belongsToMany('App\Course')->withTimestamps();
 	}
 
+	public function observations(){
+		return $this->hasMany('App\Observation');
+	}
+
 }
