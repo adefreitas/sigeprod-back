@@ -114,14 +114,13 @@ class ContestController extends Controller {
 
 			}
 
-
-			return response()->json([
-				'centerContests' => [
-					'contests' => $centers_contests,
-					'centers' => $centers,
-				]
-			]);
-	    }
+		return response()->json([
+			'centerContests' => [
+				'contests' => $centers_contests,
+				'centers' => $centers,
+			]
+		]);
+    }
 	    /*
 	     *  Si el usuario es jefe de departamento se envian todas las propuestas existentes
 	     */
@@ -145,14 +144,21 @@ class ContestController extends Controller {
 							->select('users.name', 'users.lastname','users.email','professors.id')
 							->get();
 
+			$observations = array();
+
 	        foreach($contests as $contest){
 	        	array_push($contests_full, $contest->course);
+	        	$observation = Observation::join('users', 'users.id', '=', 'observations.user_id')
+							->select('users.name', 'users.lastname', 'observations.description', 'observations.user_id', 'observations.updated_at')
+							->get();
+	        	array_push($observations, $observation);
 	        }
 
 	        return response()->json([
 	            'courses' => $contests_full,
 	            'contests' => $contests,
 	            'professors' => $professors,
+	            'observations' => $observations,
 	        ]);
 
 	    }
@@ -277,17 +283,13 @@ class ContestController extends Controller {
 		// echo $request;
 		// echo '\n';
 
-
-
 		$contest = Contest::find($id);
 
-
 		if($user->is('coursecoordinator') || $user->is('centercoordinator') || $user->is('departmenthead')){
-			echo $request->observations;
 			if($request->observations){
 				$observation = new Observation();
 				$observation->description = $request->observations;
-				$observation->user_id = $user->Professor->id;
+				$observation->user_id = $user->id;
 
 				$contest->observations()->save($observation);
 
