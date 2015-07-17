@@ -1,7 +1,7 @@
 <?php
 
 
-/* Esto es para heroku borrenlo en su version local */
+/* Esto es para heroku comentenlo en su version local */
 
 // $url = parse_url(getenv("DATABASE_URL"));
 //
@@ -11,6 +11,7 @@
 // $database = substr($url["path"], 1);
 
 /* fin de cosa para heroku 1 */
+
 return [
 
 	/*
@@ -57,6 +58,8 @@ return [
 
 	'connections' => [
 		'pgsql' => [
+
+			/* eso deberia estar descomentado para uso local */
 			'driver'   => 'pgsql',
 			'host'     => env('DB_HOST'),
 			'database' => env('DB_DATABASE'),
@@ -65,6 +68,7 @@ return [
 			'charset'  => 'utf8',
 			'prefix'   => '',
 			'schema'   => 'public',
+			/* fin de uso local */
 
 
 			/* Esto es para heroku, comenten esto y descomenten lo de arriba en su version local */
@@ -76,7 +80,7 @@ return [
 	        // 'charset'  => 'utf8',
 	        // 'prefix'   => '',
 	        // 'schema'   => 'public',
-			/* fin de cosa para heroku */
+			/* fin de cosa para heroku 2 */
 		],
 	],
 
