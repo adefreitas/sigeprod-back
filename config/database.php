@@ -1,5 +1,16 @@
 <?php
 
+
+/* Esto es para heroku borrenlo en su version local */
+
+$url = parse_url(getenv("DATABASE_URL"));
+
+$host = $url["host"];
+$username = $url["user"];
+$password = $url["pass"];
+$database = substr($url["path"], 1);
+
+/* fin de cosa para heroku 1 */
 return [
 
 	/*
@@ -46,14 +57,26 @@ return [
 
 	'connections' => [
 		'pgsql' => [
+			// 'driver'   => 'pgsql',
+			// 'host'     => env('DB_HOST'),
+			// 'database' => env('DB_DATABASE'),
+			// 'username' => env('DB_USERNAME'),
+			// 'password' => env('DB_PASSWORD'),
+			// 'charset'  => 'utf8',
+			// 'prefix'   => '',
+			// 'schema'   => 'public',
+
+
+			/* Esto es para heroku, comenten esto y descomenten lo de arriba en su version local */
 			'driver'   => 'pgsql',
-			'host'     => env('DB_HOST'),
-			'database' => env('DB_DATABASE'),
-			'username' => env('DB_USERNAME'),
-			'password' => env('DB_PASSWORD'),
-			'charset'  => 'utf8',
-			'prefix'   => '',
-			'schema'   => 'public',
+	        'host'     => $host,
+	        'database' => $database,
+	        'username' => $username,
+	        'password' => $password,
+	        'charset'  => 'utf8',
+	        'prefix'   => '',
+	        'schema'   => 'public',
+			/* fin de cosa para heroku */
 		],
 	],
 
