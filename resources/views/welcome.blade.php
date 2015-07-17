@@ -41,7 +41,7 @@
 		<div class="container">
 			<div class="content">
 				<div class="title">SIGEPROD API</div>
-				<div class="quote">URL de la aplicaccion: Proximamente</div>
+				<div class="quote">URL de la aplicacion: Proximamente</div>
 			</div>
 		</div>
 	</body>
