@@ -19,9 +19,9 @@ return [
     /* LOCAL */
     //'secret' => env('JWT_SECRET'),
     /* LOCAL END /*
-    
+
     /* HEROKU */
-    'secret' => $jtw,
+    'secret' => $jwt,
     /* HEROKU END*/
 
     /*
