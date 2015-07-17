@@ -1,7 +1,7 @@
 <html>
 	<head>
-		<title>Laravel</title>
-		
+		<title>SIGEPROD API</title>
+
 		<link href='//fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
 
 		<style>
@@ -40,8 +40,8 @@
 	<body>
 		<div class="container">
 			<div class="content">
-				<div class="title">Laravel 5</div>
-				<div class="quote">{{ Inspiring::quote() }}</div>
+				<div class="title">SIGEPROD API</div>
+				<div class="quote">URL de la aplicaccion: Proximamente</div>
 			</div>
 		</div>
 	</body>

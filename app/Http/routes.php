@@ -14,7 +14,9 @@
 use App\User;
 use Illuminate\Http\Response as HttpResponse;
 
-// Route::get('/', )
+Route::get('/', function(){
+    return view('welcome');
+});
 
 Route::post('/signup', function(){
 
