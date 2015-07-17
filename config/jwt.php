@@ -1,5 +1,9 @@
 <?php
 
+/* HEROKU */
+$jwt = ZC4x1jZVQlUVkBtB2cxmIVdDX5OzLArD;
+/* HEROKU END */
+
 return [
 
     /*
@@ -12,7 +16,13 @@ return [
     |
     */
 
-    'secret' => env('JWT_SECRET'),
+    /* LOCAL */
+    //'secret' => env('JWT_SECRET'),
+    /* LOCAL END /*
+    
+    /* HEROKU */
+    'secret' => $jtw,
+    /* HEROKU END*/
 
     /*
     |--------------------------------------------------------------------------
