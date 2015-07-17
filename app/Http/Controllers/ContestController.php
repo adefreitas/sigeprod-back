@@ -146,12 +146,23 @@ class ContestController extends Controller {
 
 			$observations = array();
 
+			// mega join
+
+        	$todo = Professor::join('users', 'users.id', '=', 'professors.user_id')
+        			->join('contests', 'contests.professor_id', '=', 'professors.id')
+        			->join('contest_course', 'contest_course.course_id', '=', 'contests.id')
+        			->join('courses', 'courses.id', '=', 'contest_course.course_id')
+        			->join('observations', 'observations.user_id', '=', 'users.id')
+        			->select('users.name')
+        			->get();
+
 	        foreach($contests as $contest){
 	        	array_push($contests_full, $contest->course);
 	        	$observation = Observation::join('users', 'users.id', '=', 'observations.user_id')
 							->select('users.name', 'users.lastname', 'observations.description', 'observations.user_id', 'observations.updated_at')
 							->get();
 	        	array_push($observations, $observation);
+	        	
 	        }
 
 	        return response()->json([
@@ -159,6 +170,7 @@ class ContestController extends Controller {
 	            'contests' => $contests,
 	            'professors' => $professors,
 	            'observations' => $observations,
+	            'todo' => $todo,
 	        ]);
 
 	    }
@@ -280,10 +292,10 @@ class ContestController extends Controller {
 		$tokenOwner = JWTAuth::toUser($token);
 
 		$user = User::where('email', $tokenOwner->email)->first();
-		// echo $request;
-		// echo '\n';
 
 		$contest = Contest::find($id);
+
+		// $request = $request->all();
 
 		if($user->is('coursecoordinator') || $user->is('centercoordinator') || $user->is('departmenthead')){
 			if($request->observations){
@@ -327,7 +339,7 @@ class ContestController extends Controller {
 
 				$contest->save();
 
-				return response()->json(['contest' => $contest]);
+				return response()->json(['contest' => $contest, 'request' => $request]);
 
 			}
 		}
