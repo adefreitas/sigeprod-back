@@ -162,7 +162,7 @@ class ContestController extends Controller {
 							->select('users.name', 'users.lastname', 'observations.description', 'observations.user_id', 'observations.updated_at')
 							->get();
 	        	array_push($observations, $observation);
-	        	
+
 	        }
 
 	        return response()->json([
@@ -308,40 +308,39 @@ class ContestController extends Controller {
 				$observation->save();
 
 				$contest->save();
+			}
 
+			$contest->teacher_helpers_1 = $request->teacher_helpers_1;
+			$contest->teacher_helpers_2 = $request->teacher_helpers_2;
 
-				$contest->teacher_helpers_1 = $request->teacher_helpers_1;
-				$contest->teacher_helpers_2 = $request->teacher_helpers_2;
+			if( !$request->teacher_helpers_1 ){
 
-				if( !$request->teacher_helpers_1 ){
-
-					$contest->teacher_helpers_1 = 0;
-
-				}
-
-				if( !$request->teacher_helpers_2 ){
-
-					$contest->teacher_helpers_2 = 0;
-
-				}
-
-				if( $user->is('departmenthead') ){
-
-					$contest->status = $request->status;
-
-				}
-
-				else if( $user->is('coursecoordinator') || $user->is('centercoordinator') ){
-					if( $request->status == 1 ){
-						$contest->status = $request->status;
-					}
-				}
-
-				$contest->save();
-
-				return response()->json(['contest' => $contest, 'request' => $request]);
+				$contest->teacher_helpers_1 = 0;
 
 			}
+
+			if( !$request->teacher_helpers_2 ){
+
+				$contest->teacher_helpers_2 = 0;
+
+			}
+
+			if( $user->is('departmenthead') ){
+
+				$contest->status = $request->status;
+
+			}
+
+			else if( $user->is('coursecoordinator') || $user->is('centercoordinator') ){
+				if( $request->status == 1 ){
+					$contest->status = $request->status;
+				}
+			}
+
+			$contest->save();
+
+			return response()->json(['contest' => $contest, 'request' => $request]);
+
 		}
 	}
 
