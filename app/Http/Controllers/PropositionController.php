@@ -61,6 +61,9 @@ class PropositionController extends Controller {
 			$proposition->mode_option_1 = 'Laboratorio';
 		}
 
+		$proposition->schedule_1_option_1 = $request->schedule1[0];
+		$proposition->schedule_2_option_1 = $request->schedule1[1];
+
 		$proposition->course_option_2 = $request->course2;
 
 		if($request->mode2[0]) {
@@ -76,6 +79,9 @@ class PropositionController extends Controller {
 			$proposition->mode_option_2 = 'Laboratorio';
 		}
 
+		$proposition->schedule_1_option_2 = $request->schedule2[0];
+		$proposition->schedule_2_option_2 = $request->schedule2[1];
+
 		$proposition->course_option_3 = $request->course3;
 
 		if($request->mode3[0]) {
@@ -90,6 +96,9 @@ class PropositionController extends Controller {
 		elseif ($request->mode3[3]) {
 			$proposition->mode_option_3 = 'Laboratorio';
 		}
+
+		$proposition->schedule_1_option_3 = $request->schedule3[0];
+		$proposition->schedule_2_option_3 = $request->schedule3[1];
 
 		$proposition->save();
 
