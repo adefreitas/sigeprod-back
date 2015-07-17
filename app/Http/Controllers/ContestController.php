@@ -51,37 +51,43 @@ class ContestController extends Controller {
 	     */
 		else if($user->is('coursecoordinator')){
 
-			$professor = $user->professor;
+			$contests = Contest::get();
 
-			$professor_id = $professor->id;
+	        $contests_full = array();
 
-			$courses = $professor->courseCoordinator;
+	        $professors = Professor::join('contests', 'contests.professor_id', '=', 'professors.id')
+							->join('users', 'users.id', '=', 'professors.user_id')
+							->select('users.name', 'users.lastname','users.email','professors.id')
+							->get();
 
-			$courses_ids = array();
+			$observations = array();
 
-			$courses_contests = array();
+			// mega join
 
-			foreach($courses as $course){
+        	$todo = Professor::join('users', 'users.id', '=', 'professors.user_id')
+        			->join('contests', 'contests.professor_id', '=', 'professors.id')
+        			->join('contest_course', 'contest_course.course_id', '=', 'contests.id')
+        			->join('courses', 'courses.id', '=', 'contest_course.course_id')
+        			->join('observations', 'observations.user_id', '=', 'users.id')
+        			->select('users.name')
+        			->get();
 
-				array_push($courses_ids, $course->id);
-				array_push($courses_contests, $course->contests);
+	        foreach($contests as $contest){
+	        	array_push($contests_full, $contest->course);
+	        	$observation = Observation::join('users', 'users.id', '=', 'observations.user_id')
+							->select('users.name', 'users.lastname', 'observations.description', 'observations.user_id', 'observations.updated_at')
+							->get();
+	        	array_push($observations, $observation);
 
-			}
+	        }
 
-			$courses = array();
-
-			foreach($courses_ids as $course_id){
-
-				array_push($courses, Course::find($course_id));
-
-			}
-
-			return response()->json([
-				'courseContests' => [
-					'contests' => $courses_contests,
-					'courses' => $courses,
-				]
-			]);
+	        return response()->json([
+	            'courses' => $contests_full,
+	            'contests' => $contests,
+	            'professors' => $professors,
+	            'observations' => $observations,
+	            'todo' => $todo,
+	        ]);
 		}
 
 	    /*
@@ -310,18 +316,15 @@ class ContestController extends Controller {
 				$contest->save();
 			}
 
-			$contest->teacher_helpers_1 = $request->teacher_helpers_1;
-			$contest->teacher_helpers_2 = $request->teacher_helpers_2;
+			if( $request->teacher_helpers_1 ){
 
-			if( !$request->teacher_helpers_1 ){
-
-				$contest->teacher_helpers_1 = 0;
+				$contest->teacher_helpers_1 = $request->teacher_helpers_1;
 
 			}
 
-			if( !$request->teacher_helpers_2 ){
+			if( $request->teacher_helpers_2 ){
 
-				$contest->teacher_helpers_2 = 0;
+				$contest->teacher_helpers_2 = $request->teacher_helpers_2;
 
 			}
 
