@@ -158,7 +158,7 @@ class ContestController extends Controller {
         			->join('contests', 'contests.professor_id', '=', 'professors.id')
         			->join('contest_course', 'contest_course.course_id', '=', 'contests.id')
         			->join('courses', 'courses.id', '=', 'contest_course.course_id')
-        			->join('observations', 'observations.user_id', '=', 'users.id')
+        			->join('observations', 'observations.contest_id', '=', 'contests.id')
         			->select('users.name')
         			->get();
 
