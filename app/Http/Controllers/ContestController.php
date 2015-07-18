@@ -141,42 +141,34 @@ class ContestController extends Controller {
 	     */
 	    else if($user->is('departmenthead')){
 
-	        $contests = Contest::get();
+			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
+				->join('users', 'users.id', '=', 'professors.user_id')
+				->join('contest_course', 'contest_course.contest_id', '=', 'contests.id', 'left outer')
+				->join('courses', 'courses.id', '=', 'contest_course.course_id', 'left outer')
+				->join('center_contest', 'center_contest.contest_id', '=', 'contests.id', 'left outer')
+				->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
+				->select(
+					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.status as contest_status',
+					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
+					'courses.name as course_name', 'courses.id as course_id',
+					'centers.id as center_id', 'centers.name as center_name'
 
-	        $contests_full = array();
+				)
+				->get();
 
-	        $professors = Professor::join('contests', 'contests.professor_id', '=', 'professors.id')
-							->join('users', 'users.id', '=', 'professors.user_id')
-							->select('users.name', 'users.lastname','users.email','professors.id')
-							->get();
+			$result = array();
 
-			$observations = array();
-
-			// mega join
-
-        	$todo = Professor::join('users', 'users.id', '=', 'professors.user_id')
-        			->join('contests', 'contests.professor_id', '=', 'professors.id')
-        			->join('contest_course', 'contest_course.course_id', '=', 'contests.id')
-        			->join('courses', 'courses.id', '=', 'contest_course.course_id')
-        			->join('observations', 'observations.contest_id', '=', 'contests.id')
-        			->select('users.name')
-        			->get();
-
-	        foreach($contests as $contest){
-	        	array_push($contests_full, $contest->course);
-	        	$observation = Observation::join('users', 'users.id', '=', 'observations.user_id')
-							->select('users.name', 'users.lastname', 'observations.description', 'observations.user_id', 'observations.updated_at')
-							->get();
-	        	array_push($observations, $observation);
-
-	        }
+			foreach($everything as $item){
+				$item->observations =
+					Observation::where('contest_id', '=', $item->contest_id)
+					->join('users', 'users.id', '=', 'observations.user_id')
+					->orderBy('observations.created_at', 'desc')
+					->get();
+				array_push($result, $item);
+			}
 
 	        return response()->json([
-	            'courses' => $contests_full,
-	            'contests' => $contests,
-	            'professors' => $professors,
-	            'observations' => $observations,
-	            'todo' => $todo,
+	            'contests' => $result,
 	        ]);
 
 	    }
