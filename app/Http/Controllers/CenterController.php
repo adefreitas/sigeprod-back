@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 
 
 use App\User;
+use App\Center;
 use App\Professor;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,10 @@ class CenterController extends Controller {
 	 */
 	public function index()
 	{
-		//
+		return response()->json([
+			'centers' => Center::get(),
+		]);
+
 	}
 
 	/**
@@ -48,7 +52,7 @@ class CenterController extends Controller {
 	 */
 	public function show($id)
 	{
-		
+
 	}
 
 	public function professors($id)
@@ -66,7 +70,7 @@ class CenterController extends Controller {
 
 			]);
 
-		
+
 	}
 
 	/**

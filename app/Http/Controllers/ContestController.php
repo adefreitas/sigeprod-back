@@ -62,6 +62,11 @@ class ContestController extends Controller {
 					Observation::where('contest_id', '=', $item->contest_id)
 					->join('users', 'users.id', '=', 'observations.user_id')
 					->orderBy('observations.created_at', 'desc')
+					->select(
+						'observations.created_at', 'observations.description',
+						'users.lastname', 'users.name', 'users.id as user_id',
+						'observations.id as observation_id'
+					)
 					->get();
 				array_push($result, $item);
 			}
@@ -102,6 +107,11 @@ class ContestController extends Controller {
 					Observation::where('contest_id', '=', $item->contest_id)
 					->join('users', 'users.id', '=', 'observations.user_id')
 					->orderBy('observations.created_at', 'desc')
+					->select(
+						'observations.created_at', 'observations.description',
+						'users.lastname', 'users.name', 'users.id as user_id',
+						'observations.id as observation_id'
+					)
 					->get();
 				array_push($result, $item);
 			}
@@ -142,6 +152,11 @@ class ContestController extends Controller {
 					Observation::where('contest_id', '=', $item->contest_id)
 					->join('users', 'users.id', '=', 'observations.user_id')
 					->orderBy('observations.created_at', 'desc')
+					->select(
+						'observations.created_at', 'observations.description',
+						'users.lastname', 'users.name', 'users.id as user_id',
+						'observations.id as observation_id'
+					)
 					->get();
 				array_push($result, $item);
 			}
@@ -178,6 +193,11 @@ class ContestController extends Controller {
 					Observation::where('contest_id', '=', $item->contest_id)
 					->join('users', 'users.id', '=', 'observations.user_id')
 					->orderBy('observations.created_at', 'desc')
+					->select(
+						'observations.created_at', 'observations.description',
+						'users.lastname', 'users.name', 'users.id as user_id',
+						'observations.id as observation_id'
+					)
 					->get();
 				array_push($result, $item);
 			}
@@ -213,6 +233,11 @@ class ContestController extends Controller {
 					Observation::where('contest_id', '=', $item->contest_id)
 					->join('users', 'users.id', '=', 'observations.user_id')
 					->orderBy('observations.created_at', 'desc')
+					->select(
+						'observations.created_at', 'observations.description',
+						'users.lastname', 'users.name', 'users.id as user_id',
+						'observations.id as observation_id'
+					)
 					->get();
 				array_push($result, $item);
 			}
@@ -252,7 +277,7 @@ class ContestController extends Controller {
 		if($user->is('coursecoordinator') || $user->is('centercoordinator')){
 
 			$contest = new Contest();
-			$contest->professor_id = $user->Professor->id;
+			$contest->professor_id = $user->id;
 			$contest->status = 1;
 			$contest->teacher_helpers_1 = $request->teacher_helpers_1;
 			$contest->teacher_helpers_2 = $request->teacher_helpers_2;
@@ -279,7 +304,7 @@ class ContestController extends Controller {
 
 				$observation = new Observation();
 				$observation->description = $request->observations;
-				$observation->user_id = $user->Professor->id;
+				$observation->user_id = $user->id;
 
 				$contest->observations()->save($observation);
 
