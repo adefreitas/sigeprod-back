@@ -47,7 +47,7 @@ class ContestController extends Controller {
 				->join('center_contest', 'center_contest.contest_id', '=', 'contests.id', 'left outer')
 				->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
 				->select(
-					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.status as contest_status',
+					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
 					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
 					'courses.name as course_name', 'courses.id as course_id',
 					'centers.id as center_id', 'centers.name as center_name'
@@ -92,7 +92,7 @@ class ContestController extends Controller {
 				->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
 				->where('courses.id', '=', $course->id)
 				->select(
-					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.status as contest_status',
+					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
 					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
 					'courses.name as course_name', 'courses.id as course_id',
 					'centers.id as center_id', 'centers.name as center_name'
@@ -137,7 +137,7 @@ class ContestController extends Controller {
 				->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
 				->where('centers.id', '=', $center->id)
 				->select(
-					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.status as contest_status',
+					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
 					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
 					'courses.name as course_name', 'courses.id as course_id',
 					'centers.id as center_id', 'centers.name as center_name'
@@ -178,7 +178,7 @@ class ContestController extends Controller {
 				->join('center_contest', 'center_contest.contest_id', '=', 'contests.id', 'left outer')
 				->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
 				->select(
-					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.status as contest_status',
+					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
 					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
 					'courses.name as course_name', 'courses.id as course_id',
 					'centers.id as center_id', 'centers.name as center_name'
@@ -218,7 +218,7 @@ class ContestController extends Controller {
 				->join('center_contest', 'center_contest.contest_id', '=', 'contests.id', 'left outer')
 				->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
 				->select(
-					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.status as contest_status',
+					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
 					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
 					'courses.name as course_name', 'courses.id as course_id',
 					'centers.id as center_id', 'centers.name as center_name'
@@ -287,6 +287,12 @@ class ContestController extends Controller {
 			}
 			if(!$request->teacher_helpers_2){
 				$contest->teacher_helpers_2 = 0;
+			}
+			if($user->is('centercoordinator')){
+				$contest->teacher_assistants = $request->teacher_assistants;
+			}
+			if(!$request->teacher_assistants || !$user->is('centercoordinator')){
+				$contest->teacher_assistants = 0;
 			}
 
 			$contest->save();

@@ -113,4 +113,65 @@ class ProfessorController extends Controller {
 		//
 	}
 
+	public function courseCoordinator($id){
+
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
+
+		$course = $user->Professor->courseCoordinator;
+
+		return response()->json([
+			"courses" => $course
+		]);
+	}
+
+	public function centerCoordinator($id){
+
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
+		$center = $user->Professor->centerCoordinator;
+
+		return response()->json([
+			"centers" => $center
+		]);
+
+	}
+
+	public function professor($id){
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('id', $id)->first();
+
+		$professor = $user->Professor;
+
+		return response()->json([
+			"professor" => $professor
+		]);
+	}
+
 }

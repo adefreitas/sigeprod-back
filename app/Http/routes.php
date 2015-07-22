@@ -69,7 +69,13 @@ Route::get('/profile', ['before' => 'jwt-auth',
     }
 ]);
 
+  Route::get('users/{id}/professor', 'ProfessorController@professor');
+
   Route::resource('professors', 'ProfessorController');
+
+  Route::get('professors/{id}/center_coordinator', 'ProfessorController@centerCoordinator');
+
+  Route::get('professors/{id}/course_coordinator', 'ProfessorController@courseCoordinator');
 
   Route::resource('centers', 'CenterController');
 

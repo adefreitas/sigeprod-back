@@ -34,6 +34,8 @@ class CreateContestsTable extends Migration {
 			//Cantidad de Preparadores 1
 			$table->integer('teacher_helpers_1');
 
+			$table->integer('teacher_assistants');
+
 			/*
 				Estado de la solicitud
 				1 = Solicitud enviada
