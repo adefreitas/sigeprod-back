@@ -8,6 +8,7 @@ use App\Course;
 use App\Contest;
 use App\Professor;
 use App\Observation;
+use App\Notification;
 use App\CourseCoordinator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -267,7 +268,7 @@ class ContestController extends Controller {
 			JWTAuth::parseToken();
 			$token = JWTAuth::getToken();
 		} catch (Exception $e){
-				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
 		$tokenOwner = JWTAuth::toUser($token);
@@ -297,8 +298,6 @@ class ContestController extends Controller {
 
 			$contest->save();
 
-
-
 			if($request->course_id){
 				$contest->course()->attach($request->course_id);
 			}
@@ -321,8 +320,22 @@ class ContestController extends Controller {
 
 			$contest->save();
 
+			$receptor = User::where('email', '=', 'jefe@ciens.ucv.ve')->get()->first();
+
+			$notification = Notification::create([
+				'creator_id' => $user->id,
+				'receptor_id' => $receptor->id,
+				'read' => '0',
+				'redirection' => 'departmentHead.helperContest',
+				'message'  => $user->name . ' ' . $user->lastname . ' ' . 'ha solicitado un nuevo concurso de preparadores'
+			]);
+
 			return response()->json(['id' => $contest->id]);
-				// $this->createContest($request);
+
+		}
+		else
+		{
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 	}
 	/**
@@ -420,6 +433,52 @@ class ContestController extends Controller {
 			}
 
 			$contest->save();
+
+			/* Manejo de notifications */
+
+			if($user->is('departmenthead')){
+				$message = '';
+				$redirection = '';
+
+				if($contest->course.length() > 0){
+					$redirection = 'courseCoordinator.helperContest';
+				}
+				else{
+					$redirection = 'centerCoordinator.helperContest';
+				}
+
+				if($request->status == 2){
+					$message = $user->name . ' ' . $user->lastname . ' ' . 'ha aceptado su solicitud de concurso de preparadores';
+				}
+				if($request->status == 3 ){
+					$message = $user->name . ' ' . $user->lastname . ' ' . 'ha rechazado su solicitud de concurso de preparadores';
+				}
+
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $contest->professor_id,
+					'read' => '0',
+					'redirection' => $redirection,
+					'message'  => $message
+				]);
+			}
+
+			else if( $user->is('coursecoordinator') || $user->is('centercoordinator') ){
+
+				$message = $user->name . ' ' . $user->lastname . ' ' . 'ha modificado su solicitud de concurso de preparadores';
+
+				$redirection = 'departmentHead.helperContests';
+
+				$receptor = User::where('email', '=', 'jefe@ciens.ucv.ve')->get()->first();
+
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $receptor->id,
+					'read' => '0',
+					'redirection' => $redirection,
+					'message'  => $message
+				]);
+			}
 
 			return response()->json(['contest' => $contest, 'request' => $request]);
 

@@ -98,4 +98,5 @@ Route::get('/profile', ['before' => 'jwt-auth',
   Route::resource('teacher_assistants', 'TeacherAssistantController');
 
   Route::resource('teacher_helpers', 'TeacherHelperController');
-// });
+
+  Route::resource('notifications', 'NotificationController');
