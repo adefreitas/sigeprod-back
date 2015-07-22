@@ -401,6 +401,12 @@ class ContestController extends Controller {
 
 			}
 
+			if( $request->teacher_assistants ){
+
+				$contest->teacher_assistants = $request->teacher_assistants;
+
+			}
+
 			if( $user->is('departmenthead') ){
 
 				$contest->status = $request->status;
@@ -408,7 +414,7 @@ class ContestController extends Controller {
 			}
 
 			else if( $user->is('coursecoordinator') || $user->is('centercoordinator') ){
-				if( $request->status == 1 ){
+				if( $request->status == 1 || $request->status == 4){
 					$contest->status = $request->status;
 				}
 			}
