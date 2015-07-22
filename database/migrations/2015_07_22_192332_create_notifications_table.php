@@ -21,6 +21,8 @@ class CreateNotificationsTable extends Migration {
 			$table->integer('creator_id')->unsigned()->index();
 			$table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
 
+			$table->string('creator_role');
+
 			//Usuario receptor
 			$table->integer('receptor_id')->unsigned()->index();
 			$table->foreign('receptor_id')->references('id')->on('users')->onDelete('cascade');

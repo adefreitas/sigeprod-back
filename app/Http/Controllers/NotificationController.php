@@ -28,10 +28,26 @@ class NotificationController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
-		$notifications = Notification::where('receptor_id', '=', $user->id)->get();
+		$notifications = Notification::join('users', 'users.id', '=', 'notifications.creator_id')
+			->where('notifications.receptor_id', '=', $user->id)
+			->select(
+				'notifications.created_at', 'notifications.id', 'notifications.read',
+				'notifications.redirection', 'notifications.message', 'notifications.creator_role',
+				'users.name', 'users.lastname'
+			)
+			->get();
+
+		$unread = 0;
+
+		foreach($notifications as $notification){
+			if(!$notification->read){
+				$unread++;
+			}
+		}
 
 		return response()->json([
 			'notifications' => $notifications,
+			'unread' => $unread
 		]);
 
 	}

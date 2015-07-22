@@ -278,7 +278,7 @@ class ContestController extends Controller {
 		if($user->is('coursecoordinator') || $user->is('centercoordinator')){
 
 			$contest = new Contest();
-			$contest->professor_id = $user->id;
+			$contest->professor_id = $user->Professor->id;
 			$contest->status = 1;
 			$contest->teacher_helpers_1 = $request->teacher_helpers_1;
 			$contest->teacher_helpers_2 = $request->teacher_helpers_2;
@@ -327,7 +327,8 @@ class ContestController extends Controller {
 				'receptor_id' => $receptor->id,
 				'read' => '0',
 				'redirection' => 'departmentHead.helperContest',
-				'message'  => $user->name . ' ' . $user->lastname . ' ' . 'ha solicitado un nuevo concurso de preparadores'
+				'message'  => 'ha solicitado un nuevo concurso de preparadores',
+				'creator_role' => 'coordinator'
 			]);
 
 			return response()->json(['id' => $contest->id]);
@@ -440,7 +441,7 @@ class ContestController extends Controller {
 				$message = '';
 				$redirection = '';
 
-				if($contest->course.length() > 0){
+				if(count($contest->course) > 0){
 					$redirection = 'courseCoordinator.helperContest';
 				}
 				else{
@@ -448,10 +449,10 @@ class ContestController extends Controller {
 				}
 
 				if($request->status == 2){
-					$message = $user->name . ' ' . $user->lastname . ' ' . 'ha aceptado su solicitud de concurso de preparadores';
+					$message = 'ha aceptado su solicitud de concurso de preparadores';
 				}
 				if($request->status == 3 ){
-					$message = $user->name . ' ' . $user->lastname . ' ' . 'ha rechazado su solicitud de concurso de preparadores';
+					$message = 'ha rechazado su solicitud de concurso de preparadores';
 				}
 
 				$notification = Notification::create([
@@ -459,13 +460,14 @@ class ContestController extends Controller {
 					'receptor_id' => $contest->professor_id,
 					'read' => '0',
 					'redirection' => $redirection,
-					'message'  => $message
+					'message'  => $message,
+					'creator_role' => 'departmenthead',
 				]);
 			}
 
 			else if( $user->is('coursecoordinator') || $user->is('centercoordinator') ){
 
-				$message = $user->name . ' ' . $user->lastname . ' ' . 'ha modificado su solicitud de concurso de preparadores';
+				$message = 'ha modificado su solicitud de concurso de preparadores';
 
 				$redirection = 'departmentHead.helperContests';
 
@@ -476,7 +478,8 @@ class ContestController extends Controller {
 					'receptor_id' => $receptor->id,
 					'read' => '0',
 					'redirection' => $redirection,
-					'message'  => $message
+					'message'  => $message,
+					'creator_role' => 'coordinator'
 				]);
 			}
 
