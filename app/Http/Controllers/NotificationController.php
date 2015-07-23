@@ -67,9 +67,40 @@ class NotificationController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
-		//
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
+		$asdf = array();
+
+		if($user->is('departmenthead')){
+			$users = $request->user;
+			foreach($users as $receptor){
+				Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $receptor,
+					'read' => '0',
+					'redirection' => $request->redirection,
+					'message'  => $request->message,
+					'creator_role' => 'departmenthead',
+				]);
+			}
+
+			return response()->json([
+				'success' => true
+			]);
+
+
+		}
 	}
 
 	/**
