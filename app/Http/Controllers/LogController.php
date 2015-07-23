@@ -33,11 +33,6 @@ class LogController extends Controller {
 			->select('logs.created_at as created_at', 'users.name', 'users.lastname', 'users.id as user_id', 'logs.activity', 'logs.id')
 			->get();
 
-			Log::create([
-				'user_id' => $user->id,
-				'activity' => 'consulto la bitacora'
-			]);
-
 			return response()->json([
 			'log' => $log,
 			]);

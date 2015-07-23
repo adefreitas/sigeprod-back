@@ -37,11 +37,6 @@ class ContestController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
-		Log::create([
-			'user_id' => $user->id,
-			'activity' => 'consulto los concursos existentes'
-		]);
-
 	    /*
 	     *  Si el usuario es coordinador de materia y coordinador de centro
 	     */
