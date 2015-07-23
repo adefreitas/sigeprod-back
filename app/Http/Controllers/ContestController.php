@@ -472,9 +472,11 @@ class ContestController extends Controller {
 					$message = 'ha rechazado su solicitud de concurso de preparadores';
 				}
 
+				$receptor = Professor::find($contest->professor_id)->user->id;
+
 				$notification = Notification::create([
 					'creator_id' => $user->id,
-					'receptor_id' => $contest->professor_id,
+					'receptor_id' => $receptor,
 					'read' => '0',
 					'redirection' => $redirection,
 					'message'  => $message,
