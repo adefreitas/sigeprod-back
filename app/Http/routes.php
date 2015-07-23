@@ -102,3 +102,5 @@ Route::get('/profile', ['before' => 'jwt-auth',
   Route::resource('notifications', 'NotificationController');
 
   Route::resource('logs', 'LogController');
+
+  Route::resource('users', 'UserController');
