@@ -100,3 +100,5 @@ Route::get('/profile', ['before' => 'jwt-auth',
   Route::resource('teacher_helpers', 'TeacherHelperController');
 
   Route::resource('notifications', 'NotificationController');
+
+  Route::resource('logs', 'LogController');

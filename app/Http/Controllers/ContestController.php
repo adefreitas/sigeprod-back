@@ -3,6 +3,7 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Log;
 use App\User;
 use App\Course;
 use App\Contest;
@@ -35,6 +36,11 @@ class ContestController extends Controller {
 		$tokenOwner = JWTAuth::toUser($token);
 
 		$user = User::where('email', $tokenOwner->email)->first();
+
+		Log::create([
+			'user_id' => $user->id,
+			'activity' => 'consulto los concursos existentes'
+		]);
 
 	    /*
 	     *  Si el usuario es coordinador de materia y coordinador de centro
@@ -275,6 +281,11 @@ class ContestController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
+		Log::create([
+			'user_id' => $user->id,
+			'activity' => 'creo un nuevo concurso de preparadores'
+		]);
+
 		if($user->is('coursecoordinator') || $user->is('centercoordinator')){
 
 			$contest = new Contest();
@@ -354,9 +365,15 @@ class ContestController extends Controller {
 				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
+
 		$tokenOwner = JWTAuth::toUser($token);
 
 		$user = User::where('email', $tokenOwner->email)->first();
+
+		Log::create([
+			'user_id' => $user->id,
+			'activity' => 'consulto el concurso de preparadores con ID: ' . $id
+		]);
 
 		$request = $request->all();
 
@@ -382,10 +399,15 @@ class ContestController extends Controller {
 				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
+
 		$tokenOwner = JWTAuth::toUser($token);
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
+		Log::create([
+			'user_id' => $user->id,
+			'activity' => 'actualizo el concurso de preparadores con ID: ' . $id
+		]);
 		$contest = Contest::find($id);
 
 		// $request = $request->all();
