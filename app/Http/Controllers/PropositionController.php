@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 
 use App\Proposition;
 use App\Professor;
+use App\Center;
+use App\Notification;
 use Illuminate\Http\Request;
 
 class PropositionController extends Controller {
@@ -45,6 +47,8 @@ class PropositionController extends Controller {
 		$professor = Professor::where('user_id', $request->user_id)->first();
 
 		$proposition->professor_id = $professor['id'];
+
+		$professor_id = $proposition->professor_id;
 
 		$proposition->course_option_1 = $request->course1;
 
@@ -101,6 +105,21 @@ class PropositionController extends Controller {
 		$proposition->schedule_2_option_3 = $request->schedule3[1];
 
 		$proposition->save();
+
+		/*$center = Professor::where('id', $professor_id)->select('center_id');
+
+		$coordinator_id = Center::where('id', $center)->select('center_center_coordinator.professor_id');
+
+		$receptor = User::where('professor_id', $coordinator_id)->get()->first();
+
+		$notification = Notification::create([
+				'creator_id' => $request->user_id,
+				'receptor_id' => $receptor->id,
+				'read' => '0',
+				'redirection' => 'centerCoordinator.semesterPlanning',
+				'message'  => 'ha enviado sus preferencias',
+				'creator_role' => 'professor'
+			]);*/
 
 		return response()->json([
 				'msg' => "success",
