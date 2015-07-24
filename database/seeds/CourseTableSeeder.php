@@ -28,7 +28,7 @@ class CourseTableSeeder extends Seeder {
           ->courses()->save(
             Course::create([
                 'id' => '6302',
-                'name' => 'Sistemas de Informacion',
+                'name' => 'Sistemas de Información',
                 'credits' => '5',
                 'semester' => '5'
             ])
@@ -38,7 +38,7 @@ class CourseTableSeeder extends Seeder {
           ->courses()->save(
             Course::create([
                 'id' => '6003',
-                'name' => 'Comunicacion de Datos',
+                'name' => 'Comunicación de Datos',
                 'credits' => '6',
                 'semester' => '5'
             ])
@@ -58,7 +58,7 @@ class CourseTableSeeder extends Seeder {
           ->courses()->save(
             Course::create([
                 'id' => '6211',
-                'name' => 'Interaccion Humano-Computador',
+                'name' => 'Interacción Humano-Computador',
                 'credits' => '5',
                 'semester' => '6'
             ])
@@ -68,7 +68,7 @@ class CourseTableSeeder extends Seeder {
           ->courses()->save(
             Course::create([
                 'id' => '6109',
-                'name' => 'Calculo Cientifico',
+                'name' => 'Cálculo Científico',
                 'credits' => '6',
                 'semester' => '5'
             ])

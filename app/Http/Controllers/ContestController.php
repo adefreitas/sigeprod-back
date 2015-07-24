@@ -278,7 +278,7 @@ class ContestController extends Controller {
 
 		Log::create([
 			'user_id' => $user->id,
-			'activity' => 'creo un nuevo concurso de preparadores'
+			'activity' => 'Creó un nuevo concurso de preparadores'
 		]);
 
 		if($user->is('coursecoordinator') || $user->is('centercoordinator')){
@@ -367,7 +367,7 @@ class ContestController extends Controller {
 
 		Log::create([
 			'user_id' => $user->id,
-			'activity' => 'consulto el concurso de preparadores con ID: ' . $id
+			'activity' => 'Consultó el concurso de preparadores con ID: ' . $id
 		]);
 
 		$request = $request->all();
@@ -401,7 +401,7 @@ class ContestController extends Controller {
 
 		Log::create([
 			'user_id' => $user->id,
-			'activity' => 'actualizo el concurso de preparadores con ID: ' . $id
+			'activity' => 'Actualizó el concurso de preparadores con ID: ' . $id
 		]);
 		$contest = Contest::find($id);
 
