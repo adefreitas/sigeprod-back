@@ -53,16 +53,28 @@ class PropositionController extends Controller {
 		$proposition->course_option_1 = $request->course1;
 
 		if($request->mode1[0]) {
-			$proposition->mode_option_1 = 'Coordinador(a)';
+			$proposition->mode_option_1_coordinator = true;
 		}
-		elseif ($request->mode1[1]) {
-			$proposition->mode_option_1 = 'Teoría';
+		else {
+			$proposition->mode_option_1_coordinator = false;
 		}
-		elseif ($request->mode1[2]) {
-			$proposition->mode_option_1 = 'Práctica';
+		if($request->mode1[1]) {
+			$proposition->mode_option_1_theory = true;
 		}
-		elseif ($request->mode1[3]) {
-			$proposition->mode_option_1 = 'Laboratorio';
+		else {
+			$proposition->mode_option_1_theory = false;
+		}
+		if($request->mode1[2]) {
+			$proposition->mode_option_1_practice = true;
+		}
+		else {
+			$proposition->mode_option_1_practice = false;
+		}
+		if($request->mode1[3]) {
+			$proposition->mode_option_1_laboratory = true;
+		}
+		else {
+			$proposition->mode_option_1_laboratory = false;
 		}
 
 		$proposition->schedule_1_option_1 = $request->schedule1[0];
@@ -71,16 +83,28 @@ class PropositionController extends Controller {
 		$proposition->course_option_2 = $request->course2;
 
 		if($request->mode2[0]) {
-			$proposition->mode_option_2 = 'Coordinador(a)';
+			$proposition->mode_option_2_coordinator = true;
 		}
-		elseif ($request->mode2[1]) {
-			$proposition->mode_option_2 = 'Teoría';
+		else {
+			$proposition->mode_option_2_coordinator = false;
 		}
-		elseif ($request->mode2[2]) {
-			$proposition->mode_option_2 = 'Práctica';
+		if($request->mode2[1]) {
+			$proposition->mode_option_2_theory = true;
 		}
-		elseif ($request->mode2[3]) {
-			$proposition->mode_option_2 = 'Laboratorio';
+		else {
+			$proposition->mode_option_2_theory = false;
+		}
+		if($request->mode2[2]) {
+			$proposition->mode_option_2_practice = true;
+		}
+		else {
+			$proposition->mode_option_2_practice = false;
+		}
+		if($request->mode2[3]) {
+			$proposition->mode_option_2_laboratory = true;
+		}
+		else {
+			$proposition->mode_option_2_laboratory = false;
 		}
 
 		$proposition->schedule_1_option_2 = $request->schedule2[0];
@@ -89,16 +113,28 @@ class PropositionController extends Controller {
 		$proposition->course_option_3 = $request->course3;
 
 		if($request->mode3[0]) {
-			$proposition->mode_option_3 = 'Coordinador(a)';
+			$proposition->mode_option_3_coordinator = true;
 		}
-		elseif ($request->mode3[1]) {
-			$proposition->mode_option_3 = 'Teoría';
+		else {
+			$proposition->mode_option_3_coordinator = false;
 		}
-		elseif ($request->mode3[2]) {
-			$proposition->mode_option_3 = 'Práctica';
+		if($request->mode3[1]) {
+			$proposition->mode_option_3_theory = true;
 		}
-		elseif ($request->mode3[3]) {
-			$proposition->mode_option_3 = 'Laboratorio';
+		else {
+			$proposition->mode_option_3_theory = false;
+		}
+		if($request->mode3[2]) {
+			$proposition->mode_option_3_practice = true;
+		}
+		else {
+			$proposition->mode_option_3_practice = false;
+		}
+		if($request->mode3[3]) {
+			$proposition->mode_option_3_laboratory = true;
+		}
+		else {
+			$proposition->mode_option_3_laboratory = false;
 		}
 
 		$proposition->schedule_1_option_3 = $request->schedule3[0];
