@@ -195,8 +195,16 @@ class PropositionController extends Controller {
 			'schedule_2_option_3' => $request->schedule3[1]
 			]);
 
+		$notification = Notification::create([
+				'creator_id' => $user->id,
+				'receptor_id' => $userModified->id,
+				'read' => '0',
+				'redirection' => 'professor.semesterPlanning',
+				'message'  => 'ha modificado sus preferencias',
+				'creator_role' => 'coordinator'
+			]);
+
 		return response()->json([
-				"msg" => "success",
 				"professor" => $professor,
 				"userModified" => $userModified
 			]);
