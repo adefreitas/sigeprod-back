@@ -3,12 +3,14 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Proposition;
-use App\Professor;
-use App\Center;
-use App\Notification;
+use App\Log;
 use App\User;
+use App\Center;
+use App\Professor;
+use App\Proposition;
+use App\Notification;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PropositionController extends Controller {
 
@@ -43,6 +45,17 @@ class PropositionController extends Controller {
 	 */
 	public function store(Request $request)
 	{
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
 		$proposition = new Proposition();
 
 		$professor = Professor::where('user_id', $request->user_id)->first();
@@ -73,6 +86,11 @@ class PropositionController extends Controller {
 		$proposition->schedule_2_option_3 = $request->schedule3[1];
 
 		$proposition->save();
+
+		Log::create([
+			'user_id' => $user->id,
+			'activity' => 'Envió sus preferencias para la planificación docente'
+		]);
 
 		$center = Professor::where('id', $professor_id)->select('center_id')->first();
 
@@ -180,6 +198,11 @@ class PropositionController extends Controller {
 		elseif ($request->mode3[3]) {
 			$mode3 = 'Laboratorio';
 		}
+
+		Log::create([
+			'user_id' => $user->id,
+			'activity' => 'Modificó las preferencias para la Planificación Docente del profesor'
+		]);
 
 		$proposition = Proposition::where('professor_id', $id)->update([
 			'course_option_1' => $request->course1,
