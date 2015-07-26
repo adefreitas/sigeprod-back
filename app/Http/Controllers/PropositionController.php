@@ -160,57 +160,33 @@ class PropositionController extends Controller {
 	 */
 	public function update(Request $request, $id)
 	{
-		if($request->mode1[0]) {
-			$mode1 = 'Coordinador(a)';
-		}
-		elseif ($request->mode1[1]) {
-			$mode1 = 'Teoría';
-		}
-		elseif ($request->mode1[2]) {
-			$mode1 = 'Práctica';
-		}
-		elseif ($request->mode1[3]) {
-			$mode1 = 'Laboratorio';
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
-		if($request->mode2[0]) {
-			$mode2 = 'Coordinador(a)';
-		}
-		elseif ($request->mode2[1]) {
-			$mode2 = 'Teoría';
-		}
-		elseif ($request->mode2[2]) {
-			$mode2 = 'Práctica';
-		}
-		elseif ($request->mode[3]) {
-			$mode2 = 'Laboratorio';
-		}
+		$tokenOwner = JWTAuth::toUser($token);
 
-		if($request->mode3[0]) {
-			$mode3 = 'Coordinador(a)';
-		}
-		elseif ($request->mode3[1]) {
-			$mode3 = 'Teoría';
-		}
-		elseif ($request->mode3[2]) {
-			$mode3 = 'Práctica';
-		}
-		elseif ($request->mode3[3]) {
-			$mode3 = 'Laboratorio';
-		}
+		$user = User::where('email', $tokenOwner->email)->first();
+
+		$professor = Professor::where('id', $id)->select('user_id')->first(); //Profesor cuyas preferencias están siendo modificadas
+
+		$userModified = User::where('id', $professor->user_id)->first();
 
 		Log::create([
 			'user_id' => $user->id,
-			'activity' => 'Modificó las preferencias para la Planificación Docente del profesor'
+			'activity' => "Modificó las preferencias del profesor ".$userModified->name." ".$userModified->lastname
 		]);
 
 		$proposition = Proposition::where('professor_id', $id)->update([
 			'course_option_1' => $request->course1,
 			'course_option_2' => $request->course2,
 			'course_option_3' => $request->course3,
-			'mode_option_1' => $mode1,
-			'mode_option_2' => $mode2,
-			'mode_option_3' => $mode3,
+			'mode_option_1' => json_encode($request->modeChecked1),
+			'mode_option_2' => json_encode($request->modeChecked2),
+			'mode_option_3' => json_encode($request->modeChecked3),
 			'schedule_1_option_1' => $request->schedule1[0],
 			'schedule_2_option_1' => $request->schedule1[1],
 			'schedule_1_option_2' => $request->schedule2[0],
@@ -220,9 +196,9 @@ class PropositionController extends Controller {
 			]);
 
 		return response()->json([
-
-				"msg" => "success"
-
+				"msg" => "success",
+				"professor" => $professor,
+				"userModified" => $userModified
 			]);
 	}
 
