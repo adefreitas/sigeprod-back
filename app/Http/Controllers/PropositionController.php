@@ -7,6 +7,7 @@ use App\Proposition;
 use App\Professor;
 use App\Center;
 use App\Notification;
+use App\User;
 use Illuminate\Http\Request;
 
 class PropositionController extends Controller {
@@ -52,46 +53,51 @@ class PropositionController extends Controller {
 
 		$proposition->course_option_1 = $request->course1;
 
-		$proposition->mode_option_1 = json_encode($request->mode1);
+		$proposition->mode_option_1 = json_encode($request->modeChecked1);
 
 		$proposition->schedule_1_option_1 = $request->schedule1[0];
 		$proposition->schedule_2_option_1 = $request->schedule1[1];
 
 		$proposition->course_option_2 = $request->course2;
 
-		$proposition->mode_option_2 = json_encode($request->mode2);
+		$proposition->mode_option_2 = json_encode($request->modeChecked2);
 
 		$proposition->schedule_1_option_2 = $request->schedule2[0];
 		$proposition->schedule_2_option_2 = $request->schedule2[1];
 
 		$proposition->course_option_3 = $request->course3;
 
-		$proposition->mode_option_3 = json_encode($request->mode3);
+		$proposition->mode_option_3 = json_encode($request->modeChecked3);
 
 		$proposition->schedule_1_option_3 = $request->schedule3[0];
 		$proposition->schedule_2_option_3 = $request->schedule3[1];
 
 		$proposition->save();
 
-		/*$center = Professor::where('id', $professor_id)->select('center_id');
+		$center = Professor::where('id', $professor_id)->select('center_id')->first();
 
-		$coordinator_id = Center::where('id', $center)->select('center_center_coordinator.professor_id');
+		$coordinator = Center::where('id', '=', $center->center_id)
+			->join('center_center_coordinator', 'center_center_coordinator.center_id', '=', 'centers.id')
+			->select('center_center_coordinator.professor_id as coordinator_id')
+			->first();
 
-		$receptor = User::where('professor_id', $coordinator_id)->get()->first();
+		$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
+
+		$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
+
 
 		$notification = Notification::create([
 				'creator_id' => $request->user_id,
-				'receptor_id' => $receptor->id,
+				'receptor_id' => $receptorUser->id,
 				'read' => '0',
 				'redirection' => 'centerCoordinator.semesterPlanning',
 				'message'  => 'ha enviado sus preferencias',
 				'creator_role' => 'professor'
-			]);*/
-
-		return response()->json([
-				'msg' => "success",
-				'id' => $proposition->id
 			]);
+
+		return response()->json(['id' => $proposition->id,
+			'coordinator_id' => $coordinator->coordinator_id,
+			'receptor' => $receptorUser->name]);
 		
 	}
 
