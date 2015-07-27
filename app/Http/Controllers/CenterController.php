@@ -52,7 +52,14 @@ class CenterController extends Controller {
 	 */
 	public function show($id)
 	{
+		$center = Center::where('id', $id)->first();
 
+		return response()->json([
+
+				"center_id" => $center->id,
+				"center_name" => $center->name
+
+			]);
 	}
 
 	public function professors($id)
