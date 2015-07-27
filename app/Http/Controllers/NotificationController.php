@@ -21,7 +21,7 @@ class NotificationController extends Controller {
 			JWTAuth::parseToken();
 			$token = JWTAuth::getToken();
 		} catch (Exception $e){
-				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
 		$tokenOwner = JWTAuth::toUser($token);
@@ -80,8 +80,6 @@ class NotificationController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
-		$asdf = array();
-
 		if($user->is('departmenthead')){
 			$users = $request->user;
 			foreach($users as $receptor){
@@ -100,6 +98,9 @@ class NotificationController extends Controller {
 			]);
 
 
+		}
+		else{
+			return response()->json(['error' => 'Solo el Jefe de Departamento puede enviar notificaciones masivas']);
 		}
 	}
 
@@ -137,7 +138,7 @@ class NotificationController extends Controller {
 			JWTAuth::parseToken();
 			$token = JWTAuth::getToken();
 		} catch (Exception $e){
-				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
 		$tokenOwner = JWTAuth::toUser($token);
@@ -146,13 +147,18 @@ class NotificationController extends Controller {
 
 		$notification = Notification::find($id);
 
-		$notification->read = true;
+		if($notification->receptor_id == $user->id){
+			$notification->read = true;
 
-		$notification->save();
+			$notification->save();
 
-		return response()->json([
-			'read' => true,
-		]);
+			return response()->json([
+				'read' => true,
+			]);
+		}
+		else{
+			return response()->json(['error' => 'Solo el receptor de la notificacion puede marcarla como leida'], HttpResponse::HTTP_UNAUTHORIZED);
+		}
 
 	}
 

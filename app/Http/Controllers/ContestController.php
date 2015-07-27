@@ -332,7 +332,7 @@ class ContestController extends Controller {
 				'creator_id' => $user->id,
 				'receptor_id' => $receptor->id,
 				'read' => '0',
-				'redirection' => 'departmentHead.helperContest',
+				'redirection' => 'user.dashboard.departmentHead.helperContest',
 				'message'  => 'ha solicitado un nuevo concurso de preparadores',
 				'creator_role' => 'coordinator'
 			]);
@@ -459,10 +459,10 @@ class ContestController extends Controller {
 				$redirection = '';
 
 				if(count($contest->course) > 0){
-					$redirection = 'courseCoordinator.helperContest';
+					$redirection = 'user.dashboard.courseCoordinator.helperContest';
 				}
 				else{
-					$redirection = 'centerCoordinator.helperContest';
+					$redirection = 'user.dashboard.centerCoordinator.helperContest';
 				}
 
 				if($request->status == 2){
@@ -472,11 +472,11 @@ class ContestController extends Controller {
 					$message = 'ha rechazado su solicitud de concurso de preparadores';
 				}
 
-				$receptor = Professor::find($contest->professor_id)->user->id;
+				$receptor = Professor::find($contest->professor_id)->user;
 
 				$notification = Notification::create([
 					'creator_id' => $user->id,
-					'receptor_id' => $receptor,
+					'receptor_id' => $receptor->id,
 					'read' => '0',
 					'redirection' => $redirection,
 					'message'  => $message,
@@ -488,7 +488,7 @@ class ContestController extends Controller {
 
 				$message = 'ha modificado su solicitud de concurso de preparadores';
 
-				$redirection = 'departmentHead.helperContests';
+				$redirection = 'user.dashboard.departmentHead.helperContests';
 
 				$receptor = User::where('email', '=', 'jefe@ciens.ucv.ve')->get()->first();
 
