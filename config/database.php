@@ -75,14 +75,14 @@ return [
 
 			/* Esto es para heroku, comenten esto y descomenten lo de arriba en su version local */
 
-			// 'driver'   => 'pgsql',
-	        // 'host'     => $host,
-	        // 'database' => $database,
-	        // 'username' => $username,
-	        // 'password' => $password,
-	        // 'charset'  => 'utf8',
-	        // 'prefix'   => '',
-	        // 'schema'   => 'public',
+			'driver'   => 'pgsql',
+	        'host'     => $host,
+	        'database' => $database,
+	        'username' => $username,
+	        'password' => $password,
+	        'charset'  => 'utf8',
+	        'prefix'   => '',
+	        'schema'   => 'public',
 
 			/* fin de cosa para heroku 2 */
 		],
