@@ -3,11 +3,14 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Proposition;
-use App\Professor;
+use App\Log;
+use App\User;
 use App\Center;
+use App\Professor;
+use App\Proposition;
 use App\Notification;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PropositionController extends Controller {
 
@@ -42,6 +45,17 @@ class PropositionController extends Controller {
 	 */
 	public function store(Request $request)
 	{
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
 		$proposition = new Proposition();
 
 		$professor = Professor::where('user_id', $request->user_id)->first();
@@ -52,46 +66,56 @@ class PropositionController extends Controller {
 
 		$proposition->course_option_1 = $request->course1;
 
-		$proposition->mode_option_1 = json_encode($request->mode1);
+		$proposition->mode_option_1 = json_encode($request->modeChecked1);
 
 		$proposition->schedule_1_option_1 = $request->schedule1[0];
 		$proposition->schedule_2_option_1 = $request->schedule1[1];
 
 		$proposition->course_option_2 = $request->course2;
 
-		$proposition->mode_option_2 = json_encode($request->mode2);
+		$proposition->mode_option_2 = json_encode($request->modeChecked2);
 
 		$proposition->schedule_1_option_2 = $request->schedule2[0];
 		$proposition->schedule_2_option_2 = $request->schedule2[1];
 
 		$proposition->course_option_3 = $request->course3;
 
-		$proposition->mode_option_3 = json_encode($request->mode3);
+		$proposition->mode_option_3 = json_encode($request->modeChecked3);
 
 		$proposition->schedule_1_option_3 = $request->schedule3[0];
 		$proposition->schedule_2_option_3 = $request->schedule3[1];
 
 		$proposition->save();
 
-		/*$center = Professor::where('id', $professor_id)->select('center_id');
+		Log::create([
+			'user_id' => $user->id,
+			'activity' => 'Envió sus preferencias para la planificación docente'
+		]);
 
-		$coordinator_id = Center::where('id', $center)->select('center_center_coordinator.professor_id');
+		$center = Professor::where('id', $professor_id)->select('center_id')->first();
 
-		$receptor = User::where('professor_id', $coordinator_id)->get()->first();
+		$coordinator = Center::where('id', '=', $center->center_id)
+			->join('center_center_coordinator', 'center_center_coordinator.center_id', '=', 'centers.id')
+			->select('center_center_coordinator.professor_id as coordinator_id')
+			->first();
+
+		$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
+
+		$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
+
 
 		$notification = Notification::create([
 				'creator_id' => $request->user_id,
-				'receptor_id' => $receptor->id,
+				'receptor_id' => $receptorUser->id,
 				'read' => '0',
 				'redirection' => 'centerCoordinator.semesterPlanning',
 				'message'  => 'ha enviado sus preferencias',
 				'creator_role' => 'professor'
-			]);*/
-
-		return response()->json([
-				'msg' => "success",
-				'id' => $proposition->id
 			]);
+
+		return response()->json(['id' => $proposition->id,
+			'coordinator_id' => $coordinator->coordinator_id,
+			'receptor' => $receptorUser->name]);
 		
 	}
 
@@ -136,52 +160,33 @@ class PropositionController extends Controller {
 	 */
 	public function update(Request $request, $id)
 	{
-		if($request->mode1[0]) {
-			$mode1 = 'Coordinador(a)';
-		}
-		elseif ($request->mode1[1]) {
-			$mode1 = 'Teoría';
-		}
-		elseif ($request->mode1[2]) {
-			$mode1 = 'Práctica';
-		}
-		elseif ($request->mode1[3]) {
-			$mode1 = 'Laboratorio';
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
-		if($request->mode2[0]) {
-			$mode2 = 'Coordinador(a)';
-		}
-		elseif ($request->mode2[1]) {
-			$mode2 = 'Teoría';
-		}
-		elseif ($request->mode2[2]) {
-			$mode2 = 'Práctica';
-		}
-		elseif ($request->mode[3]) {
-			$mode2 = 'Laboratorio';
-		}
+		$tokenOwner = JWTAuth::toUser($token);
 
-		if($request->mode3[0]) {
-			$mode3 = 'Coordinador(a)';
-		}
-		elseif ($request->mode3[1]) {
-			$mode3 = 'Teoría';
-		}
-		elseif ($request->mode3[2]) {
-			$mode3 = 'Práctica';
-		}
-		elseif ($request->mode3[3]) {
-			$mode3 = 'Laboratorio';
-		}
+		$user = User::where('email', $tokenOwner->email)->first();
+
+		$professor = Professor::where('id', $id)->select('user_id')->first(); //Profesor cuyas preferencias están siendo modificadas
+
+		$userModified = User::where('id', $professor->user_id)->first();
+
+		Log::create([
+			'user_id' => $user->id,
+			'activity' => "Modificó las preferencias del profesor ".$userModified->name." ".$userModified->lastname
+		]);
 
 		$proposition = Proposition::where('professor_id', $id)->update([
 			'course_option_1' => $request->course1,
 			'course_option_2' => $request->course2,
 			'course_option_3' => $request->course3,
-			'mode_option_1' => $mode1,
-			'mode_option_2' => $mode2,
-			'mode_option_3' => $mode3,
+			'mode_option_1' => json_encode($request->modeChecked1),
+			'mode_option_2' => json_encode($request->modeChecked2),
+			'mode_option_3' => json_encode($request->modeChecked3),
 			'schedule_1_option_1' => $request->schedule1[0],
 			'schedule_2_option_1' => $request->schedule1[1],
 			'schedule_1_option_2' => $request->schedule2[0],
@@ -190,10 +195,18 @@ class PropositionController extends Controller {
 			'schedule_2_option_3' => $request->schedule3[1]
 			]);
 
+		$notification = Notification::create([
+				'creator_id' => $user->id,
+				'receptor_id' => $userModified->id,
+				'read' => '0',
+				'redirection' => 'professor.semesterPlanning',
+				'message'  => 'ha modificado sus preferencias',
+				'creator_role' => 'coordinator'
+			]);
+
 		return response()->json([
-
-				"msg" => "success"
-
+				"professor" => $professor,
+				"userModified" => $userModified
 			]);
 	}
 

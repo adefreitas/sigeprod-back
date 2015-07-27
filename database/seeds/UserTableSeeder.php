@@ -157,8 +157,8 @@ class UserTableSeeder extends Seeder {
         $user = User::create([
           'email' => 'cc11@ciens.ucv.ve',
           'password' => Hash::make('cc11'),
-          'name' => 'Wilfredo',
-          'lastname' => 'Vargas'
+          'name' => 'Eric',
+          'lastname' => 'Gamess'
         ]);
 
         $user->attachRole($role_cc);
@@ -181,8 +181,8 @@ class UserTableSeeder extends Seeder {
         $user = User::create([
           'email' => 'cc22@ciens.ucv.ve',
           'password' => Hash::make('cc22'),
-          'name' => 'Yusneyi',
-          'lastname' => 'Carballo'
+          'name' => 'Rhadamés',
+          'lastname' => 'Carmona'
         ]);
 
         $user->attachRole($role_cc);
@@ -207,8 +207,8 @@ class UserTableSeeder extends Seeder {
         $user = User::create([
             'email' => 'cc33@ciens.ucv.ve',
             'password' => Hash::make('cc33'),
-            'name' => 'Carlos',
-            'lastname' => 'Acosta'
+            'name' => 'Concettina',
+            'lastname' => 'Di Vasta'
         ]);
 
         $user->attachRole($role_cc);
@@ -232,8 +232,8 @@ class UserTableSeeder extends Seeder {
         $user = User::create([
           'email' => 'cc44@ciens.ucv.ve',
           'password' => Hash::make('cc44'),
-          'name' => 'Yosly',
-          'lastname' => 'Hernandez'
+          'name' => 'Carlos',
+          'lastname' => 'Acosta'
         ]);
 
         $user->attachRole($role_cc);
@@ -242,6 +242,81 @@ class UserTableSeeder extends Seeder {
         $professor = Professor::create([
           'dedication' => 'Completa',
           'center_id' => '44',
+          'status' => 'Activo',
+          'proposition_sent' => false
+        ]);
+
+        $professor->user()->associate($user);
+
+        $professor->save();
+
+        /**********************************************************
+        ***************** Coordinador de Centro 55 ****************
+        ***********************************************************/
+
+        $user = User::create([
+          'email' => 'cc55@ciens.ucv.ve',
+          'password' => Hash::make('cc55'),
+          'name' => 'Zenaida',
+          'lastname' => 'Castillo'
+        ]);
+
+        $user->attachRole($role_cc);
+        $user -> attachRole($role_profesor);
+
+        $professor = Professor::create([
+          'dedication' => 'Completa',
+          'center_id' => '55',
+          'status' => 'Activo',
+          'proposition_sent' => false
+        ]);
+
+        $professor->user()->associate($user);
+
+        $professor->save();
+
+        /**********************************************************
+        ***************** Coordinador de Centro 66 ****************
+        ***********************************************************/
+
+        $user = User::create([
+          'email' => 'cc66@ciens.ucv.ve',
+          'password' => Hash::make('cc66'),
+          'name' => 'Eleonora',
+          'lastname' => 'Acosta'
+        ]);
+
+        $user->attachRole($role_cc);
+        $user -> attachRole($role_profesor);
+
+        $professor = Professor::create([
+          'dedication' => 'Completa',
+          'center_id' => '66',
+          'status' => 'Activo',
+          'proposition_sent' => false
+        ]);
+
+        $professor->user()->associate($user);
+
+        $professor->save();
+
+        /**********************************************************
+        ***************** Coordinador de Centro 77 ****************
+        ***********************************************************/
+
+        $user = User::create([
+          'email' => 'cc77@ciens.ucv.ve',
+          'password' => Hash::make('cc77'),
+          'name' => 'Adrian',
+          'lastname' => 'Bottini'
+        ]);
+
+        $user->attachRole($role_cc);
+        $user -> attachRole($role_profesor);
+
+        $professor = Professor::create([
+          'dedication' => 'Completa',
+          'center_id' => '77',
           'status' => 'Activo',
           'proposition_sent' => false
         ]);
