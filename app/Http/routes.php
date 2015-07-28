@@ -60,9 +60,16 @@ Route::get('/profile', ['before' => 'jwt-auth',
 
         return Response::json([
             'data' => [
+                'id' => $current->id,
                 'name' => $current->name,
                 'lastname' => $current->lastname,
                 'email' => $current->email,
+                'alternate_email' => $current->alternate_email,
+                'local_phone' => $current->local_phone,
+                'cell_phone' => $current->cell_phone,
+                'state' => $current->state,
+                'municipality' => $current->municipality,
+                'address' => $current->address,
                 'registered_at' => $current->created_at->toDateTimeString()
             ]
         ]);

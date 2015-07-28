@@ -2,6 +2,7 @@
 
 use App\Http\Requests;
 use App\User;
+use App\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 
@@ -27,7 +28,7 @@ class UserController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
-		$users = User::select('name','lastname','email','id')
+		$users = User::select('name','lastname','email','id', 'municipality', 'state', 'address', 'local_phone', 'cell_phone', 'alternate_email')
 					->get();
 
 		return response()->json([
@@ -83,9 +84,46 @@ class UserController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request, $id)
 	{
-		//
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		
+
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
+		Log::create([
+			'user_id' => $user->id,
+			'activity' => 'Actualizó su perfil de usuario: ' . $id
+		]);
+
+
+		if($user->id == $id){
+
+			$user->name = $request->name;
+			$user->lastname = $request->lastname;
+			$user->email = $request->email;
+			$user->alternate_email = $request->alternate_email;
+			$user->password = \Hash::make($request->password);
+			$user->local_phone = $request->local_phone;
+			$user->cell_phone = $request->cell_phone;
+			$user->state = $request->state;
+			$user->municipality = $request->municipality;
+			$user->address = $request->address;
+
+			$user->save();
+
+			return response()->json(['success' => true]);
+
+		}
 	}
 
 	/**

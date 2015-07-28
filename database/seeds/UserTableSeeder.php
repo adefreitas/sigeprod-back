@@ -1,5 +1,6 @@
 <?php
 
+use \Hash;
 use App\User;
 use App\Professor;
 use Illuminate\Database\Seeder;
