@@ -4,6 +4,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Course;
+use App\Center;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller {
@@ -39,7 +40,42 @@ class CourseController extends Controller {
 	 */
 	public function store()
 	{
-		//
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
+		Log::create([
+			'user_id' => $user->id,
+			'activity' => 'Creó una nueva materia'
+		]);
+
+		if($user->is('admin') || $user->is('departmenthead')){
+
+			$course = new Course();
+			$course->id = $request->id;
+			$course->name = $request->name;
+			$course->credits = $request->credits;
+			$course->semester = $request->semester;
+			$course->center_id = $request->center_id;
+			$course->active = $request->active;
+
+			$course->save();
+
+
+			return response()->json(['id' => $course->id]);
+
+		}
+		else
+		{
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
 	}
 
 	/**
@@ -70,9 +106,41 @@ class CourseController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request, $id)
 	{
-		//
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
+		$course = Course::find($id);
+
+		Log::create([
+			'user_id' => $user->id,
+			'activity' => 'Actualizó la materia: ' . $id
+		]);
+
+
+		if($course->id == $id){
+
+			$course->id = $request->id;
+			$course->name = $request->name;
+			$course->credits = $request->credits;
+			$course->semester = $request->semester;
+			$course->center_id = $request->center_id;
+			$course->active = $request->active;
+
+			$course->save();
+
+			return response()->json(['success' => true]);
+
+		}
 	}
 
 	/**

@@ -18,37 +18,44 @@ class CenterTableSeeder extends Seeder {
 
         Center::create([
             'id' => '11',
-            'name' => 'CICORE'
+            'name' => 'CICORE',
+            'active' => true
         ]);
 
         Center::create([
             'id' => '22',
-            'name' => 'CCG'
+            'name' => 'CCG',
+            'active' => true
         ]);
 
         Center::create([
             'id' => '33',
-            'name' => 'CISI'
+            'name' => 'CISI',
+            'active' => true
         ]);
 
         Center::create([
             'id' => '44',
-            'name' => 'CCPD'
+            'name' => 'CCPD',
+            'active' => true
         ]);
 
         Center::create([
             'id' => '55',
-            'name' => 'CCCT'
+            'name' => 'CCCT',
+            'active' => true
         ]);
 
         Center::create([
             'id' => '66',
-            'name' => 'ISYS'
+            'name' => 'ISYS',
+            'active' => true
         ]);
 
         Center::create([
             'id' => '77',
-            'name' => 'CIOMMA'
+            'name' => 'CIOMMA',
+            'active' => true
         ]);
 
     }

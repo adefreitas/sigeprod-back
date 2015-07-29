@@ -93,9 +93,6 @@ class UserController extends Controller {
 				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
-		
-
-
 		$tokenOwner = JWTAuth::toUser($token);
 
 		$user = User::where('email', $tokenOwner->email)->first();
