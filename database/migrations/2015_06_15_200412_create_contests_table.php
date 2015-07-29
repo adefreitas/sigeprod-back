@@ -68,6 +68,8 @@ class CreateContestsTable extends Migration {
 			$table->string('lastname');
 			$table->boolean('activated')->default('false');
 			$table->string('type');
+			$table->integer('contest_id')->unsigned()->index();
+			$table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');
 			$table->timestamps();
 		});
 

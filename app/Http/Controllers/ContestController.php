@@ -451,19 +451,23 @@ class ContestController extends Controller {
 				}
 
 				if($request->status == 4){
-					$results = $request->results;
+					if($request->results){
+						$results = $request->results;
+	
+						foreach($results as $item){
 
-					foreach($results as $item){
-						\DB::table('preapproved_users')
-							->insert([
-								"id" => $item["id"],
-								"email" => $item["email"],
-								"name" => $item["name"],
-								"lastname" => $item["lastname"],
-								"type" => $item["type"],
-								"created_at" => Carbon::now(),
-								"updated_at" => Carbon::now()
-							]);
+							\DB::table('preapproved_users')
+								->insert([
+									"user_id" => $item["id"],
+									"email" => $item["email"],
+									"name" => $item["name"],
+									"lastname" => $item["lastname"],
+									"type" => $item["type"],
+									"contest_id" => $contest->id,
+									"created_at" => Carbon::now(),
+									"updated_at" => Carbon::now()
+								]);
+						}
 					}
 				}
 			}

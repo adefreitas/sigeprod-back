@@ -24,6 +24,8 @@ class CreateTeacherHelpersTable extends Migration {
 		Schema::create('teacher_helpers_users', function(Blueprint $table)
 		{
 			$table->increments('id');
+			$table->integer('user_id')->unsigned()->index();
+			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->integer('teacher_helper_id')->unsigned()->index();
 			$table->foreign('teacher_helper_id')->references('id')->on('teacher_helpers')->onDelete('cascade');
 			$table->integer('user_id')->unsigned()->index();
