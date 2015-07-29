@@ -8,6 +8,7 @@ use App\User;
 use App\Course;
 use App\Contest;
 use App\Professor;
+use Carbon\Carbon;
 use App\Observation;
 use App\Notification;
 use App\CourseCoordinator;
@@ -448,6 +449,23 @@ class ContestController extends Controller {
 				if( $request->status == 1 || $request->status == 4){
 					$contest->status = $request->status;
 				}
+
+				if($request->status == 4){
+					$results = $request->results;
+
+					foreach($results as $item){
+						\DB::table('preapproved_users')
+							->insert([
+								"id" => $item["id"],
+								"email" => $item["email"],
+								"name" => $item["name"],
+								"lastname" => $item["lastname"],
+								"type" => $item["type"],
+								"created_at" => Carbon::now(),
+								"updated_at" => Carbon::now()
+							]);
+					}
+				}
 			}
 
 			$contest->save();
@@ -485,8 +503,12 @@ class ContestController extends Controller {
 			}
 
 			else if( $user->is('coursecoordinator') || $user->is('centercoordinator') ){
-
-				$message = 'ha modificado su solicitud de concurso de preparadores';
+				if($request->status == 4){
+					$message = 'ha finalizado su concurso de preparadores';
+				}
+				else{
+					$message = 'ha modificado su solicitud de concurso de preparadores';
+				}
 
 				$redirection = 'user.dashboard.departmentHead.helperContests';
 

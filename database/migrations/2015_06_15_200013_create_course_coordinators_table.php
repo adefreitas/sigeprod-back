@@ -12,12 +12,6 @@ class CreateCourseCoordinatorsTable extends Migration {
 	 */
 	public function up()
 	{
-		// Schema::create('course_coordinators', function(Blueprint $table){
-		// 	$table->increments('id');
-		// 	$table->integer('professors_id')->unsigned()->index();
-		// 	$table->foreign('professors_id')->references('id')->on('professors')->onDelete('cascade');
-		// 	$table->timestamps();
-		// });
 
 		Schema::create('course_course_coordinator', function(Blueprint $table)
 		{
@@ -27,14 +21,6 @@ class CreateCourseCoordinatorsTable extends Migration {
             $table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade');
 			$table->timestamps();
 		});
-
-		// Schema::create('course_coordinator_professor', function(Blueprint $table){
-		// 	$table->integer('professor_id')->unsigned()->index();
-        //     $table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade');
-		// 	$table->integer('course_coordinator_id')->unsigned()->index();
-        //     $table->foreign('course_coordinator_id')->references('id')->on('course_coordinators')->onDelete('cascade');
-		// 	$table->timestamps();
-		// });
 	}
 
 	/**
@@ -45,8 +31,6 @@ class CreateCourseCoordinatorsTable extends Migration {
 	public function down()
 	{
 		Schema::drop('course_course_coordinator');
-		// Schema::drop('course_coordinator_professor');
-		// Schema::drop('course_coordinators');
 	}
 
 }

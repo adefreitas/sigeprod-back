@@ -47,7 +47,7 @@ class CreateCoursesTable extends Migration {
 	public function down()
 	{
 		Schema::drop('course_prelate');
-    Schema::drop('course_professor');
+    	Schema::drop('course_professor');
 		Schema::drop('courses');
 	}
 
