@@ -61,8 +61,9 @@ class CreateContestsTable extends Migration {
 
 		Schema::create('preapproved_users', function(Blueprint $table)
 		{
-			$table->integer('id')->unsigned()->index();
-			$table->unique('id');
+			$table->increments('id');
+			$table->integer('personal_id')->unsigned()->index();
+			$table->unique('personal_id');
 			$table->string('email');
 			$table->string('name');
 			$table->string('lastname');

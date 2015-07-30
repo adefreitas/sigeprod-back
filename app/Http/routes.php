@@ -111,3 +111,7 @@ Route::get('/profile', ['before' => 'jwt-auth',
   Route::resource('logs', 'LogController');
 
   Route::resource('users', 'UserController');
+  
+  Route::get('preapproved_users/{id}', 'UserController@showPreapprovedUser');
+  
+  Route::put('preapproved_users/{id}', 'UserController@updatePreapprovedUser');

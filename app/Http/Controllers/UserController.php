@@ -1,8 +1,8 @@
 <?php namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\User;
 use App\Log;
+use App\Http\Requests;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 
@@ -132,6 +132,35 @@ class UserController extends Controller {
 	public function destroy($id)
 	{
 		//
+	}
+	public function showPreapprovedUser(Request $request, $id){
+		
+		$user = \DB::table('preapproved_users')
+			->where('personal_id', '=', $id)
+			->first();
+			
+		return response()->json(['user' => $user]);
+	}
+	
+	public function updatePreapprovedUser(Request $request, $id){
+		$user = \DB::table('preapproved_users')
+			->where('personal_id', '=', $id)
+			->where('id', '!=', $request->id)
+			->first();
+		if($user){
+			return response()->json(['error' => 'Ya existe un usuario con esa cedula de identidad']);
+		}
+		else{
+			$user = \DB::table('preapproved_users')
+			->where('personal_id', '=', $id)
+			->update([
+				'personal_id' => $request->personal_id,
+				'name' => $request->name,
+				'lastname' => $request->lastname,
+				'email' => $request->email
+			]);
+			return response()->json(['success' => true]);	
+		}
 	}
 
 }

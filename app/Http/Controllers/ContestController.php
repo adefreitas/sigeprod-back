@@ -458,7 +458,7 @@ class ContestController extends Controller {
 
 							\DB::table('preapproved_users')
 								->insert([
-									"user_id" => $item["id"],
+									"personal_id" => $item["id"],
 									"email" => $item["email"],
 									"name" => $item["name"],
 									"lastname" => $item["lastname"],
@@ -466,7 +466,7 @@ class ContestController extends Controller {
 									"contest_id" => $contest->id,
 									"created_at" => Carbon::now(),
 									"updated_at" => Carbon::now()
-								]);
+							]);						
 						}
 					}
 				}
