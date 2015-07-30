@@ -21,10 +21,8 @@ class PropositionController extends Controller {
 	 */
 	public function index()
 	{
-		$propositions = Proposition::get();
-
-        return response()->json([
-			"propositions" => $propositions->toArray()
+		return response()->json([
+			'propositions' => Proposition::get(),
 		]);
 	}
 

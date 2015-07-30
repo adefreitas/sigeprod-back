@@ -480,8 +480,8 @@ class UserTableSeeder extends Seeder {
         $user = User::create([
             'email' => 'prof1c11@ciens.ucv.ve',
             'password' => Hash::make('prof1c11'),
-            'name' => 'Eric',
-            'lastname' => 'Gamess'
+            'name' => 'Aparicio',
+            'lastname' => 'Peña'
         ]);
 
         $user -> attachRole($role_profesor);

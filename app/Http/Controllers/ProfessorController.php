@@ -17,23 +17,9 @@ class ProfessorController extends Controller {
 	 */
 	public function index()
 	{
-		try {
-			JWTAuth::parseToken();
-			$token = JWTAuth::getToken();
-		} catch (Exception $e){
-				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
-		}
-
-		$tokenOwner = JWTAuth::toUser($token);
-
-		$user = User::where('email', $tokenOwner->email)->first();
-
-		$professor = Professor::where('id', $user->Professor->id)->first();
-
 		return response()->json([
-				"msg" => "success",
-				"sent" => $professor->proposition_sent
-			]);
+			'professors' => Professor::get(),
+		]);
 	}
 
 	/**
@@ -70,7 +56,7 @@ class ProfessorController extends Controller {
 
 				"center_id" => $professor->center_id,
 				"professor_id" => $professor->id,
-				"proposition_sent" => $professor->proposition_sent
+				"sent" => $professor->proposition_sent
 
 			]);
 	}
