@@ -3,9 +3,13 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\User;
+use App\Log;
 use App\Course;
 use App\Center;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CourseController extends Controller {
 
@@ -38,7 +42,7 @@ class CourseController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
 		try {
 			JWTAuth::parseToken();
@@ -51,12 +55,12 @@ class CourseController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
-		Log::create([
-			'user_id' => $user->id,
-			'activity' => 'Creó una nueva materia'
-		]);
-
 		if($user->is('admin') || $user->is('departmenthead')){
+			
+			Log::create([
+				'user_id' => $user->id,
+				'activity' => 'Creó una nueva materia'
+			]);
 
 			$course = new Course();
 			$course->id = $request->id;
@@ -119,15 +123,13 @@ class CourseController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
-		$course = Course::find($id);
-
-		Log::create([
-			'user_id' => $user->id,
-			'activity' => 'Actualizó la materia: ' . $id
-		]);
-
+		$course = Course::find($request->id);
 
 		if($course->id == $id){
+			Log::create([
+				'user_id' => $user->id,
+				'activity' => 'Actualizo el centro: ' .'['. $request->id .'] '. $request->name
+			]);
 
 			$course->id = $request->id;
 			$course->name = $request->name;
@@ -141,6 +143,7 @@ class CourseController extends Controller {
 			return response()->json(['success' => true]);
 
 		}
+		return response()->json(['success' => false,'error'=>'No se encontro el centro con el ID especificado']);
 	}
 
 	/**

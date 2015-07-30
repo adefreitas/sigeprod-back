@@ -5,9 +5,12 @@ use App\Http\Controllers\Controller;
 
 
 use App\User;
+use App\Log;
 use App\Center;
 use App\Professor;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CenterController extends Controller {
 
@@ -39,9 +42,39 @@ class CenterController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
-		//
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
+		if($user->is('admin') || $user->is('departmenthead')){
+
+			Log::create([
+				'user_id' => $user->id,
+				'activity' => 'Creó una nueva materia'
+			]);
+
+			$center = new center();
+			$center->id = $request->id;
+			$center->name = $request->name;
+			$center->active = $request->active;
+
+			$center->save();
+
+			return response()->json(['id' => $center->id]);
+		}
+		else
+		{
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
 	}
 
 	/**
@@ -55,11 +88,10 @@ class CenterController extends Controller {
 		$center = Center::where('id', $id)->first();
 
 		return response()->json([
-
-				"center_id" => $center->id,
-				"center_name" => $center->name
-
-			]);
+			"center_id" => $center->id,
+			"center_name" => $center->name,
+			"center_active" => $center->active
+		]);
 	}
 
 	public function professors($id)
@@ -71,11 +103,9 @@ class CenterController extends Controller {
 						->get();
 
 		return response()->json([
-
-				"msg" => "success",
-				"professors" => $professors
-
-			]);
+			"msg" => "success",
+			"professors" => $professors
+		]);
 
 
 	}
@@ -97,9 +127,36 @@ class CenterController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request, $id)
 	{
-		//
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
+		$center = Center::find($request->id);
+
+		if($center->id == $id){
+			Log::create([
+				'user_id' => $user->id,
+				'activity' => 'Actualizo el centro: ' .'['. $request->id .'] '. $request->name
+			]);
+
+			$center->name = $request->name;
+			$center->active = $request->active;
+
+			$center->save();
+
+			return response()->json(['success' => true]);
+
+		}
+		return response()->json(['success' => false,'error'=>'No se encontro el centro con el ID especificado']);
 	}
 
 	/**

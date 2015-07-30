@@ -24,7 +24,7 @@ class CourseTableSeeder extends Seeder {
         ************************* Materias ************************
         ***********************************************************/
 
-        Center::find(33)
+        Center::find(11)
           ->courses()->save(
             Course::create([
                 'id' => '6302',
@@ -35,7 +35,7 @@ class CourseTableSeeder extends Seeder {
             ])
         );
 
-        Center::find(11)
+        Center::find(22)
           ->courses()->save(
             Course::create([
                 'id' => '6003',
@@ -57,7 +57,7 @@ class CourseTableSeeder extends Seeder {
             ])
         );
 
-        Center::find(66)
+        Center::find(44)
           ->courses()->save(
             Course::create([
                 'id' => '6211',
@@ -68,7 +68,7 @@ class CourseTableSeeder extends Seeder {
             ])
         );
 
-        Center::find(77)
+        Center::find(55)
           ->courses()->save(
             Course::create([
                 'id' => '6109',
@@ -79,37 +79,49 @@ class CourseTableSeeder extends Seeder {
             ])
         );
 
-        Course::create([
+        Center::find(66)
+          ->courses()->save(
+            Course::create([
                 'id' => '6106',
                 'name' => 'Matemáticas Discretas I',
                 'credits' => '4',
                 'semester' => '1',
                 'active' => true
-        ]);
+            ])
+        );
 
-        Course::create([
+        Center::find(77)
+          ->courses()->save(
+            Course::create([
                 'id' => '6201',
                 'name' => 'Algoritmos y Programación',
                 'credits' => '6',
                 'semester' => '1',
                 'active' => true
-        ]);
+            ])
+        );
 
-        Course::create([
+        Center::find(11)
+          ->courses()->save(
+            Course::create([
                 'id' => '6301',
                 'name' => 'Introducción a la Informática',
                 'credits' => '4',
                 'semester' => '1',
                 'active' => true
-        ]);
+            ])
+        );
 
-        Course::create([
+        Center::find(22)
+          ->courses()->save(
+            Course::create([
                 'id' => '6202',
                 'name' => 'Algoritmos y Estructuras de Datos',
                 'credits' => '5',
                 'semester' => '2',
                 'active' => true
-        ]);
+            ])
+        );
 
 
 

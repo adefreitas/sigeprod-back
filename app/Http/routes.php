@@ -115,3 +115,5 @@ Route::get('/profile', ['before' => 'jwt-auth',
   Route::get('preapproved_users/{id}', 'UserController@showPreapprovedUser');
   
   Route::put('preapproved_users/{id}', 'UserController@updatePreapprovedUser');
+
+  Route::put('centers/{id}', 'CenterController@update');
