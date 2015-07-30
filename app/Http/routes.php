@@ -117,3 +117,12 @@ Route::get('/profile', ['before' => 'jwt-auth',
   Route::put('preapproved_users/{id}', 'UserController@updatePreapprovedUser');
 
   Route::put('centers/{id}', 'CenterController@update');
+  
+  Route::get('fileentry', 'FileENtryController@index');
+  
+  Route::get('fileentry/get/{filename}', [
+      'as' => 'getentry', 'uses' =>'FileEntryController@get']);
+  
+  Route::post('fileentry/add', [
+     'as' => 'addentry', 'uses' => 'FileEntryController@add'
+  ]);
