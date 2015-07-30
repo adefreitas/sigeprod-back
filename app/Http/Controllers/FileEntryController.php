@@ -28,7 +28,7 @@ class FileEntryController extends Controller {
 		Log::info($extension);
 		Storage::disk('local')->put($file->getFilename().'.'.$extension,  File::get($file));
 		$entry = new Fileentry();
-		$entry->personal_id = $request['personal_id'];
+		$entry->preapproved_id = $request['id'];
 		$entry->mime = $file->getClientMimeType();
 		$entry->original_filename = $file->getClientOriginalName();
 		$entry->filename = $file->getFilename().'.'.$extension;

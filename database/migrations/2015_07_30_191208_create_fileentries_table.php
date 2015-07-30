@@ -18,8 +18,8 @@ class CreateFileentriesTable extends Migration {
 			$table->string('filename');
 			$table->string('mime');
 			$table->string('original_filename');
-			$table->integer('personal_id')->unsigned()->index();
-			$table->foreign('personal_id')->references('personal_id')->on('preapproved_users')->onDelete('cascade');
+			$table->integer('preapproved_id')->unsigned()->index();
+			$table->foreign('preapproved_id')->references('id')->on('preapproved_users')->onDelete('cascade');
 			$table->timestamps();
 		});
 	}
