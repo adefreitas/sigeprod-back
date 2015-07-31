@@ -21,8 +21,15 @@ class PropositionController extends Controller {
 	 */
 	public function index()
 	{
+		$propositions = Proposition::get();
+		for($i = 0; $i < count($propositions); ++$i) {
+    		$propositions[$i]->mode_option_1 = json_decode($propositions[$i]->mode_option_1);
+    		$propositions[$i]->mode_option_2 = json_decode($propositions[$i]->mode_option_2);
+			$propositions[$i]->mode_option_3 = json_decode($propositions[$i]->mode_option_3);
+		}
+
 		return response()->json([
-			'propositions' => Proposition::get(),
+			'propositions' => $propositions,
 		]);
 	}
 
