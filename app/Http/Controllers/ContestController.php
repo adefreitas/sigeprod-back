@@ -7,10 +7,12 @@ use App\Log;
 use App\User;
 use App\Course;
 use App\Contest;
-use App\Professor;
 use Carbon\Carbon;
+use App\Professor;
 use App\Observation;
 use App\Notification;
+use App\TeacherHelper;
+use App\PreapprovedUser;
 use App\CourseCoordinator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -71,6 +73,18 @@ class ContestController extends Controller {
 						'observations.id as observation_id'
 					)
 					->get();
+
+				$item->preapproved_users =
+					PreapprovedUser::where('contest_id', '=', $item->contest_id)
+					->orderBy('preapproved_users.type', 'asc')
+					->orderBy('preapproved_users.personal_id', 'asc')
+					->select(
+						'preapproved_users.name', 'preapproved_users.lastname', 'preapproved_users.email',
+						'preapproved_users.personal_id', 'preapproved_users.name', 'preapproved_users.type',
+						'preapproved_users.contest_id'
+					)
+					->get();
+
 				array_push($result, $item);
 			}
 
@@ -114,6 +128,16 @@ class ContestController extends Controller {
 						'observations.created_at', 'observations.description',
 						'users.lastname', 'users.name', 'users.id as user_id',
 						'observations.id as observation_id'
+					)
+					->get();
+					$item->preapproved_users =
+					PreapprovedUser::where('contest_id', '=', $item->contest_id)
+					->orderBy('preapproved_users.type', 'asc')
+					->orderBy('preapproved_users.personal_id', 'asc')
+					->select(
+						'preapproved_users.name', 'preapproved_users.lastname', 'preapproved_users.email',
+						'preapproved_users.personal_id', 'preapproved_users.name', 'preapproved_users.type',
+						'preapproved_users.contest_id'
 					)
 					->get();
 				array_push($result, $item);
@@ -161,6 +185,16 @@ class ContestController extends Controller {
 						'observations.id as observation_id'
 					)
 					->get();
+					$item->preapproved_users =
+					PreapprovedUser::where('contest_id', '=', $item->contest_id)
+					->orderBy('preapproved_users.type', 'asc')
+					->orderBy('preapproved_users.personal_id', 'asc')
+					->select(
+						'preapproved_users.name', 'preapproved_users.lastname', 'preapproved_users.email',
+						'preapproved_users.personal_id', 'preapproved_users.name', 'preapproved_users.type',
+						'preapproved_users.contest_id'
+					)
+					->get();
 				array_push($result, $item);
 			}
 
@@ -174,6 +208,10 @@ class ContestController extends Controller {
 	     */
 	    else if($user->is('coursecoordinator') && $user->is('departmenthead')){
 
+	    	$helper_1 = TeacherHelper::where('type', '=', 1)
+	    								->where('available', '=', true)
+	    								->count();
+
 			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
 				->join('users', 'users.id', '=', 'professors.user_id')
 				->join('contest_course', 'contest_course.contest_id', '=', 'contests.id', 'left outer')
@@ -202,11 +240,24 @@ class ContestController extends Controller {
 						'observations.id as observation_id'
 					)
 					->get();
+					$item->preapproved_users =
+					PreapprovedUser::where('contest_id', '=', $item->contest_id)
+					->orderBy('preapproved_users.type', 'asc')
+					->orderBy('preapproved_users.personal_id', 'asc')
+					->select(
+						'preapproved_users.name', 'preapproved_users.lastname', 'preapproved_users.email',
+						'preapproved_users.personal_id', 'preapproved_users.name', 'preapproved_users.type',
+						'preapproved_users.contest_id'
+					)
+					->get();
 				array_push($result, $item);
 			}
 
 	        return response()->json([
 	            'contests' => $result,
+	            'helper_1' => $helper_1,
+	            'helper_2' => $helper_2,
+	            'assistant' => $assistant,
 	        ]);
 	    }
 	    /*
@@ -214,6 +265,16 @@ class ContestController extends Controller {
 	     */
 	    else if($user->is('departmenthead')){
 
+	    	$helper_1 = TeacherHelper::where('type', '=', 1)
+	    								->where('available', '=', true)
+	    								->count();
+	    	$helper_2 = TeacherHelper::where('type', '=', 2)
+	    								->where('available', '=', true)
+	    								->count();
+	    	$assistant = TeacherHelper::where('type', '=', 3)
+	    								->where('available', '=', true)
+	    								->count();
+
 			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
 				->join('users', 'users.id', '=', 'professors.user_id')
 				->join('contest_course', 'contest_course.contest_id', '=', 'contests.id', 'left outer')
@@ -242,11 +303,24 @@ class ContestController extends Controller {
 						'observations.id as observation_id'
 					)
 					->get();
+				$item->preapproved_users =
+					PreapprovedUser::where('contest_id', '=', $item->contest_id)
+					->orderBy('preapproved_users.type', 'asc')
+					->orderBy('preapproved_users.personal_id', 'asc')
+					->select(
+						'preapproved_users.name', 'preapproved_users.lastname', 'preapproved_users.email',
+						'preapproved_users.personal_id', 'preapproved_users.name', 'preapproved_users.type',
+						'preapproved_users.contest_id'
+					)
+					->get();
 				array_push($result, $item);
 			}
 
 	        return response()->json([
 	            'contests' => $result,
+	            'helper_1' => $helper_1,
+	            'helper_2' => $helper_2,
+	            'assistant' => $assistant,
 	        ]);
 
 	    }

@@ -18,7 +18,7 @@ class TeacherHelperTableSeeder extends Seeder {
         DB::table('teacher_helpers')->delete();
         $id = 1000;
 
-        for($i = 0; $i < 10; $i++){
+        for($i = 0; $i < 20; $i++){
             TeacherHelper::create([
                 "id" => $id,
                 "available" => 1,
@@ -27,11 +27,19 @@ class TeacherHelperTableSeeder extends Seeder {
 
             $id++;
         }
-        for($i = 0; $i < 10; $i++){
+        for($i = 0; $i < 20; $i++){
             TeacherHelper::create([
                 "id" => $id,
                 "available" => 1,
                 "type" => 2,
+            ]);
+            $id++;
+        }
+        for($i = 0; $i < 10; $i++){
+            TeacherHelper::create([
+                "id" => $id,
+                "available" => 1,
+                "type" => 3,
             ]);
             $id++;
         }
