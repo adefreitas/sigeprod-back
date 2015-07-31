@@ -109,12 +109,14 @@ class TeacherHelper extends Model {
 	}
 
 	public function clear(){
+		$this->reserved = false;
+		$this->available = true;
 		$helper_id = \DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)
 			->where('active', '=', true)
 			->select('id')
 			->first();
-
+		
 		\DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)
 			->where('active', '=', true)

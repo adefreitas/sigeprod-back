@@ -1,7 +1,12 @@
 <?php namespace App\Http\Controllers;
 
-use App\User;
+use \Hash;
 use App\Log;
+use App\User;
+use App\TeacherHelper;
+use App\Contest;
+use App\Course;
+use App\Center;
 use App\Http\Requests;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
@@ -148,7 +153,7 @@ class UserController extends Controller {
 			->where('id', '!=', $request->id)
 			->first();
 		if($user){
-			return response()->json(['error' => 'Ya existe un usuario con esa cedula de identidad']);
+			return response()->json(['error' => 'Ya existe un usuario con esa cedula de identidad'], 404);
 		}
 		else{
 			$user = \DB::table('preapproved_users')
@@ -161,6 +166,80 @@ class UserController extends Controller {
 			]);
 			return response()->json(['success' => true]);	
 		}
+	}
+	
+	public function createPreapprovedUser(Request $request, $id){
+		$exists = \DB::table('preapproved_users')
+			->where('personal_id', '=', $request->personal_id)
+			->where('activated', '=', false)
+			->orderBy('created_at', 'desc')
+			->first();
+		$preapproved = $request;
+		if($preapproved == null){
+			return response()->json(['error' => 'No existe un usuario preaprobado con esa cedula de identidad'], 404);
+		}
+		
+		$user = User::find($id);
+		
+		if($user == null){
+			$user = User::create([
+				'name' => $preapproved->name,
+				'lastname' => $preapproved->lastname,
+				'email' => $preapproved->email,
+				'password' => Hash::make($preapproved->password),
+				'id' => $preapproved->personal_id
+			]);
+		}
+			
+		$user->name = $preapproved->name;
+		$user->lastname = $preapproved->lastname;
+		$user->email = $preapproved->email;
+		$user->password = Hash::make($preapproved->password);
+		
+		\DB::table('preapproved_users')
+			->where('personal_id', '=', $request->personal_id)
+			->where('activated', '=', false)
+			->update([
+				"activated" => true
+			]);
+			
+		// $preapproved->activated = true;
+		
+		// $preapproved->save();
+		
+		$user->save();
+		
+		$contest = Contest::find($preapproved->contest_id);
+		
+		$center = $contest->center;
+		$course = $contest->course;
+		
+		$helper = TeacherHelper::where('type', '=', $preapproved->type)
+			->where('available', '=', true)
+			->where('reserved', '=', true)
+			->first();
+			
+					
+		if($helper){				
+			$helper->user()->attach($user->id);
+			
+			if(count($center) > 0){
+				$center = $center[0]->id;
+				$helper->setCenter($center);
+			}
+			if(count($course) > 0){
+				$course = $course[0]->id;
+				$helper->setCourse($course);
+			}
+			
+			$helper->available = false;
+			$helper->save();
+		}
+		
+		else{
+			return response()->json(['error' => 'No hay plazas disponibles para este tipo de preparador'], 404);
+		}
+		
 	}
 
 }

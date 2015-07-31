@@ -17,6 +17,7 @@ class CreateTeacherHelpersTable extends Migration {
 		{
 			$table->increments('id');
 			$table->boolean('available');
+			$table->boolean('reserved')->default('false');
 			$table->enum('type', [1, 2, 3]);
 			$table->timestamps();
 		});
