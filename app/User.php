@@ -34,7 +34,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	protected $hidden = ['password', 'remember_token'];
 
 	public function teacherHelper(){
-		return $this->belongsToMany('App\User', 'teacher_helpers_users')->withTimestamps();
+		return $this->belongsToMany('App\TeacherHelper', 'teacher_helpers_users')->withTimestamps();
 	}
 	public function professor(){
 		return $this->hasOne('App\Professor');

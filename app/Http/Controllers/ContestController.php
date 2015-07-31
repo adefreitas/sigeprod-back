@@ -209,7 +209,13 @@ class ContestController extends Controller {
 	    else if($user->is('coursecoordinator') && $user->is('departmenthead')){
 
 	    	$helper_1 = TeacherHelper::where('type', '=', 1)
-	    								->where('available', '=', true)
+	    								->where('reserved', '=', false)
+	    								->count();
+	    	$helper_2 = TeacherHelper::where('type', '=', 2)
+	    								->where('reserved', '=', false)
+	    								->count();
+	    	$assistant = TeacherHelper::where('type', '=', 3)
+	    								->where('reserved', '=', false)
 	    								->count();
 
 			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
@@ -266,13 +272,13 @@ class ContestController extends Controller {
 	    else if($user->is('departmenthead')){
 
 	    	$helper_1 = TeacherHelper::where('type', '=', 1)
-	    								->where('available', '=', true)
+	    								->where('reserved', '=', false)
 	    								->count();
 	    	$helper_2 = TeacherHelper::where('type', '=', 2)
-	    								->where('available', '=', true)
+	    								->where('reserved', '=', false)
 	    								->count();
 	    	$assistant = TeacherHelper::where('type', '=', 3)
-	    								->where('available', '=', true)
+	    								->where('reserved', '=', false)
 	    								->count();
 
 			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
@@ -516,6 +522,40 @@ class ContestController extends Controller {
 			if( $user->is('departmenthead') ){
 
 				$contest->status = $request->status;
+				
+				for($i = 0; $i < $contest->teacher_helpers_1; $i++){
+					
+					$helper = TeacherHelper::where('type', '=', 1)
+						->where('available', '=', true)
+						->where('reserved', '=', false)
+						->first();
+								
+					$helper->reserved = true;
+					$helper->reserved_for = $contest->id;
+					$helper->save();
+				}
+				for($i = 0; $i < $contest->teacher_helpers_2; $i++){
+					
+					$helper = TeacherHelper::where('type', '=', 2)
+						->where('available', '=', true)
+						->where('reserved', '=', false)
+						->first();
+								
+					$helper->reserved = true;
+					$helper->reserved_for = $contest->id;
+					$helper->save();
+				}
+				for($i = 0; $i < $contest->teacher_assistants; $i++){
+					
+					$helper = TeacherHelper::where('type', '=', 3)
+						->where('available', '=', true)
+						->where('reserved', '=', false)
+						->first();
+								
+					$helper->reserved = true;
+					$helper->reserved_for = $contest->id;
+					$helper->save();
+				}
 
 			}
 
@@ -540,7 +580,7 @@ class ContestController extends Controller {
 									"contest_id" => $contest->id,
 									"created_at" => Carbon::now(),
 									"updated_at" => Carbon::now()
-							]);						
+							]);
 						}
 					}
 				}

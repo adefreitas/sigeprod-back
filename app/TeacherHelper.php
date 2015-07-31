@@ -57,15 +57,20 @@ class TeacherHelper extends Model {
 	public function courses(){
 
 
-		$helper_id = \DB::table('teacher_helpers_users')
+		$helper_ids = \DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)
+			->where('active', '=', true)
 			->select('id')
-			->first();
+			->get();
 
-
+		$helper_ids_array = array();
+		
+		foreach($helper_ids as $helper_id){
+			array_push($helper_ids_array, $helper_id->id);
+		}
 
 		$courses = \DB::table('courses_teacher_helpers')
-			->where('helper_id', '=', $helper_id->id)
+			->whereIn('helper_id', $helper_ids_array)
 			->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id')
 			->groupBy('courses.id')
 			->select('courses.id')
@@ -77,7 +82,7 @@ class TeacherHelper extends Model {
 		foreach($courses as $course){
 			array_push($courses_id, $course->id);
 		}
-
+		
 		$courses = \App\Course::whereIn('id', $courses_id)->get();
 
 		return $courses;
@@ -85,18 +90,27 @@ class TeacherHelper extends Model {
 	}
 
 	public function centers(){
-		$helper_id = \DB::table('teacher_helpers_users')
+		$helper_ids = \DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)
+			->where('active', '=', true)
 			->select('id')
-			->first();
-
+			->get();
+		
+		$helper_ids_array = array();
+		
+		foreach($helper_ids as $helper_id){
+			array_push($helper_ids_array, $helper_id->id);
+		}
+				
+		// return $helper_ids_array;
+		
 		$centers = \DB::table('centers_teacher_helpers')
-			->where('helper_id', '=', $helper_id->id)
-			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.course_id')
+			->whereIn('helper_id', $helper_ids_array)
+			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id')
 			->groupBy('centers.id')
 			->select('centers.id')
 			->get();
-
+		
 		$centers_id = array();
 
 		foreach($centers as $center){
@@ -104,11 +118,13 @@ class TeacherHelper extends Model {
 		}
 
 		$centers = \App\Center::whereIn('id', $centers_id)->get();
+		// $centers = \App\Center::get();
 
 		return $centers;
 	}
 
 	public function clear(){
+		$this->reserved_for = null;
 		$this->reserved = false;
 		$this->available = true;
 		$helper_id = \DB::table('teacher_helpers_users')
@@ -126,12 +142,14 @@ class TeacherHelper extends Model {
 
 		\DB::table('centers_teacher_helpers')
 			->where('helper_id', '=', $helper_id->id)
+			->where('active', '=', true)
 			->update([
 				"active" => false
 			]);
 
 		\DB::table('courses_teacher_helpers')
 			->where('helper_id', '=', $helper_id->id)
+			->where('active', '=', true)
 			->update([
 				"active" => false
 			]);

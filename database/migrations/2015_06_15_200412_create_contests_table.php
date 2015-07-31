@@ -12,34 +12,35 @@ class CreateContestsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('contests', function(Blueprint $table)
-		{
-			$table->increments('id');
+		/* MOVIDO A TEACHER HELPERS */
+		// Schema::create('contests', function(Blueprint $table)
+		// {
+		// 	$table->increments('id');
 
-			//ID del profesor que solicito el concurso
-			$table->integer('professor_id')->unsigned()->index();
-			$table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade');
+		// 	//ID del profesor que solicito el concurso
+		// 	$table->integer('professor_id')->unsigned()->index();
+		// 	$table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade');
 
-			//Cantidad de Preparadores 2
-			$table->integer('teacher_helpers_2');
+		// 	//Cantidad de Preparadores 2
+		// 	$table->integer('teacher_helpers_2');
 
-			//Cantidad de Preparadores 1
-			$table->integer('teacher_helpers_1');
+		// 	//Cantidad de Preparadores 1
+		// 	$table->integer('teacher_helpers_1');
 
-			$table->integer('teacher_assistants');
+		// 	$table->integer('teacher_assistants');
 
-			/*
-				Estado de la solicitud
-				1 = Solicitud enviada
-				2 = Solicitud aceptada
-				3 = Solicitud rechazada
-				4 = Concurso finalizado
-				5 = Concurso descartado
-			*/
+		// 	/*
+		// 		Estado de la solicitud
+		// 		1 = Solicitud enviada
+		// 		2 = Solicitud aceptada
+		// 		3 = Solicitud rechazada
+		// 		4 = Concurso finalizado
+		// 		5 = Concurso descartado
+		// 	*/
 
-			$table->integer('status');
-			$table->timestamps();
-		});
+		// 	$table->integer('status');
+		// 	$table->timestamps();
+		// });
 
 		Schema::create('contest_course', function(Blueprint $table)
 		{
@@ -100,7 +101,7 @@ class CreateContestsTable extends Migration {
 		Schema::drop('center_contest');
 		Schema::drop('contest_results');
 		Schema::drop('preapproved_users');
-		Schema::drop('contests');
+		// Schema::drop('contests');
 	}
 
 }

@@ -142,6 +142,7 @@ class UserController extends Controller {
 		
 		$user = \DB::table('preapproved_users')
 			->where('personal_id', '=', $id)
+			->where('activated', '=', false)
 			->first();
 			
 		return response()->json(['user' => $user]);
@@ -151,9 +152,15 @@ class UserController extends Controller {
 		$user = \DB::table('preapproved_users')
 			->where('personal_id', '=', $id)
 			->where('id', '!=', $request->id)
+			->where('activated', '=', true)
 			->first();
 		if($user){
-			return response()->json(['error' => 'Ya existe un usuario con esa cedula de identidad'], 404);
+			$user = User::find($id);
+			$user->name = $request->name;
+			$user->lastname = $request->lastname;
+			$user->email = $request->email;
+			$user->save();
+			return response()->json(['success'=>true]);
 		}
 		else{
 			$user = \DB::table('preapproved_users')
@@ -174,14 +181,17 @@ class UserController extends Controller {
 			->where('activated', '=', false)
 			->orderBy('created_at', 'desc')
 			->first();
+			
 		$preapproved = $request;
+		
 		if($preapproved == null){
 			return response()->json(['error' => 'No existe un usuario preaprobado con esa cedula de identidad'], 404);
 		}
 		
 		$user = User::find($id);
+		$newUser = $user == null;
 		
-		if($user == null){
+		if($newUser){
 			$user = User::create([
 				'name' => $preapproved->name,
 				'lastname' => $preapproved->lastname,
@@ -214,31 +224,111 @@ class UserController extends Controller {
 		$center = $contest->center;
 		$course = $contest->course;
 		
-		$helper = TeacherHelper::where('type', '=', $preapproved->type)
-			->where('available', '=', true)
-			->where('reserved', '=', true)
-			->first();
+		$isHelper = false;
+		
+		//Revisando si el alumno ya es preparador
+		
+		if(!$newUser){
+			$helper = \DB::table('teacher_helpers_users')
+				->where('user_id', '=', $user->id)
+				->where('active', '=', true)
+				->first();
+				
+			$isHelper = !($helper == null);
 			
+			if($isHelper){
+				$foundHelper = TeacherHelper::where('type', '=', $preapproved->type)
+					->where('available', '=', true)
+					->where('reserved', '=', true)
+					->where('reserved_for', '=', $contest->id)
+					->first();
+				
+				$helper_id = \DB::table('teacher_helpers_users')
+					->where('active', '=', true)
+					->where('user_id', '=', $user->id)
+					->first()
+					->teacher_helper_id;
+				
+				$helper = TeacherHelper::find($helper_id);
+				// Si la plaza que ya tenia asignada es mayor, se queda con esa
+				if($foundHelper->type >= $helper->type){
+					TeacherHelper::where('type', '=', $preapproved->type)
+						->where('available', '=', true)
+						->where('reserved', '=', true)
+						->where('reserved_for', '=', $contest->contest_id)
+						->update([
+							'reserved' => false,
+							'reserved_for' => null,
+							'available' => true
+					]);
+				}
+				//Sino, lo cambio
+				else{
+					$centers = $helper->centers();
+					$courses = $helper->courses();
 					
-		if($helper){				
-			$helper->user()->attach($user->id);
-			
-			if(count($center) > 0){
-				$center = $center[0]->id;
-				$helper->setCenter($center);
+					$foundHelper->available = false;
+					
+					foreach($centers as $center_item){
+						$foundHelper->setCenter($center_item->id);
+					}
+					foreach($courses as $course_item){
+						$foundHelper->setCourse($course_item->id);
+					}
+					
+					$helper->clear();
+					$helper->save();
+					
+					$foundHelper->save();
+					
+					$helper = $foundHelper;
+					
+				}
+				
+				$helper->user()->attach($user->id);
+				
+				if(count($center) > 0){
+					$center = $center[0]->id;
+					$helper->setCenter($center);
+				}
+				if(count($course) > 0){
+					$course = $course[0]->id;
+					$helper->setCourse($course);
+				}
+				
+				$helper->available = false;
+				$helper->save();
+				
 			}
-			if(count($course) > 0){
-				$course = $course[0]->id;
-				$helper->setCourse($course);
-			}
-			
-			$helper->available = false;
-			$helper->save();
 		}
 		
-		else{
-			return response()->json(['error' => 'No hay plazas disponibles para este tipo de preparador'], 404);
+		if($newUser || (!$newUser && !$isHelper)){
+			$helper = TeacherHelper::where('type', '=', $preapproved->type)
+				->where('available', '=', true)
+				->where('reserved', '=', true)
+				->first();
+				
+						
+			if($helper){				
+				$helper->user()->attach($user->id);
+				
+				if(count($center) > 0){
+					$center = $center[0]->id;
+					$helper->setCenter($center);
+				}
+				if(count($course) > 0){
+					$course = $course[0]->id;
+					$helper->setCourse($course);
+				}
+				
+				$helper->available = false;
+				$helper->save();
+			}
+			else{
+				return response()->json(['error' => 'No hay plazas disponibles para este tipo de preparador'], 404);
+			}
 		}
+		return response()->json(['success'=>true]);
 		
 	}
 
