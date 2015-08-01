@@ -50,7 +50,7 @@ class FileEntryController extends Controller {
 			]);	
 		}
 		else{
-			return response()->json([ 'error' => 404, 'message' => 'No se recibio ningun archivo' ], 404);
+			return response()->json([ 'error' => 404, 'message' => 'No se recibió ningún archivo' ], 404);
 		}
 	}
 	

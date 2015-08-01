@@ -145,7 +145,7 @@ class CenterController extends Controller {
 		if($center->id == $id){
 			Log::create([
 				'user_id' => $user->id,
-				'activity' => 'Actualizo el centro: ' .'['. $request->id .'] '. $request->name
+				'activity' => 'Actualizó el centro: ' .'['. $request->id .'] '. $request->name
 			]);
 
 			$center->name = $request->name;
@@ -156,7 +156,7 @@ class CenterController extends Controller {
 			return response()->json(['success' => true]);
 
 		}
-		return response()->json(['success' => false,'error'=>'No se encontro el centro con el ID especificado']);
+		return response()->json(['success' => false,'error'=>'No se encontró el centro con el ID especificado']);
 	}
 
 	/**

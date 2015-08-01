@@ -100,7 +100,7 @@ class NotificationController extends Controller {
 
 		}
 		else{
-			return response()->json(['error' => 'Solo el Jefe de Departamento puede enviar notificaciones masivas']);
+			return response()->json(['error' => 'Sólo el Jefe de Departamento puede enviar notificaciones masivas']);
 		}
 	}
 
@@ -157,7 +157,7 @@ class NotificationController extends Controller {
 			]);
 		}
 		else{
-			return response()->json(['error' => 'Solo el receptor de la notificacion puede marcarla como leida'], HttpResponse::HTTP_UNAUTHORIZED);
+			return response()->json(['error' => 'Sólo el receptor de la notificación puede marcarla como leída'], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
 	}

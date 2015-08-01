@@ -185,7 +185,7 @@ class UserController extends Controller {
 		$preapproved = $request;
 		
 		if($preapproved == null){
-			return response()->json(['error' => 'No existe un usuario preaprobado con esa cedula de identidad'], 404);
+			return response()->json(['error' => 'No existe un usuario preaprobado con esa cédula de identidad'], 404);
 		}
 		
 		$user = User::find($id);
@@ -325,7 +325,7 @@ class UserController extends Controller {
 				$helper->save();
 			}
 			else{
-				return response()->json(['error' => 'No hay plazas disponibles para este tipo de preparador'], 404);
+				return response()->json(['error' => 'No hay plazas disponibles para éste tipo de preparador'], 404);
 			}
 		}
 		return response()->json(['success'=>true]);
