@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use App\Fileentry;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -122,7 +123,27 @@ class TeacherHelper extends Model {
 
 		return $centers;
 	}
-
+	
+	public function getFiles(){
+		$user_id = \DB::table('teacher_helpers_users')
+			->where('teacher_helper_id', '=', $this->id)
+			->where('active', '=', true)
+			->select('user_id')
+			->first()
+			->user_id;
+			
+		$preapproved_id =  \DB::table('preapproved_users')
+			->where('personal_id', '=', $user_id)
+			->where('activated', '=', true)
+			->orderBy('updated_at', 'desc')
+			->first()
+			->id;
+		
+		return Fileentry::where('preapproved_id','=', $preapproved_id)
+			->get();
+			
+	}
+	
 	public function clear(){
 		$this->reserved_for = null;
 		$this->reserved = false;
@@ -153,8 +174,6 @@ class TeacherHelper extends Model {
 			->update([
 				"active" => false
 			]);
-
-
 	}
 
 }

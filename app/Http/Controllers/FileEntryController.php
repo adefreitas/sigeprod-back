@@ -21,6 +21,14 @@ class FileEntryController extends Controller {
 	public function add(){
 		// Log::info(Request::all());
 		$request = Request::all();
+		
+		$id = \DB::table('preapproved_users')
+			->where('personal_id', '=', $request["id"])
+			->where('activated', '=', false)
+			->orderBy('updated_at', 'desc')
+			->first()
+			->id;
+		
 		$file = $request['file'];
 		if($file != ''){
 			Log::info(Request::all());
@@ -29,7 +37,7 @@ class FileEntryController extends Controller {
 			Log::info($extension);
 			Storage::disk('local')->put($request['id'].$request['type'].'.'.$extension,  File::get($file));
 			$entry = new Fileentry();
-			$entry->preapproved_id = $request['id'];
+			$entry->preapproved_id = $id;
 			$entry->type = $request['type'];
 			$entry->mime = $file->getClientMimeType();
 			$entry->original_filename = $file->getClientOriginalName();
@@ -44,6 +52,15 @@ class FileEntryController extends Controller {
 		else{
 			return response()->json([ 'error' => 404, 'message' => 'No se recibio ningun archivo' ], 404);
 		}
+	}
+	
+	public function get($filename){
+		$entry = Fileentry::where('filename', '=', $filename)
+			->orderBy('updated_at', 'desc')->firstOrFail();
+			
+		$file = Storage::disk('local')->get($entry->filename);
+ 
+		return (new Response($file, 200))->header('Content-Type', $entry->mime);
 	}
 
 }

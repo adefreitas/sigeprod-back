@@ -19,7 +19,7 @@ class CreateFileentriesTable extends Migration {
 			$table->string('mime');
 			$table->string('original_filename');
 			$table->string('type');
-			$table->integer('preapproved_id')->unsigned()->index();
+			$table->integer('preapproved_id');
 			$table->foreign('preapproved_id')->references('id')->on('preapproved_users')->onDelete('cascade');
 			$table->timestamps();
 		});

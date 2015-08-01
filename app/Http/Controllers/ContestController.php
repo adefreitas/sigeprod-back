@@ -58,6 +58,7 @@ class ContestController extends Controller {
 					'centers.id as center_id', 'centers.name as center_name'
 
 				)
+				->orderBy('contests.created_at', 'desc')
 				->get();
 
 			$result = array();
@@ -115,6 +116,7 @@ class ContestController extends Controller {
 					'centers.id as center_id', 'centers.name as center_name'
 
 				)
+				->orderBy('contests.created_at', 'desc')
 				->get();
 
 			$result = array();
@@ -170,6 +172,7 @@ class ContestController extends Controller {
 					'centers.id as center_id', 'centers.name as center_name'
 
 				)
+				->orderBy('contests.created_at', 'desc')
 				->get();
 
 			$result = array();
@@ -231,6 +234,7 @@ class ContestController extends Controller {
 					'centers.id as center_id', 'centers.name as center_name'
 
 				)
+				->orderBy('contests.created_at', 'desc')
 				->get();
 
 			$result = array();
@@ -294,6 +298,7 @@ class ContestController extends Controller {
 					'centers.id as center_id', 'centers.name as center_name'
 
 				)
+				->orderBy('contests.created_at', 'desc')
 				->get();
 
 			$result = array();
