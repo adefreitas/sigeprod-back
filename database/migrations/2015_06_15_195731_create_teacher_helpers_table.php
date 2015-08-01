@@ -61,6 +61,10 @@ class CreateTeacherHelpersTable extends Migration {
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->json('available_schedule')->nullable()->default(null);
 			$table->boolean('active')->default('true');
+			//TODO: Agregar columna de tipo, en caso de que el alumno sea preparador de varios tipos en distintas materias
+			//y se retire de una. Ej: Si es preparador 2 en una materia, y prepa 1 en otra, si llegase a retirarse de la
+			//que es tipo dos, se verifica que no sea preparador 2 en alguna otra materia, y se le asigna un ID detalle de
+			//tipo 1. En caso de que sea prepa 2 de otra materia, se queda con su mismo ID detalle
 			$table->timestamps();
 		});
 
