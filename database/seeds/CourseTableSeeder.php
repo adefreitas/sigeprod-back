@@ -178,6 +178,11 @@ class CourseTableSeeder extends Seeder {
             User::where('email', '=', 'cc77@ciens.ucv.ve')->firstOrFail()->professor
         );
 
+        Center::find(88)
+          ->centerCoordinator()->attach(
+            User::where('email', '=', 'cc88@ciens.ucv.ve')->firstOrFail()->professor
+        );
+
         /**********************************************************
         **************** Coordinadores de Materia *****************
         ***********************************************************/
