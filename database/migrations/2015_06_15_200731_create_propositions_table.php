@@ -28,6 +28,7 @@ class CreatePropositionsTable extends Migration {
 			$table->json('mode_option_3');
 			$table->string('schedule_1_option_3');
 			$table->string('schedule_2_option_3');
+			$table->string('owner');
 			$table->timestamps();
 		});
 	}
