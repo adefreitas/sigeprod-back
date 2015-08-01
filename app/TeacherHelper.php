@@ -12,13 +12,14 @@ class TeacherHelper extends Model {
 		return $this->belongsToMany('App\User', 'teacher_helpers_users')->withTimestamps();
 	}
 
-	public function setCourse($course_id){
+	public function setCourse($course_id, $contest_id){
 
 		$user = $this->user->first();
 
 		$helper = \DB::table('teacher_helpers_users')
 			->where('active', '=', true)
 			->where('user_id', '=', $user->id)
+			->where('contest_id', '=', $contest_id)
 			->select('id')
 			->first();
 
@@ -34,13 +35,14 @@ class TeacherHelper extends Model {
 
 	}
 
-	public function setCenter($center_id){
+	public function setCenter($center_id, $contest_id){
 
 		$user = $this->user->first();
 
 		$helper = \DB::table('teacher_helpers_users')
 			->where('active', '=', true)
 			->where('user_id', '=', $user->id)
+			->where('contest_id', '=', $contest_id)
 			->select('id')
 			->first();
 

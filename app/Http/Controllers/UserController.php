@@ -206,12 +206,7 @@ class UserController extends Controller {
 		$user->email = $preapproved->email;
 		$user->password = Hash::make($preapproved->password);
 		
-		\DB::table('preapproved_users')
-			->where('personal_id', '=', $request->personal_id)
-			->where('activated', '=', false)
-			->update([
-				"activated" => true
-			]);
+		
 			
 		// $preapproved->activated = true;
 		
@@ -240,7 +235,6 @@ class UserController extends Controller {
 				$foundHelper = TeacherHelper::where('type', '=', $preapproved->type)
 					->where('available', '=', true)
 					->where('reserved', '=', true)
-					->where('reserved_for', '=', $contest->id)
 					->first();
 				
 				$helper_id = \DB::table('teacher_helpers_users')
@@ -270,10 +264,10 @@ class UserController extends Controller {
 					$foundHelper->available = false;
 					
 					foreach($centers as $center_item){
-						$foundHelper->setCenter($center_item->id);
+						$foundHelper->setCenter($center_item->id, $preapproved->contest_id);
 					}
 					foreach($courses as $course_item){
-						$foundHelper->setCourse($course_item->id);
+						$foundHelper->setCourse($course_item->id, $preapproved->contest_id);
 					}
 					
 					$helper->clear();
@@ -285,15 +279,15 @@ class UserController extends Controller {
 					
 				}
 				
-				$helper->user()->attach($user->id);
+				$helper->user()->attach($user->id, ['contest_id'=> $preapproved->contest_id, 'type' => $preapproved->type]);
 				
 				if(count($center) > 0){
 					$center = $center[0]->id;
-					$helper->setCenter($center);
+					$helper->setCenter($center, $preapproved->contest_id);
 				}
 				if(count($course) > 0){
 					$course = $course[0]->id;
-					$helper->setCourse($course);
+					$helper->setCourse($course, $preapproved->contest_id);
 				}
 				
 				$helper->available = false;
@@ -310,15 +304,15 @@ class UserController extends Controller {
 				
 						
 			if($helper){				
-				$helper->user()->attach($user->id);
+				$helper->user()->attach($user->id, ['contest_id'=> $preapproved->contest_id, 'type' => $preapproved->type]);
 				
 				if(count($center) > 0){
 					$center = $center[0]->id;
-					$helper->setCenter($center);
+					$helper->setCenter($center, $preapproved->contest_id);
 				}
 				if(count($course) > 0){
 					$course = $course[0]->id;
-					$helper->setCourse($course);
+					$helper->setCourse($course, $preapproved->contest_id);
 				}
 				
 				$helper->available = false;
@@ -328,6 +322,17 @@ class UserController extends Controller {
 				return response()->json(['error' => 'No hay plazas disponibles para éste tipo de preparador'], 404);
 			}
 		}
+		$thu = \DB::table('preapproved_users')
+			->where('personal_id', '=', $request->personal_id)
+			->where('activated', '=', false)
+			->select('id')
+			->get();
+			
+		\DB::table('preapproved_users')
+			->where('id', '=', $thu[0]->id)
+			->update([
+				"activated" => true
+			]);
 		return response()->json(['success'=>true]);
 		
 	}

@@ -57,6 +57,8 @@ class CreateTeacherHelpersTable extends Migration {
 			$table->increments('id');
 			$table->integer('teacher_helper_id')->unsigned()->index();
 			$table->foreign('teacher_helper_id')->references('id')->on('teacher_helpers')->onDelete('cascade');
+			$table->integer('contest_id')->unsigned()->index();
+			$table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');
 			$table->integer('user_id')->unsigned()->index();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->json('available_schedule')->nullable()->default(null);
@@ -65,6 +67,7 @@ class CreateTeacherHelpersTable extends Migration {
 			//y se retire de una. Ej: Si es preparador 2 en una materia, y prepa 1 en otra, si llegase a retirarse de la
 			//que es tipo dos, se verifica que no sea preparador 2 en alguna otra materia, y se le asigna un ID detalle de
 			//tipo 1. En caso de que sea prepa 2 de otra materia, se queda con su mismo ID detalle
+			$table->enum('type', [1, 2, 3]);
 			$table->timestamps();
 		});
 

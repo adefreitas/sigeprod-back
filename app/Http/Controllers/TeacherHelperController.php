@@ -46,7 +46,9 @@ class TeacherHelperController extends Controller {
 					->orderBy('users.id', 'asc')
 					->select(
 						'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
-						'users.id as user_id', 'teacher_helpers.id as teacher_helper_id', 
+						'users.id as user_id', 'users.local_phone', 'users.cell_phone',
+						'users.state', 'users.municipality', 'users.address', 
+						'teacher_helpers.id as teacher_helper_id', 
 						'courses.name as course_name', 'courses.id as course_id',
 						'centers.name as center_name', 'centers.id as center_id',
 						'teacher_helpers.updated_at', 'teacher_helpers.created_at',
@@ -56,8 +58,12 @@ class TeacherHelperController extends Controller {
 					->get();	
 				
 					foreach($helpers as $helper){
+						$pre = \DB::table('preapproved_users')
+							->where('email', '=', $helper->user_email)
+							->orderBy('updated_at', 'desc')
+							->get();
 						$helper->files = \DB::table('fileentries')
-							->where('fileentries.preapproved_id', '=', $helper->thu_id)
+							->where('fileentries.preapproved_id', '=', $pre[0]->id)
 							->orderBy('updated_at', 'desc')
 							->get();
 					}
