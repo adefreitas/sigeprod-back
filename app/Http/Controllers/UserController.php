@@ -3,10 +3,11 @@
 use \Hash;
 use App\Log;
 use App\User;
-use App\TeacherHelper;
-use App\Contest;
 use App\Course;
 use App\Center;
+use App\Contest;
+use App\Notification;
+use App\TeacherHelper;
 use App\Http\Requests;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
@@ -20,7 +21,7 @@ class UserController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index() //función para enviar el perfil a la vista
 	{
 		try {
 			JWTAuth::parseToken();
@@ -89,7 +90,7 @@ class UserController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update(Request $request, $id)
+	public function update(Request $request, $id) //función para actualizar los datos de perfil
 	{
 		try {
 			JWTAuth::parseToken();
@@ -123,6 +124,17 @@ class UserController extends Controller {
 
 			$user->save();
 
+			$receptor = User::where('email', '=', 'jefe@ciens.ucv.ve')->get()->first();
+
+			$notification = Notification::create([
+				'creator_id' => $user->id,
+				'receptor_id' => $receptor->id,
+				'read' => '0',
+				'redirection' => 'user.dashboard',
+				'message'  => 'ha actualizado su perfil de usuario',
+				'creator_role' => 'professor'
+			]);
+
 			return response()->json(['success' => true]);
 
 		}
@@ -138,7 +150,8 @@ class UserController extends Controller {
 	{
 		//
 	}
-	public function showPreapprovedUser(Request $request, $id){
+	public function showPreapprovedUser(Request $request, $id) //función para enviar a la vista la información de los usuarios preaprobados
+	{
 		
 		$user = \DB::table('preapproved_users')
 			->where('personal_id', '=', $id)
@@ -148,7 +161,8 @@ class UserController extends Controller {
 		return response()->json(['user' => $user]);
 	}
 	
-	public function updatePreapprovedUser(Request $request, $id){
+	public function updatePreapprovedUser(Request $request, $id) //función para actualizar el estado de los usuarios preaprobados
+	{
 		$user = \DB::table('preapproved_users')
 			->where('personal_id', '=', $id)
 			->where('id', '!=', $request->id)
@@ -175,7 +189,7 @@ class UserController extends Controller {
 		}
 	}
 	
-	public function createPreapprovedUser(Request $request, $id){
+	public function createPreapprovedUser(Request $request, $id){ //función para registrar o actualizar a los usuarios preaprobados
 		$exists = \DB::table('preapproved_users')
 			->where('personal_id', '=', $request->personal_id)
 			->where('activated', '=', false)

@@ -527,40 +527,44 @@ class ContestController extends Controller {
 			if( $user->is('departmenthead') ){
 
 				$contest->status = $request->status;
+
+				if ($request->status != 3) {
+					
+					for($i = 0; $i < $contest->teacher_helpers_1; $i++){
+						
+						$helper = TeacherHelper::where('type', '=', 1)
+							->where('available', '=', true)
+							->where('reserved', '=', false)
+							->first();
+									
+						$helper->reserved = true;
+						$helper->reserved_for = $contest->id;
+						$helper->save();
+					}
+					for($i = 0; $i < $contest->teacher_helpers_2; $i++){
+						
+						$helper = TeacherHelper::where('type', '=', 2)
+							->where('available', '=', true)
+							->where('reserved', '=', false)
+							->first();
+									
+						$helper->reserved = true;
+						$helper->reserved_for = $contest->id;
+						$helper->save();
+					}
+					for($i = 0; $i < $contest->teacher_assistants; $i++){
+						
+						$helper = TeacherHelper::where('type', '=', 3)
+							->where('available', '=', true)
+							->where('reserved', '=', false)
+							->first();
+									
+						$helper->reserved = true;
+						$helper->reserved_for = $contest->id;
+						$helper->save();
+					}
+				}
 				
-				for($i = 0; $i < $contest->teacher_helpers_1; $i++){
-					
-					$helper = TeacherHelper::where('type', '=', 1)
-						->where('available', '=', true)
-						->where('reserved', '=', false)
-						->first();
-								
-					$helper->reserved = true;
-					$helper->reserved_for = $contest->id;
-					$helper->save();
-				}
-				for($i = 0; $i < $contest->teacher_helpers_2; $i++){
-					
-					$helper = TeacherHelper::where('type', '=', 2)
-						->where('available', '=', true)
-						->where('reserved', '=', false)
-						->first();
-								
-					$helper->reserved = true;
-					$helper->reserved_for = $contest->id;
-					$helper->save();
-				}
-				for($i = 0; $i < $contest->teacher_assistants; $i++){
-					
-					$helper = TeacherHelper::where('type', '=', 3)
-						->where('available', '=', true)
-						->where('reserved', '=', false)
-						->first();
-								
-					$helper->reserved = true;
-					$helper->reserved_for = $contest->id;
-					$helper->save();
-				}
 
 			}
 
