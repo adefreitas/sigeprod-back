@@ -90,6 +90,8 @@ class PropositionController extends Controller {
 		$proposition->schedule_1_option_3 = $request->schedule3[0];
 		$proposition->schedule_2_option_3 = $request->schedule3[1];
 
+		$proposition->owner = 'centerCoordinator';
+
 		$proposition->save();
 
 		Log::create([
