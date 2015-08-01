@@ -17,6 +17,7 @@ class CreateCoursesTable extends Migration {
             $table->increments('id');
             $table->string('name');
             $table->integer('credits');
+            $table->string('type');
             $table->integer('semester');
             $table->integer('center_id')->nullable()->references('id')->on('centers')->onDelete('cascade');
             $table->boolean('active');
