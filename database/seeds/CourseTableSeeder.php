@@ -30,6 +30,7 @@ class CourseTableSeeder extends Seeder {
                 'id' => '6302',
                 'name' => 'Sistemas de Información',
                 'credits' => '5',
+                'type' => 'Obligatoria',
                 'semester' => '5',
                 'active' => true
             ])
@@ -41,6 +42,7 @@ class CourseTableSeeder extends Seeder {
                 'id' => '6003',
                 'name' => 'Comunicación de Datos',
                 'credits' => '6',
+                'type' => 'Obligatoria',
                 'semester' => '5',
                 'active' => true
             ])
@@ -52,6 +54,7 @@ class CourseTableSeeder extends Seeder {
                 'id' => '6303',
                 'name' => 'Bases de Datos',
                 'credits' => '5',
+                'type' => 'Obligatoria',
                 'semester' => '4',
                 'active' => true
             ])
@@ -63,6 +66,7 @@ class CourseTableSeeder extends Seeder {
                 'id' => '6211',
                 'name' => 'Interacción Humano-Computador',
                 'credits' => '5',
+                'type' => 'Electiva-Optativa',
                 'semester' => '6',
                 'active' => true
             ])
@@ -73,6 +77,7 @@ class CourseTableSeeder extends Seeder {
             Course::create([
                 'id' => '6109',
                 'name' => 'Cálculo Científico',
+                'type' => 'Obligatoria',
                 'credits' => '6',
                 'semester' => '5',
                 'active' => true
@@ -84,6 +89,7 @@ class CourseTableSeeder extends Seeder {
             Course::create([
                 'id' => '6106',
                 'name' => 'Matemáticas Discretas I',
+                'type' => 'Obligatoria',
                 'credits' => '4',
                 'semester' => '1',
                 'active' => true
@@ -95,6 +101,7 @@ class CourseTableSeeder extends Seeder {
             Course::create([
                 'id' => '6201',
                 'name' => 'Algoritmos y Programación',
+                'type' => 'Obligatoria',
                 'credits' => '6',
                 'semester' => '1',
                 'active' => true
@@ -106,6 +113,7 @@ class CourseTableSeeder extends Seeder {
             Course::create([
                 'id' => '6301',
                 'name' => 'Introducción a la Informática',
+                'type' => 'Obligatoria',
                 'credits' => '4',
                 'semester' => '1',
                 'active' => true
@@ -117,6 +125,7 @@ class CourseTableSeeder extends Seeder {
             Course::create([
                 'id' => '6202',
                 'name' => 'Algoritmos y Estructuras de Datos',
+                'type' => 'Obligatoria',
                 'credits' => '5',
                 'semester' => '2',
                 'active' => true
@@ -167,6 +176,11 @@ class CourseTableSeeder extends Seeder {
         Center::find(77)
           ->centerCoordinator()->attach(
             User::where('email', '=', 'cc77@ciens.ucv.ve')->firstOrFail()->professor
+        );
+
+        Center::find(88)
+          ->centerCoordinator()->attach(
+            User::where('email', '=', 'cc88@ciens.ucv.ve')->firstOrFail()->professor
         );
 
         /**********************************************************

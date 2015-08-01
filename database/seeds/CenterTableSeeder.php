@@ -58,6 +58,11 @@ class CenterTableSeeder extends Seeder {
             'active' => true
         ]);
 
+        Center::create([
+            'id' => '88',
+            'name' => 'CENEAC',
+            'active' => true
+        ]);
     }
 
 }

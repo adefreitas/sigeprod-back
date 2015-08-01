@@ -100,6 +100,17 @@ class ProfessorController extends Controller {
 		//
 	}
 
+	public function showWithPropositions()
+	{
+		$professors = Professor::where('proposition_sent', true)->get();
+
+		return response()->json([
+
+				"professors" => $professors
+
+			]);
+	}
+
 	public function courseCoordinator($id){
 
 		try {
