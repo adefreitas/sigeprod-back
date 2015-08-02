@@ -67,7 +67,7 @@ class TeacherHelper extends Model {
 			->get();
 
 		$helper_ids_array = array();
-		
+
 		foreach($helper_ids as $helper_id){
 			array_push($helper_ids_array, $helper_id->id);
 		}
@@ -85,7 +85,7 @@ class TeacherHelper extends Model {
 		foreach($courses as $course){
 			array_push($courses_id, $course->id);
 		}
-		
+
 		$courses = \App\Course::whereIn('id', $courses_id)->get();
 
 		return $courses;
@@ -98,22 +98,22 @@ class TeacherHelper extends Model {
 			->where('active', '=', true)
 			->select('id')
 			->get();
-		
+
 		$helper_ids_array = array();
-		
+
 		foreach($helper_ids as $helper_id){
 			array_push($helper_ids_array, $helper_id->id);
 		}
-				
+
 		// return $helper_ids_array;
-		
+
 		$centers = \DB::table('centers_teacher_helpers')
 			->whereIn('helper_id', $helper_ids_array)
 			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id')
 			->groupBy('centers.id')
 			->select('centers.id')
 			->get();
-		
+
 		$centers_id = array();
 
 		foreach($centers as $center){
@@ -125,7 +125,53 @@ class TeacherHelper extends Model {
 
 		return $centers;
 	}
-	
+
+	public function removeCourse($course_id, $contest_id){
+
+		$user = $this->user->first();
+		// \Log::info($user);
+		// \Log::info($contest_id);
+		$helper = \DB::table('teacher_helpers_users')
+			->where('active', '=', true)
+			->where('user_id', '=', $user->id)
+			->where('contest_id', '=', $contest_id)
+			->first();
+		// \Log::info($helper);
+
+		$result = \DB::table('courses_teacher_helpers')
+			->where('course_id', '=', $course_id)
+			->where('helper_id', '=', $helper->id)
+			->where('active', '=', true)
+			->update([
+					'active' => false
+			]);
+
+		return $result;
+
+	}
+	public function removeCenter($center_id, $contest_id){
+
+		$user = $this->user->first();
+
+		$helper = \DB::table('teacher_helpers_users')
+			->where('active', '=', true)
+			->where('user_id', '=', $user->id)
+			->where('contest_id', '=', $contest_id)
+			->select('id')
+			->first();
+
+		$result = \DB::table('centers_teacher_helpers')
+			->where('center_id', '=', $center_id)
+			->where('helper_id', '=', $helper->id)
+			->where('active', '=', true)
+			->update([
+					'active' => false
+			]);
+
+		return $result;
+
+	}
+
 	public function getFiles(){
 		$user_id = \DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)
@@ -133,49 +179,54 @@ class TeacherHelper extends Model {
 			->select('user_id')
 			->first()
 			->user_id;
-			
+
 		$preapproved_id =  \DB::table('preapproved_users')
 			->where('personal_id', '=', $user_id)
 			->where('activated', '=', true)
 			->orderBy('updated_at', 'desc')
 			->first()
 			->id;
-		
+
 		return Fileentry::where('preapproved_id','=', $preapproved_id)
 			->get();
-			
+
 	}
-	
+
 	public function clear(){
 		$this->reserved_for = null;
 		$this->reserved = false;
 		$this->available = true;
-		$helper_id = \DB::table('teacher_helpers_users')
+
+		$helpers = \DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)
 			->where('active', '=', true)
-			->select('id')
-			->first();
+			->get();
+
+		foreach($helpers as $helper){
+			\DB::table('courses_teacher_helpers')
+				->where('helper_id', '=', $helper->id)
+				->where('active', '=', true)
+				->update([
+					'active' => false
+			]);
+			\DB::table('centers_teacher_helpers')
+				->where('helper_id', '=', $helper->id)
+				->where('active', '=', true)
+				->update([
+					'active' => false
+			]);
+		}
+
+		$user = $this->user[0];
+		$this->user()->detach($user->id);
 		
 		\DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)
 			->where('active', '=', true)
 			->update([
 				"active" => false
-			]);
+		]);
 
-		\DB::table('centers_teacher_helpers')
-			->where('helper_id', '=', $helper_id->id)
-			->where('active', '=', true)
-			->update([
-				"active" => false
-			]);
-
-		\DB::table('courses_teacher_helpers')
-			->where('helper_id', '=', $helper_id->id)
-			->where('active', '=', true)
-			->update([
-				"active" => false
-			]);
 	}
 
 }
