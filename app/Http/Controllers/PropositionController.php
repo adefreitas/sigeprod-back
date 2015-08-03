@@ -23,9 +23,15 @@ class PropositionController extends Controller {
 	{
 		$propositions = Proposition::get();
 		for($i = 0; $i < count($propositions); ++$i) {
+			$propositions[$i]->course_option_1 = json_decode($propositions[$i]->course_option_1);
     		$propositions[$i]->mode_option_1 = json_decode($propositions[$i]->mode_option_1);
+    		$propositions[$i]->schedule_option_1 = json_decode($propositions[$i]->schedule_option_1);
+    		$propositions[$i]->course_option_2 = json_decode($propositions[$i]->course_option_2);
     		$propositions[$i]->mode_option_2 = json_decode($propositions[$i]->mode_option_2);
+    		$propositions[$i]->schedule_option_2 = json_decode($propositions[$i]->schedule_option_2);
+    		$propositions[$i]->course_option_3 = json_decode($propositions[$i]->course_option_3);
 			$propositions[$i]->mode_option_3 = json_decode($propositions[$i]->mode_option_3);
+			$propositions[$i]->schedule_option_3 = json_decode($propositions[$i]->schedule_option_3);
 		}
 
 		return response()->json([
@@ -69,26 +75,23 @@ class PropositionController extends Controller {
 
 		$professor_id = $proposition->professor_id;
 
-		$proposition->course_option_1 = $request->course1;
+		$proposition->course_option_1 = json_encode($request->course1);
 
 		$proposition->mode_option_1 = json_encode($request->modeChecked1);
 
-		$proposition->schedule_1_option_1 = $request->schedule1[0];
-		$proposition->schedule_2_option_1 = $request->schedule1[1];
+		$proposition->schedule_option_1 = json_encode($request->schedule1);
 
-		$proposition->course_option_2 = $request->course2;
+		$proposition->course_option_2 = json_encode($request->course2);
 
 		$proposition->mode_option_2 = json_encode($request->modeChecked2);
 
-		$proposition->schedule_1_option_2 = $request->schedule2[0];
-		$proposition->schedule_2_option_2 = $request->schedule2[1];
+		$proposition->schedule_option_2 = json_encode($request->schedule2);
 
-		$proposition->course_option_3 = $request->course3;
+		$proposition->course_option_3 = json_encode($request->course3);
 
 		$proposition->mode_option_3 = json_encode($request->modeChecked3);
 
-		$proposition->schedule_1_option_3 = $request->schedule3[0];
-		$proposition->schedule_2_option_3 = $request->schedule3[1];
+		$proposition->schedule_option_3 = json_encode($request->schedule3);
 
 		$proposition->owner = 'centerCoordinator';
 
@@ -136,9 +139,15 @@ class PropositionController extends Controller {
 	{
 		$proposition = Proposition::where('professor_id', $id)->get()->first();
 
+		$proposition->course_option_1 = json_decode($proposition->course_option_1);
 		$proposition->mode_option_1 = json_decode($proposition->mode_option_1);
+		$proposition->schedule_option_1 = json_decode($proposition->schedule_option_1);
+		$proposition->course_option_2 = json_decode($proposition->course_option_2);
 		$proposition->mode_option_2 = json_decode($proposition->mode_option_2);
+		$proposition->schedule_option_2 = json_decode($proposition->schedule_option_2);
+		$proposition->course_option_3 = json_decode($proposition->course_option_3);
 		$proposition->mode_option_3 = json_decode($proposition->mode_option_3);
+		$proposition->schedule_option_3 = json_decode($proposition->schedule_option_3);
 
 		return response()->json([
 
