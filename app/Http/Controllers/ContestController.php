@@ -529,42 +529,42 @@ class ContestController extends Controller {
 				$contest->status = $request->status;
 
 				if ($request->status != 3) {
-					
+
 					for($i = 0; $i < $contest->teacher_helpers_1; $i++){
-						
+
 						$helper = TeacherHelper::where('type', '=', 1)
 							->where('available', '=', true)
 							->where('reserved', '=', false)
 							->first();
-									
+
 						$helper->reserved = true;
 						$helper->reserved_for = $contest->id;
 						$helper->save();
 					}
 					for($i = 0; $i < $contest->teacher_helpers_2; $i++){
-						
+
 						$helper = TeacherHelper::where('type', '=', 2)
 							->where('available', '=', true)
 							->where('reserved', '=', false)
 							->first();
-									
+
 						$helper->reserved = true;
 						$helper->reserved_for = $contest->id;
 						$helper->save();
 					}
 					for($i = 0; $i < $contest->teacher_assistants; $i++){
-						
+
 						$helper = TeacherHelper::where('type', '=', 3)
 							->where('available', '=', true)
 							->where('reserved', '=', false)
 							->first();
-									
+
 						$helper->reserved = true;
 						$helper->reserved_for = $contest->id;
 						$helper->save();
 					}
 				}
-				
+
 
 			}
 
@@ -576,7 +576,7 @@ class ContestController extends Controller {
 				if($request->status == 4){
 					if($request->results){
 						$results = $request->results;
-	
+
 						foreach($results as $item){
 
 							\DB::table('preapproved_users')

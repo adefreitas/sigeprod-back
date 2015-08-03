@@ -30,7 +30,7 @@ class TeacherHelperController extends Controller {
 
 		$helpers = [];
 
-		if($user->is('departmenthead')){
+		if($user->is('departmenthead') || $user->is('departmentsecretary')){
 
 			$helpers = \DB::table('teacher_helpers_users')
 			->join('teacher_helpers', 'teacher_helpers.id', '=', 'teacher_helpers_users.teacher_helper_id')
