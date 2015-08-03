@@ -273,7 +273,7 @@ class ContestController extends Controller {
 	    /*
 	     *  Si el usuario es jefe de departamento se envian todas las propuestas existentes
 	     */
-	    else if($user->is('departmenthead')){
+	    else if($user->is('departmenthead') || $user->is('departmentsecretary') || $user->is('directionsecretary')){
 
 	    	$helper_1 = TeacherHelper::where('type', '=', 1)
 	    								->where('reserved', '=', false)

@@ -222,7 +222,7 @@ class CourseTableSeeder extends Seeder {
                 'id' => '6211',
                 'name' => 'Interacción Humano-Computador',
                 'credits' => '5',
-                'type' => 'Electiva-Optativa',
+                'type' => 'Electiva',
                 'semester' => '6',
                 'active' => true
             ])
@@ -234,7 +234,7 @@ class CourseTableSeeder extends Seeder {
                 'id' => '6221',
                 'name' => 'Aplicaciones con la Tecnología Internet',
                 'credits' => '5',
-                'type' => 'Electiva-Optativa',
+                'type' => 'Electiva',
                 'semester' => '6',
                 'active' => true
             ])
@@ -246,7 +246,7 @@ class CourseTableSeeder extends Seeder {
                 'id' => '6012',
                 'name' => 'Redes de Computadoras',
                 'credits' => '6',
-                'type' => 'Electiva-Optativa',
+                'type' => 'Electiva',
                 'semester' => '6',
                 'active' => true
             ])
@@ -258,7 +258,7 @@ class CourseTableSeeder extends Seeder {
                 'id' => '6311',
                 'name' => 'Administración de Bases de Datos',
                 'credits' => '5',
-                'type' => 'Electiva-Optativa',
+                'type' => 'Electiva',
                 'semester' => '6',
                 'active' => true
             ])
