@@ -112,6 +112,17 @@ class TeacherHelperController extends Controller {
 			)
 			->get();
 
+			foreach($helpers as $helper){
+				$pre = \DB::table('preapproved_users')
+				->where('email', '=', $helper->user_email)
+				->orderBy('updated_at', 'desc')
+				->get();
+				$helper->files = \DB::table('fileentries')
+				->where('fileentries.preapproved_id', '=', $pre[0]->id)
+				->orderBy('updated_at', 'desc')
+				->get();
+			}
+
 		}
 
 		return response()->json([
