@@ -307,13 +307,17 @@ class UserController extends Controller {
 					$foundHelper->save();
 
 					if(count($center) > 0){
-						$center = $center[0]->id;
-						$foundHelper->setCenter($center, $preapproved->contest_id);
+						foreach($center as $ce){
+							$foundHelper->setCenter($ce->id, $ce->contest_id);
+						}
 					}
+
 					if(count($course) > 0){
-						$course = $course[0]->id;
-						$foundHelper->setCourse($course, $preapproved->contest_id);
+						foreach($course as $co){
+							$foundHelper->setCourse($co->id, $co->contest_id);
+						}
 					}
+
 					$foundHelper->save();
 
 				}

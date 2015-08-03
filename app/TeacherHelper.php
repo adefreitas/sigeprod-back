@@ -20,7 +20,7 @@ class TeacherHelper extends Model {
 		$helper = \DB::table('teacher_helpers_users')
 			->where('active', '=', true)
 			->where('user_id', '=', $user->id)
-			->where('contest_id', '=', $contest_id)
+			// ->where('contest_id', '=', $contest_id)
 			->select('id')
 			->first();
 
@@ -44,8 +44,8 @@ class TeacherHelper extends Model {
 		\Log::info($user);
 		$helper = \DB::table('teacher_helpers_users')
 			->where('active', '=', true)
-			->where('user_id', '=', $user->id)
-			->where('contest_id', '=', $contest_id)
+			->where('teacher_helper_id', '=', $this->id)
+			// ->where('contest_id', '=', $contest_id)
 			->select('id')
 			->first();
 
@@ -66,30 +66,31 @@ class TeacherHelper extends Model {
 		$helper_ids = \DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)
 			->where('active', '=', true)
-			->select('id')
 			->get();
 
 		$helper_ids_array = array();
-
+		$contests_ids = array();
 		foreach($helper_ids as $helper_id){
 			array_push($helper_ids_array, $helper_id->id);
+			array_push($contests_ids, $helper_id->contest_id);
 		}
 
 		$courses = \DB::table('courses_teacher_helpers')
 			->whereIn('helper_id', $helper_ids_array)
+			->join('teacher_helpers_users', 'teacher_helpers_users.id', '=', 'courses_teacher_helpers.helper_id')
 			->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id')
-			->groupBy('courses.id')
-			->select('courses.id')
+			->groupBy('courses.id', 'teacher_helpers_users.contest_id')
+			->select('courses.id', 'teacher_helpers_users.contest_id')
 			->get();
 
 		// return $courses;
-		$courses_id = array();
-
-		foreach($courses as $course){
-			array_push($courses_id, $course->id);
-		}
-
-		$courses = \App\Course::whereIn('id', $courses_id)->get();
+		// $courses_id = array();
+		//
+		// foreach($courses as $course){
+		// 	array_push($courses_id, $course->id);
+		// }
+		//
+		// $courses = \App\Course::whereIn('id', $courses_id)->get();
 
 		return $courses;
 
@@ -99,31 +100,32 @@ class TeacherHelper extends Model {
 		$helper_ids = \DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)
 			->where('active', '=', true)
-			->select('id')
+			// ->select('id')
 			->get();
 
 		$helper_ids_array = array();
-
+		$contests_ids = array();
 		foreach($helper_ids as $helper_id){
 			array_push($helper_ids_array, $helper_id->id);
+			array_push($contests_ids, $helper_id->contest_id);
 		}
-
 		// return $helper_ids_array;
 
 		$centers = \DB::table('centers_teacher_helpers')
 			->whereIn('helper_id', $helper_ids_array)
+			->join('teacher_helpers_users', 'teacher_helpers_users.id', '=', 'centers_teacher_helpers.helper_id')
 			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id')
-			->groupBy('centers.id')
-			->select('centers.id')
+			->groupBy('centers.id', 'teacher_helpers_users.contest_id')
+			->select('centers.id', 'teacher_helpers_users.contest_id')
 			->get();
 
-		$centers_id = array();
+		// $centers_id = array();
+		//
+		// foreach($centers as $center){
+		// 	array_push($centers_id, $center->id);
+		// }
 
-		foreach($centers as $center){
-			array_push($centers_id, $center->id);
-		}
-
-		$centers = \App\Center::whereIn('id', $centers_id)->get();
+		// $centers = \App\Center::whereIn('id', $centers_id)->get();
 		// $centers = \App\Center::get();
 
 		return $centers;
@@ -219,7 +221,7 @@ class TeacherHelper extends Model {
 			]);
 		}
 
-		$this->user()->detach();
+		// $this->user()->detach();
 
 		\DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)
