@@ -152,15 +152,15 @@ class UserController extends Controller {
 	}
 	public function showPreapprovedUser(Request $request, $id) //función para enviar a la vista la información de los usuarios preaprobados
 	{
-		
+
 		$user = \DB::table('preapproved_users')
 			->where('personal_id', '=', $id)
 			->where('activated', '=', false)
 			->first();
-			
+
 		return response()->json(['user' => $user]);
 	}
-	
+
 	public function updatePreapprovedUser(Request $request, $id) //función para actualizar el estado de los usuarios preaprobados
 	{
 		$user = \DB::table('preapproved_users')
@@ -185,26 +185,26 @@ class UserController extends Controller {
 				'lastname' => $request->lastname,
 				'email' => $request->email
 			]);
-			return response()->json(['success' => true]);	
+			return response()->json(['success' => true]);
 		}
 	}
-	
+
 	public function createPreapprovedUser(Request $request, $id){ //función para registrar o actualizar a los usuarios preaprobados
 		$exists = \DB::table('preapproved_users')
 			->where('personal_id', '=', $request->personal_id)
 			->where('activated', '=', false)
 			->orderBy('created_at', 'desc')
 			->first();
-			
+
 		$preapproved = $request;
-		
+
 		if($preapproved == null){
 			return response()->json(['error' => 'No existe un usuario preaprobado con esa cédula de identidad'], 404);
 		}
-		
+
 		$user = User::find($id);
 		$newUser = $user == null;
-		
+
 		if($newUser){
 			$user = User::create([
 				'name' => $preapproved->name,
@@ -214,52 +214,52 @@ class UserController extends Controller {
 				'id' => $preapproved->personal_id
 			]);
 		}
-			
+
 		$user->name = $preapproved->name;
 		$user->lastname = $preapproved->lastname;
 		$user->email = $preapproved->email;
 		$user->password = Hash::make($preapproved->password);
-		
-		
-			
+
+
+
 		// $preapproved->activated = true;
-		
+
 		// $preapproved->save();
-		
+
 		$user->save();
-		
+
 		$contest = Contest::find($preapproved->contest_id);
-		
+
 		$center = $contest->center;
 		$course = $contest->course;
-		
+
 		$isHelper = false;
-		
+
 		//Revisando si el alumno ya es preparador
-		
+
 		if(!$newUser){
 			$helper = \DB::table('teacher_helpers_users')
 				->where('user_id', '=', $user->id)
 				->where('active', '=', true)
 				->first();
-				
+
 			$isHelper = !($helper == null);
-			
+
 			if($isHelper){
 				$foundHelper = TeacherHelper::where('type', '=', $preapproved->type)
 					->where('available', '=', true)
 					->where('reserved', '=', true)
 					->first();
-				
+
 				$helper_id = \DB::table('teacher_helpers_users')
 					->where('active', '=', true)
 					->where('user_id', '=', $user->id)
 					->first()
 					->teacher_helper_id;
-				
+
 				$helper = TeacherHelper::find($helper_id);
 				// Si la plaza que ya tenia asignada es mayor, se queda con esa
-				if($foundHelper->type >= $helper->type){
+				if($foundHelper->type < $helper->type){
 					TeacherHelper::where('type', '=', $preapproved->type)
 						->where('available', '=', true)
 						->where('reserved', '=', true)
@@ -269,57 +269,67 @@ class UserController extends Controller {
 							'reserved_for' => null,
 							'available' => true
 					]);
+					$helper->user()->attach($user->id, ['contest_id'=> $preapproved->contest_id, 'type' => $preapproved->type]);
+
+					if(count($center) > 0){
+						$center = $center[0]->id;
+						$helper->setCenter($center, $preapproved->contest_id);
+					}
+					if(count($course) > 0){
+						$course = $course[0]->id;
+						$helper->setCourse($course, $preapproved->contest_id);
+					}
+
+					$helper->available = false;
+					$helper->save();
+
 				}
 				//Sino, lo cambio
 				else{
 					$centers = $helper->centers();
 					$courses = $helper->courses();
-					
+
 					$foundHelper->available = false;
-					
+
+					$foundHelper->user()->attach($id, ['contest_id'=> $preapproved->contest_id, 'type' => $preapproved->type]);
+					$foundHelper->save();
+
 					foreach($centers as $center_item){
 						$foundHelper->setCenter($center_item->id, $preapproved->contest_id);
 					}
 					foreach($courses as $course_item){
 						$foundHelper->setCourse($course_item->id, $preapproved->contest_id);
 					}
-					
+
 					$helper->clear();
 					$helper->save();
-					
+
 					$foundHelper->save();
-					
-					$helper = $foundHelper;
-					
+
+					if(count($center) > 0){
+						$center = $center[0]->id;
+						$foundHelper->setCenter($center, $preapproved->contest_id);
+					}
+					if(count($course) > 0){
+						$course = $course[0]->id;
+						$foundHelper->setCourse($course, $preapproved->contest_id);
+					}
+					$foundHelper->save();
+
 				}
-				
-				$helper->user()->attach($user->id, ['contest_id'=> $preapproved->contest_id, 'type' => $preapproved->type]);
-				
-				if(count($center) > 0){
-					$center = $center[0]->id;
-					$helper->setCenter($center, $preapproved->contest_id);
-				}
-				if(count($course) > 0){
-					$course = $course[0]->id;
-					$helper->setCourse($course, $preapproved->contest_id);
-				}
-				
-				$helper->available = false;
-				$helper->save();
-				
 			}
 		}
-		
+
 		if($newUser || (!$newUser && !$isHelper)){
 			$helper = TeacherHelper::where('type', '=', $preapproved->type)
 				->where('available', '=', true)
 				->where('reserved', '=', true)
 				->first();
-				
-						
-			if($helper){				
+
+
+			if($helper){
 				$helper->user()->attach($user->id, ['contest_id'=> $preapproved->contest_id, 'type' => $preapproved->type]);
-				
+
 				if(count($center) > 0){
 					$center = $center[0]->id;
 					$helper->setCenter($center, $preapproved->contest_id);
@@ -328,7 +338,7 @@ class UserController extends Controller {
 					$course = $course[0]->id;
 					$helper->setCourse($course, $preapproved->contest_id);
 				}
-				
+
 				$helper->available = false;
 				$helper->save();
 			}
@@ -341,14 +351,14 @@ class UserController extends Controller {
 			->where('activated', '=', false)
 			->select('id')
 			->get();
-			
+
 		\DB::table('preapproved_users')
 			->where('id', '=', $thu[0]->id)
 			->update([
 				"activated" => true
 			]);
 		return response()->json(['success'=>true]);
-		
+
 	}
 
 }

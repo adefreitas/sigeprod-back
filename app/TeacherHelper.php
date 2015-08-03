@@ -15,7 +15,8 @@ class TeacherHelper extends Model {
 	public function setCourse($course_id, $contest_id){
 
 		$user = $this->user->first();
-
+		\Log::info($this);
+		\Log::info($user);
 		$helper = \DB::table('teacher_helpers_users')
 			->where('active', '=', true)
 			->where('user_id', '=', $user->id)
@@ -38,7 +39,9 @@ class TeacherHelper extends Model {
 	public function setCenter($center_id, $contest_id){
 
 		$user = $this->user->first();
-
+		\Log::info($this);
+		\Log::info($this->user);
+		\Log::info($user);
 		$helper = \DB::table('teacher_helpers_users')
 			->where('active', '=', true)
 			->where('user_id', '=', $user->id)
@@ -157,7 +160,6 @@ class TeacherHelper extends Model {
 			->where('active', '=', true)
 			->where('user_id', '=', $user->id)
 			->where('contest_id', '=', $contest_id)
-			->select('id')
 			->first();
 
 		$result = \DB::table('centers_teacher_helpers')
@@ -217,9 +219,8 @@ class TeacherHelper extends Model {
 			]);
 		}
 
-		$user = $this->user[0];
-		$this->user()->detach($user->id);
-		
+		$this->user()->detach();
+
 		\DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)
 			->where('active', '=', true)

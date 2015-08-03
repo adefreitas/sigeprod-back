@@ -51,7 +51,8 @@ class TeacherHelperController extends Controller {
 			'centers.name as center_name', 'centers.id as center_id',
 			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
 			'teacher_helpers_users.id as thu_id',
-			'teacher_helpers.type as type', 'teacher_helpers_users.active'
+			'teacher_helpers.type as type', 'courses_teacher_helpers.active as course_active', 'centers_teacher_helpers.active as center_active',
+			'teacher_helpers_users.contest_id'
 			)
 			->get();
 
@@ -92,6 +93,7 @@ class TeacherHelperController extends Controller {
 			->join('centers_teacher_helpers', 'centers_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id', 'left outer')
 			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id', 'left outer')
 			// ->where('teacher_helpers_users.active', '=', true)
+			->orderBy('teacher_helpers_users.active', 'desc')
 			->orderBy('teacher_helpers.type', 'asc')
 			->orderBy('users.id', 'asc')
 			->whereIn('courses_teacher_helpers.course_id', $courses_ids)
@@ -105,7 +107,7 @@ class TeacherHelperController extends Controller {
 			'centers.name as center_name', 'centers.id as center_id',
 			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
 			'teacher_helpers_users.id as thu_id',
-			'teacher_helpers.type as type', 'teacher_helpers_users.active',
+			'teacher_helpers.type as type', 'courses_teacher_helpers.active as course_active', 'centers_teacher_helpers.active as center_active',
 			'teacher_helpers_users.contest_id'
 			)
 			->get();
@@ -173,7 +175,7 @@ class TeacherHelperController extends Controller {
 			$current = \DB::table('teacher_helpers_users')
 				->where('id', '=', $id)
 				->where('contest_id', '=', $request->contest_id)
-				->where('active', '=', true)
+				// ->where('active', '=', true)
 				->first();
 
 			//Si se esta ratificando el preparador para ese concurso, se modifica la fecha de actualizacion
@@ -194,21 +196,21 @@ class TeacherHelperController extends Controller {
 			//Sino
 			else if($request->retiring)
 			{
-
-				$oldtype = $current->type;
-				$oldhelper_id = $current->teacher_helper_id;
+				\Log::info('current->type'.$current->type);
+				$current_type = $current->type;
+				$currenthelper_id = $current->teacher_helper_id;
 
 
 				$others = \DB::table('teacher_helpers_users')
-					->where('teacher_helper_id', '=', $oldhelper_id)
+					->where('teacher_helper_id', '=', $currenthelper_id)
 					->where('active', '=', true)
 					->where('id', '!=', $id)
 					->get();
 
 				$typeIsDifferent = false;
-				$newtype = $oldtype;
+				$newtype = $current_type;
 
-				$currenthelper = TeacherHelper::find($oldhelper_id);
+				$currenthelper = TeacherHelper::find($currenthelper_id);
 
 				if($request->center_id){
 						$currenthelper->removeCenter($request->center_id, $request->contest_id);
@@ -217,8 +219,14 @@ class TeacherHelperController extends Controller {
 						$currenthelper->removeCourse($request->course_id, $request->contest_id);
 				}
 
-
 				$currenthelper->save();
+
+				foreach($others as $other){
+					if($other->type > $current_type){
+						$typeIsDifferent = true;
+						$newtype = $other->type;
+					}
+				}
 
 				if(!$typeIsDifferent && $others == null){
 
@@ -235,14 +243,21 @@ class TeacherHelperController extends Controller {
 					return response()->json(['success', true]);
 
 				}
-				if(!$typeIsDifferent && $others != null){
+				else if(!$typeIsDifferent && $others != null){
 
-					foreach($others as $other){
-						if($other->type != $oldtype){
-							$typeIsDifferent = true;
-							$newtype = $other->type;
-						}
-					}
+					\DB::table('teacher_helpers_users')
+						->where('id', '=', $id)
+						->where('contest_id', '=', $request->contest_id)
+						->where('active', '=', true)
+						->update([
+							'active' => false
+					]);
+
+					return response()->json(['success', true]);
+				}
+
+				else if($typeIsDifferent && $others != null){
+
 
 					$old_centers = $currenthelper->centers();
 					$old_courses = $currenthelper->courses();
@@ -264,20 +279,30 @@ class TeacherHelperController extends Controller {
 
 					if($newhelper == null){
 
-						\DB::table('teacher_helpers_users')
-							->where('id', '=', $id)
-							->where('contest_id', '=', $request->contest_id)
-							->where('active', '=', true)
-							->update([
-								'active' => false
-						]);
+						// \DB::table('teacher_helpers_users')
+						// 	->where('id', '=', $id)
+						// 	->where('contest_id', '=', $request->contest_id)
+						// 	->where('active', '=', true)
+						// 	->update([
+						// 		'active' => false
+						// ]);
 
 						//Se queda con su ID de preparador anterior por no haber plazas disponibles del nuevo tipo
 						return response()->json(['success', true]);
 					}
 					else{
 						//Se le asigna un ID de preparador nuevo que cumpla con el nuevo tipo
-						$helper_user = $currenthelper->user;
+						$helper_users = $currenthelper->user;
+						$current_user = null;
+						foreach($helper_users as $helper_user){
+							$aux = \DB::table('teacher_helpers_users')
+								->where('active', '=', true)
+								->where('user_id', '=', $helper_user->id)
+								->first();
+								if($aux != null){
+									$current_user = $aux;
+								}
+						}
 
 						TeacherHelper::where('available', '=', true)
 							->where('reserved', '=', false)
@@ -285,8 +310,8 @@ class TeacherHelperController extends Controller {
 							->update([
 								'available' => false
 						]);
-
-						$newhelper->user()->attach($helper_user[0]->id, ['contest_id'=> $request->contest_id, 'type' => $newtype]);
+						\Log::info('current_user->id'.$current_user->id);
+						$newhelper->user()->attach($current_user->id, ['contest_id'=> $request->contest_id, 'type' => $newtype]);
 
 
 
@@ -310,6 +335,7 @@ class TeacherHelperController extends Controller {
 					return response()->json(['success' => true]);
 				}
 			}
+			return response()->json(['success', true]);
 		}
 
 			/**
