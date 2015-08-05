@@ -93,7 +93,7 @@ class PropositionController extends Controller {
 
 		$proposition->schedule_option_3 = json_encode($request->schedule3);
 
-		$proposition->owner = 'centerCoordinator';
+		$proposition->viewer = $request->viewer;
 
 		$proposition->save();
 
@@ -113,14 +113,27 @@ class PropositionController extends Controller {
 
 		$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
 
+		if($request->viewer == 'centerCoordinator'){
+
+			$notification = Notification::create([
+				'creator_id' => $request->user_id,
+				'receptor_id' => $receptorUser->id,
+				'read' => '0',
+				'redirection' => 'centerCoordinator.semesterPlanning',
+				'message'  => 'ha enviado sus propuestas',
+				'creator_role' => 'professor'
+			]);
+		}
+
+		else if($request->viewer == 'departmentHead')
 
 		$notification = Notification::create([
 				'creator_id' => $request->user_id,
 				'receptor_id' => $receptorUser->id,
 				'read' => '0',
-				'redirection' => 'centerCoordinator.semesterPlanning',
-				'message'  => 'ha enviado sus preferencias',
-				'creator_role' => 'professor'
+				'redirection' => 'departmentHead.semesterPlanning',
+				'message'  => 'ha aprobado sus propuestas',
+				'creator_role' => 'centerCoordinator'
 			]);
 
 		return response()->json(['id' => $proposition->id,
@@ -191,10 +204,7 @@ class PropositionController extends Controller {
 
 		$userModified = User::where('id', $professor->user_id)->first();
 
-		Log::create([
-			'user_id' => $user->id,
-			'activity' => "Modificó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
-		]);
+		$userDepartmentHead = User::where('email', 'jefe@ciens.ucv.ve')->first();
 
 		$proposition = Proposition::where('professor_id', $id)->update([
 			'course_option_1' => json_encode($request->course1),
@@ -205,10 +215,13 @@ class PropositionController extends Controller {
 			'mode_option_3' => json_encode($request->modeChecked3),
 			'schedule_option_1' => json_encode($request->schedule1),
 			'schedule_option_2' => json_encode($request->schedule2),
-			'schedule_option_3' => json_encode($request->schedule3)
+			'schedule_option_3' => json_encode($request->schedule3),
+			'viewer' => $request->viewer
 			]);
 
-		$notification = Notification::create([
+		if($request->status == 'modification') {
+
+			$notification = Notification::create([
 				'creator_id' => $user->id,
 				'receptor_id' => $userModified->id,
 				'read' => '0',
@@ -216,6 +229,30 @@ class PropositionController extends Controller {
 				'message'  => 'ha modificado sus propuestas',
 				'creator_role' => 'coordinator'
 			]);
+
+			Log::create([
+			'user_id' => $user->id,
+			'activity' => "Modificó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
+		]);
+		}
+
+		else if($request->status == 'approval') {
+			$notification = Notification::create([
+				'creator_id' => $user->id,
+				'receptor_id' => $userDepartmentHead->id,
+				'read' => '0',
+				'redirection' => 'departmentHead.semesterPlanning',
+				'message'  =>"ha aprobado las propuestas del profesor ".$userModified->name." ".$userModified->lastname,
+				'creator_role' => 'coordinator'
+			]);
+
+			Log::create([
+			'user_id' => $user->id,
+			'activity' => "Aprobó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
+		]);
+		}
+
+		
 
 		return response()->json([
 				"professor" => $professor,
