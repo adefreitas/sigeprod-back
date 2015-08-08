@@ -45,7 +45,20 @@ class SemesterController extends Controller {
 	 */
 	public function store()
 	{
-		//
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		Semester::create([
+			'name' =>,
+			'beings_at' =>,
+			'ends_at' =>,
+			'intensive' =>
+		]);
+
 	}
 
 	/**
