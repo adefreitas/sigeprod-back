@@ -156,6 +156,8 @@ return [
          * Role handling package
          */
         'Bican\Roles\RolesServiceProvider',
+
+        'Nitmedia\Wkhtml2pdf\L5Wkhtml2pdfServiceProvider',
 	],
 
 	/*
@@ -205,6 +207,7 @@ return [
 		'View'      => 'Illuminate\Support\Facades\View',
         'JWTAuth'   => 'Tymon\JWTAuth\Facades\JWTAuth',
         'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory',
+        'PDF'       => 'Nitmedia\Wkhtml2pdf\Facades\Wkhtml2pdf',
 
 	],
 
