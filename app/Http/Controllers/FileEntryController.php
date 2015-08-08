@@ -55,6 +55,7 @@ class FileEntryController extends Controller {
 	}
 
 	public function get($filename){
+
 		$entry = Fileentry::where('filename', '=', $filename)
 			->orderBy('updated_at', 'desc')->firstOrFail();
 

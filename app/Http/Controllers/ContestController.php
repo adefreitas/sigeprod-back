@@ -55,7 +55,7 @@ class ContestController extends Controller {
 					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
 					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
 					'courses.name as course_name', 'courses.id as course_id',
-					'centers.id as center_id', 'centers.name as center_name'
+					'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
 
 				)
 				->orderBy('contests.created_at', 'desc')
@@ -113,7 +113,7 @@ class ContestController extends Controller {
 					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
 					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
 					'courses.name as course_name', 'courses.id as course_id',
-					'centers.id as center_id', 'centers.name as center_name'
+					'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
 
 				)
 				->orderBy('contests.created_at', 'desc')
@@ -169,7 +169,7 @@ class ContestController extends Controller {
 					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
 					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
 					'courses.name as course_name', 'courses.id as course_id',
-					'centers.id as center_id', 'centers.name as center_name'
+					'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
 
 				)
 				->orderBy('contests.created_at', 'desc')
@@ -231,7 +231,7 @@ class ContestController extends Controller {
 					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
 					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
 					'courses.name as course_name', 'courses.id as course_id',
-					'centers.id as center_id', 'centers.name as center_name'
+					'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
 
 				)
 				->orderBy('contests.created_at', 'desc')
@@ -295,7 +295,7 @@ class ContestController extends Controller {
 					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
 					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
 					'courses.name as course_name', 'courses.id as course_id',
-					'centers.id as center_id', 'centers.name as center_name'
+					'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
 
 				)
 				->orderBy('contests.created_at', 'desc')
