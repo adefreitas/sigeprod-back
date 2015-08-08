@@ -77,19 +77,19 @@ class PropositionController extends Controller {
 
 		$proposition->course_option_1 = json_encode($request->course1);
 
-		$proposition->mode_option_1 = json_encode($request->modeChecked1);
+		$proposition->mode_option_1 = json_encode($request->mode1);
 
 		$proposition->schedule_option_1 = json_encode($request->schedule1);
 
 		$proposition->course_option_2 = json_encode($request->course2);
 
-		$proposition->mode_option_2 = json_encode($request->modeChecked2);
+		$proposition->mode_option_2 = json_encode($request->mode2);
 
 		$proposition->schedule_option_2 = json_encode($request->schedule2);
 
 		$proposition->course_option_3 = json_encode($request->course3);
 
-		$proposition->mode_option_3 = json_encode($request->modeChecked3);
+		$proposition->mode_option_3 = json_encode($request->mode3);
 
 		$proposition->schedule_option_3 = json_encode($request->schedule3);
 
