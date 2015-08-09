@@ -95,6 +95,8 @@ class PropositionController extends Controller {
 
 		$proposition->viewer = $request->viewer;
 
+		$proposition->status = $request->status;
+
 		$proposition->save();
 
 		Log::create([
@@ -216,7 +218,8 @@ class PropositionController extends Controller {
 			'schedule_option_1' => json_encode($request->schedule1),
 			'schedule_option_2' => json_encode($request->schedule2),
 			'schedule_option_3' => json_encode($request->schedule3),
-			'viewer' => $request->viewer
+			'viewer' => $request->viewer,
+			'status' => $request->status
 			]);
 
 		if($request->status == 'modification') {
