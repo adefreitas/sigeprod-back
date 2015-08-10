@@ -265,7 +265,7 @@ class PropositionController extends Controller {
 
 				Log::create([
 				'user_id' => $user->id,
-				'activity' => "Aprobó sus propuestas"
+				'activity' => "envió sus propuestas"
 				]);
 			}
 
