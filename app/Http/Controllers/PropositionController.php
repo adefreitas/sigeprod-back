@@ -249,17 +249,20 @@ class PropositionController extends Controller {
 			
 		}
 
-		else if($request->status == 3) {
-			$notification = Notification::create([
-				'creator_id' => $user->id,
-				'receptor_id' => $userDepartmentHead->id,
-				'read' => '0',
-				'redirection' => 'departmentHead.semesterPlanning',
-				'message'  =>"ha aprobado las propuestas del profesor ".$userModified->name." ".$userModified->lastname,
-				'creator_role' => 'coordinator'
-			]);
+		else if($request->status == 4) {
+			
 
 			if($user->id == $userModified->id) {
+
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userDepartmentHead->id,
+					'read' => '0',
+					'redirection' => 'departmentHead.semesterPlanning',
+					'message'  =>"ha enviado sus propuestas ",
+					'creator_role' => 'coordinator'
+				]);
+
 				Log::create([
 				'user_id' => $user->id,
 				'activity' => "Aprobó sus propuestas"
@@ -267,6 +270,16 @@ class PropositionController extends Controller {
 			}
 
 			else {
+
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userDepartmentHead->id,
+					'read' => '0',
+					'redirection' => 'departmentHead.semesterPlanning',
+					'message'  =>"ha aprobado las propuestas del profesor ".$userModified->name." ".$userModified->lastname,
+					'creator_role' => 'coordinator'
+				]);
+
 				Log::create([
 				'user_id' => $user->id,
 				'activity' => "Aprobó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
