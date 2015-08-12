@@ -101,7 +101,7 @@ class PropositionController extends Controller {
 
 		Log::create([
 			'user_id' => $user->id,
-			'activity' => 'Envió sus preferencias para la planificación docente'
+			'activity' => 'Envió sus propuestas para la planificación docente'
 		]);
 
 		$center = Professor::where('id', $professor_id)->select('center_id')->first();
@@ -265,7 +265,7 @@ class PropositionController extends Controller {
 
 				Log::create([
 				'user_id' => $user->id,
-				'activity' => "envió sus propuestas"
+				'activity' => "Envió sus propuestas"
 				]);
 			}
 
