@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Log;
 use App\User;
 use App\Center;
+use App\Rejection;
 use App\Professor;
 use App\Proposition;
 use App\Notification;
@@ -154,6 +155,13 @@ class PropositionController extends Controller {
 	{
 		$proposition = Proposition::where('professor_id', $id)->get()->first();
 
+		if($proposition->status == 2) {
+			$rejection = Rejection::where('proposition_id', $proposition->id)->get()->first();
+
+			$proposition->rejection = $rejection;
+		}
+		
+
 		$proposition->course_option_1 = json_decode($proposition->course_option_1);
 		$proposition->mode_option_1 = json_decode($proposition->mode_option_1);
 		$proposition->schedule_option_1 = json_decode($proposition->schedule_option_1);
@@ -229,21 +237,29 @@ class PropositionController extends Controller {
 				'receptor_id' => $userModified->id,
 				'read' => '0',
 				'redirection' => 'professor.semesterPlanning',
-				'message'  => 'ha modificado sus propuestas',
+				'message'  => 'ha rechazado sus propuestas',
 				'creator_role' => 'coordinator'
+			]);
+
+			$propositionId = Proposition::where('professor_id', $id)->select('id')->first();
+
+			$rejection = Rejection::create([
+				'description' => $request->rejectionMessage,
+				'user_id' => $userModified->id,
+				'proposition_id' => $propositionId->id
 			]);
 
 			if($user->id == $userModified->id) {
 				Log::create([
 				'user_id' => $user->id,
-				'activity' => "Modificó sus propuestas "
+				'activity' => "Rechazó sus propuestas "
 				]);
 			}
 
 			else {
 				Log::create([
 				'user_id' => $user->id,
-				'activity' => "Modificó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
+				'activity' => "Rechazó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
 				]);
 			}
 			
