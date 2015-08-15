@@ -346,6 +346,109 @@ class PropositionController extends Controller {
 					'creator_role' => 'coordinator'
 				]);
 
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userModified->id,
+					'read' => '0',
+					'redirection' => 'professor.semesterPlanning',
+					'message'  =>"ha aprobado sus propuestas",
+					'creator_role' => 'coordinator'
+				]);
+
+				Log::create([
+				'user_id' => $user->id,
+				'activity' => "Aprobó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
+				]);
+			}
+		}
+
+		else if($request->status == 4) {
+
+			$notification = Notification::create([
+				'creator_id' => $user->id,
+				'receptor_id' => $userModified->id,
+				'read' => '0',
+				'redirection' => 'professor.semesterPlanning',
+				'message'  => 'ha rechazado sus propuestas',
+				'creator_role' => 'departmenthead'
+			]);
+
+			$propositionId = Proposition::where('professor_id', $id)->select('id')->first();
+
+			$previousRejection = Rejection::where('user_id', $userModified->id)->first();
+
+			if($previousRejection) {
+
+				Rejection::where('user_id', $userModified->id)->update([
+								'active' => false
+							]);
+
+				Rejection::create([
+				'description' => $request->rejectionMessage,
+				'active' => true,
+				'user_id' => $userModified->id,
+				'proposition_id' => $propositionId->id
+			]);
+
+			}
+
+			else {
+
+				Rejection::create([
+				'description' => $request->rejectionMessage,
+				'active' => 'true',
+				'user_id' => $userModified->id,
+				'proposition_id' => $propositionId->id
+				]);
+			}
+
+			if($user->id == $userModified->id) {
+				Log::create([
+				'user_id' => $user->id,
+				'activity' => "Rechazó sus propuestas "
+				]);
+			}
+
+			else {
+				Log::create([
+				'user_id' => $user->id,
+				'activity' => "Rechazó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
+				]);
+			}
+			
+		}
+
+		else if($request->status == 5) {
+			
+
+			if($user->id == $userModified->id) {
+
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userModified->id,
+					'read' => '0',
+					'redirection' => 'professor.semesterPlanning',
+					'message'  =>"ha aprobado sus propuestas ",
+					'creator_role' => 'departmenthead'
+				]);
+
+				Log::create([
+				'user_id' => $user->id,
+				'activity' => "Aprobó sus propuestas"
+				]);
+			}
+
+			else {
+
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userModified->id,
+					'read' => '0',
+					'redirection' => 'professor.semesterPlanning',
+					'message'  =>"ha aprobado sus propuestas",
+					'creator_role' => 'departmenthead'
+				]);
+
 				Log::create([
 				'user_id' => $user->id,
 				'activity' => "Aprobó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
