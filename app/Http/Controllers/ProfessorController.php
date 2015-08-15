@@ -54,9 +54,7 @@ class ProfessorController extends Controller {
 
 		return response()->json([
 
-				"center_id" => $professor->center_id,
-				"professor_id" => $professor->id,
-				"sent" => $professor->proposition_sent
+				"professor" => $professor
 
 			]);
 	}

@@ -156,7 +156,7 @@ class PropositionController extends Controller {
 		$proposition = Proposition::where('professor_id', $id)->get()->first();
 
 		if($proposition->status == 2) {
-			$rejection = Rejection::where('proposition_id', $proposition->id)->get()->first();
+			$rejection = Rejection::where('proposition_id', $proposition->id)->where('active', true)->get()->first();
 
 			$proposition->rejection = $rejection;
 		}
@@ -230,7 +230,36 @@ class PropositionController extends Controller {
 			'status' => $request->status
 			]);
 
-		if($request->status == 2) {
+		if($request->status == 1) {  // Entra aqui cuando el profesor edita las propuestas debido a un rechazo previo
+
+			$center = Professor::where('id', $id)->select('center_id')->first();
+
+			$coordinator = Center::where('id', '=', $center->center_id)
+				->join('center_center_coordinator', 'center_center_coordinator.center_id', '=', 'centers.id')
+				->select('center_center_coordinator.professor_id as coordinator_id')
+				->first();
+
+			$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
+
+			$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
+
+			$notification = Notification::create([
+				'creator_id' => $user->id,
+				'receptor_id' => $receptorUser->id,
+				'read' => '0',
+				'redirection' => 'centerCoordinator.semesterPlanning',
+				'message'  => 'ha editado sus propuestas',
+				'creator_role' => 'professor'
+			]);
+
+			Log::create([
+				'user_id' => $user->id,
+				'activity' => "Editó sus propuestas "
+				]);
+			
+		}
+
+		else if($request->status == 2) {
 
 			$notification = Notification::create([
 				'creator_id' => $user->id,
@@ -243,11 +272,32 @@ class PropositionController extends Controller {
 
 			$propositionId = Proposition::where('professor_id', $id)->select('id')->first();
 
-			$rejection = Rejection::create([
+			$previousRejection = Rejection::where('user_id', $userModified->id)->first();
+
+			if($previousRejection) {
+
+				Rejection::where('user_id', $userModified->id)->update([
+								'active' => false
+							]);
+
+				Rejection::create([
 				'description' => $request->rejectionMessage,
+				'active' => true,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 			]);
+
+			}
+
+			else {
+
+				Rejection::create([
+				'description' => $request->rejectionMessage,
+				'active' => 'true',
+				'user_id' => $userModified->id,
+				'proposition_id' => $propositionId->id
+				]);
+			}
 
 			if($user->id == $userModified->id) {
 				Log::create([
@@ -265,7 +315,7 @@ class PropositionController extends Controller {
 			
 		}
 
-		else if($request->status == 4) {
+		else if($request->status == 3) {
 			
 
 			if($user->id == $userModified->id) {
