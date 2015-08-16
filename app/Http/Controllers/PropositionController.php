@@ -155,7 +155,7 @@ class PropositionController extends Controller {
 	{
 		$proposition = Proposition::where('professor_id', $id)->get()->first();
 
-		if($proposition->status == 2) {
+		if($proposition->status == 2 || $proposition->status == 4) {
 			$rejection = Rejection::where('proposition_id', $proposition->id)->where('active', true)->get()->first();
 
 			$proposition->rejection = $rejection;
@@ -316,7 +316,6 @@ class PropositionController extends Controller {
 		}
 
 		else if($request->status == 3) {
-			
 
 			if($user->id == $userModified->id) {
 
@@ -363,6 +362,30 @@ class PropositionController extends Controller {
 		}
 
 		else if($request->status == 4) {
+
+			//*****Obteniendo el coordinador del centro del profesor que ha enviado las propuestas*****//
+
+			$center = Professor::where('id', $id)->select('center_id')->first();
+
+			$coordinator = Center::where('id', '=', $center->center_id)
+				->join('center_center_coordinator', 'center_center_coordinator.center_id', '=', 'centers.id')
+				->select('center_center_coordinator.professor_id as coordinator_id')
+				->first();
+
+			$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
+
+			$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
+
+			//***************************************************************************************//
+
+			$notification = Notification::create([
+				'creator_id' => $user->id,
+				'receptor_id' => $receptorUser->id,
+				'read' => '0',
+				'redirection' => 'centerCoordinator.semesterPlanning',
+				'message'  => "ha rechazado las propuestas del profesor ".$userModified->name." ".$userModified->lastname,
+				'creator_role' => 'departmenthead'
+			]);
 
 			$notification = Notification::create([
 				'creator_id' => $user->id,
@@ -419,18 +442,41 @@ class PropositionController extends Controller {
 		}
 
 		else if($request->status == 5) {
+
+			//*****Obteniendo el coordinador del centro del profesor que ha enviado las propuestas*****//
+
+			$center = Professor::where('id', $id)->select('center_id')->first();
+
+			$coordinator = Center::where('id', '=', $center->center_id)
+				->join('center_center_coordinator', 'center_center_coordinator.center_id', '=', 'centers.id')
+				->select('center_center_coordinator.professor_id as coordinator_id')
+				->first();
+
+			$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
+
+			$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
+
+			//***************************************************************************************//
 			
+			$notification = Notification::create([
+				'creator_id' => $user->id,
+				'receptor_id' => $receptorUser->id,
+				'read' => '0',
+				'redirection' => 'centerCoordinator.semesterPlanning',
+				'message'  => "ha aprobado las propuestas del profesor ".$userModified->name." ".$userModified->lastname,
+				'creator_role' => 'departmenthead'
+			]);
+
+			$notification = Notification::create([
+				'creator_id' => $user->id,
+				'receptor_id' => $userModified->id,
+				'read' => '0',
+				'redirection' => 'professor.semesterPlanning',
+				'message'  =>"ha aprobado sus propuestas ",
+				'creator_role' => 'departmenthead'
+			]);
 
 			if($user->id == $userModified->id) {
-
-				$notification = Notification::create([
-					'creator_id' => $user->id,
-					'receptor_id' => $userModified->id,
-					'read' => '0',
-					'redirection' => 'professor.semesterPlanning',
-					'message'  =>"ha aprobado sus propuestas ",
-					'creator_role' => 'departmenthead'
-				]);
 
 				Log::create([
 				'user_id' => $user->id,
@@ -439,15 +485,6 @@ class PropositionController extends Controller {
 			}
 
 			else {
-
-				$notification = Notification::create([
-					'creator_id' => $user->id,
-					'receptor_id' => $userModified->id,
-					'read' => '0',
-					'redirection' => 'professor.semesterPlanning',
-					'message'  =>"ha aprobado sus propuestas",
-					'creator_role' => 'departmenthead'
-				]);
 
 				Log::create([
 				'user_id' => $user->id,
