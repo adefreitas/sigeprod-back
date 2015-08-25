@@ -3,12 +3,12 @@
 
 /* Esto es para heroku comentenlo en su version local */
 
-// $url = parse_url(getenv("DATABASE_URL"));
-//
-// $host = $url["host"];
-// $username = $url["user"];
-// $password = $url["pass"];
-// $database = substr($url["path"], 1);
+ $url = parse_url(getenv("DATABASE_URL"));
+
+ $host = $url["host"];
+ $username = $url["user"];
+ $password = $url["pass"];
+ $database = substr($url["path"], 1);
 
 /* fin de cosa para heroku 1 */
 
