@@ -21,7 +21,7 @@ return [
     /* LOCAL END /*
 
     /* HEROKU */
-     'secret' => $jwt,
+    'secret' => $jwt,
     /* HEROKU END*/
 
     /*
