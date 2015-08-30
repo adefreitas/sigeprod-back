@@ -458,23 +458,37 @@ class PropositionController extends Controller {
 
 			//***************************************************************************************//
 			
-			$notification = Notification::create([
-				'creator_id' => $user->id,
-				'receptor_id' => $receptorUser->id,
-				'read' => '0',
-				'redirection' => 'centerCoordinator.semesterPlanning',
-				'message'  => "ha aprobado las propuestas del profesor ".$userModified->name." ".$userModified->lastname,
-				'creator_role' => 'departmenthead'
-			]);
+			if($receptorUser->id != $userModified->id) {
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $receptorUser->id,
+					'read' => '0',
+					'redirection' => 'centerCoordinator.semesterPlanning',
+					'message'  => "ha aprobado las propuestas del profesor ".$userModified->name." ".$userModified->lastname,
+					'creator_role' => 'departmenthead'
+				]);
 
-			$notification = Notification::create([
-				'creator_id' => $user->id,
-				'receptor_id' => $userModified->id,
-				'read' => '0',
-				'redirection' => 'professor.semesterPlanning',
-				'message'  =>"ha aprobado sus propuestas ",
-				'creator_role' => 'departmenthead'
-			]);
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userModified->id,
+					'read' => '0',
+					'redirection' => 'professor.semesterPlanning',
+					'message'  =>"ha aprobado sus propuestas ",
+					'creator_role' => 'departmenthead'
+				]);
+			}
+
+			else {
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userModified->id,
+					'read' => '0',
+					'redirection' => 'professor.semesterPlanning',
+					'message'  =>"ha aprobado sus propuestas ",
+					'creator_role' => 'departmenthead'
+				]);
+			}
+			
 
 			if($user->id == $userModified->id) {
 
