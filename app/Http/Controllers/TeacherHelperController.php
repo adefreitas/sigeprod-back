@@ -182,16 +182,40 @@ class TeacherHelperController extends Controller {
 		* @return Response
 		*/
 
-		public function prueba()
+		public function prueba($id)
 		{
-			
-			$data = array('name'=>'John Smith', 'date'=>'1/29/15');
+			$helper = \DB::table('teacher_helpers_users')
+			->join('teacher_helpers', 'teacher_helpers.id', '=', 'teacher_helpers_users.teacher_helper_id')
+			->join('users', 'users.id', '=', 'teacher_helpers_users.user_id')
+			->join('courses_teacher_helpers', 'courses_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id', 'left outer')
+			->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id', 'left outer')
+			->join('centers_teacher_helpers', 'centers_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id', 'left outer')
+			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id', 'left outer')
+			// ->where('teacher_helpers_users.active', '=', true)
+			->orderBy('teacher_helpers_users.active', 'desc')
+			->orderBy('teacher_helpers.type', 'asc')
+			->orderBy('users.id', 'asc')
+			->where('teacher_helpers_users.user_id', '=', $id)
+			->select(
+			'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
+			'users.id as user_id', 'users.local_phone', 'users.cell_phone',
+			'users.state', 'users.municipality', 'users.address',
+			'teacher_helpers.id as teacher_helper_id',
+			'courses.name as course_name', 'courses.id as course_id',
+			'centers.name as center_name', 'centers.id as center_id',
+			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
+			'teacher_helpers_users.id as thu_id',
+			'teacher_helpers.type as type', 'courses_teacher_helpers.active as course_active', 'centers_teacher_helpers.active as center_active',
+			'teacher_helpers_users.contest_id'
+			)
+			->first();
+
+			$data = array('name'=>'John Smith', 'date'=>'1/29/15', 'id' => $id, 'helper' => $helper);
 			$pdf = \DPDF::loadView('prueba', $data);
 			return $pdf->stream('temp.pdf');
 
 			// $pdf = \DPDF::loadHTML('<h1>Test</h1>');
 			// return $pdf->download('invoice.pdf');
-
 		}
 
 		/**

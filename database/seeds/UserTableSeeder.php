@@ -1,6 +1,6 @@
 <?php
 
-use \Hash;
+use \Hash as Hash;
 use App\User;
 use App\Professor;
 use Illuminate\Database\Seeder;
