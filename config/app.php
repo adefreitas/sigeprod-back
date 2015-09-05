@@ -152,6 +152,7 @@ return [
 
 
         'Barryvdh\Cors\CorsServiceProvider',
+        'Barryvdh\DomPDF\ServiceProvider',
         /*
          * Role handling package
          */
@@ -208,7 +209,7 @@ return [
         'JWTAuth'   => 'Tymon\JWTAuth\Facades\JWTAuth',
         'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory',
         'PDF'       => 'Nitmedia\Wkhtml2pdf\Facades\Wkhtml2pdf',
-
+        'DPDF'       => 'Barryvdh\DomPDF\Facade',
 	],
 
 ];

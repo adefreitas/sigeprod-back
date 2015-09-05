@@ -8,6 +8,7 @@
 		"laravel/framework": "5.0.*",
 		"tymon/jwt-auth": "0.5.*",
 		"barryvdh/laravel-cors": "0.5.x@dev",
+		"barryvdh/laravel-dompdf": "0.6.*",
 		"bican/roles": "1.7.*",
 		"nitmedia/wkhtml2pdf": "dev-master"
 	},

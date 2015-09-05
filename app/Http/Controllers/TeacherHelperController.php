@@ -7,6 +7,7 @@ use App\TeacherHelper;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
+use Barryvdh\DomPDF\Facade;
 
 class TeacherHelperController extends Controller {
 
@@ -172,6 +173,25 @@ class TeacherHelperController extends Controller {
 		public function edit($id)
 		{
 			//
+		}
+
+		/**
+		* Update the specified resource in storage.
+		*
+		* @param  int  $id = id en la tabla teacher_helpers_users
+		* @return Response
+		*/
+
+		public function prueba()
+		{
+			
+			$data = array('name'=>'John Smith', 'date'=>'1/29/15');
+			$pdf = \DPDF::loadView('prueba', $data);
+			return $pdf->stream('temp.pdf');
+
+			// $pdf = \DPDF::loadHTML('<h1>Test</h1>');
+			// return $pdf->download('invoice.pdf');
+
 		}
 
 		/**
