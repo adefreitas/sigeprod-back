@@ -22,7 +22,7 @@ class PropositionController extends Controller {
 	 */
 	public function index()
 	{
-		$propositions = Proposition::get();
+		$propositions = Proposition::where('active', true)->get();
 		for($i = 0; $i < count($propositions); ++$i) {
 			$propositions[$i]->course_option_1 = json_decode($propositions[$i]->course_option_1);
     		$propositions[$i]->mode_option_1 = json_decode($propositions[$i]->mode_option_1);
@@ -68,9 +68,17 @@ class PropositionController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
-		$proposition = new Proposition();
-
 		$professor = Professor::where('user_id', $request->user_id)->first();
+
+		$previousProposition = Proposition::where('professor_id', $professor['id'])->where('active', true)->first();
+
+		if($previousProposition != null) {
+
+			$previousProposition->active = false;
+			$previousProposition->save();
+		}
+		
+		$proposition = new Proposition();
 
 		$proposition->professor_id = $professor['id'];
 
@@ -98,6 +106,8 @@ class PropositionController extends Controller {
 
 		$proposition->status = $request->status;
 
+		$proposition->active = true;
+
 		$proposition->save();
 
 		Log::create([
@@ -105,19 +115,18 @@ class PropositionController extends Controller {
 			'activity' => 'Envió sus propuestas para la planificación docente'
 		]);
 
-		$center = Professor::where('id', $professor_id)->select('center_id')->first();
+		if($request->viewer == 'centerCoordinator') {
 
-		$coordinator = Center::where('id', '=', $center->center_id)
-			->join('center_center_coordinator', 'center_center_coordinator.center_id', '=', 'centers.id')
-			->select('center_center_coordinator.professor_id as coordinator_id')
-			->first();
+			$center = Professor::where('id', $professor_id)->select('center_id')->first();
 
-		$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
+			$coordinator = Center::where('id', '=', $center->center_id)
+				->join('center_center_coordinator', 'center_center_coordinator.center_id', '=', 'centers.id')
+				->select('center_center_coordinator.professor_id as coordinator_id')
+				->first();
 
-		$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
+			$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
 
-		if($request->viewer == 'centerCoordinator'){
-
+			$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
 			$notification = Notification::create([
 				'creator_id' => $request->user_id,
 				'receptor_id' => $receptorUser->id,
@@ -126,22 +135,30 @@ class PropositionController extends Controller {
 				'message'  => 'ha enviado sus propuestas',
 				'creator_role' => 'professor'
 			]);
+
+			return response()->json(['id' => $proposition->id,
+			'coordinator_id' => $coordinator->coordinator_id,
+			'receptor' => $receptorUser->name,
+			'propuestasPrevias' => $previousProposition]);
 		}
 
-		else if($request->viewer == 'departmentHead')
+		else if($request->viewer == 'departmentHead') {
 
-		$notification = Notification::create([
+			$receptorUser = User::where('email', '=', 'jefe@ciens.ucv.ve')->get()->first();
+
+			$notification = Notification::create([
 				'creator_id' => $request->user_id,
 				'receptor_id' => $receptorUser->id,
 				'read' => '0',
 				'redirection' => 'departmentHead.semesterPlanning',
-				'message'  => 'ha aprobado sus propuestas',
-				'creator_role' => 'centerCoordinator'
+				'message'  => 'ha enviado sus propuestas',
+				'creator_role' => 'professor'
 			]);
 
-		return response()->json(['id' => $proposition->id,
-			'coordinator_id' => $coordinator->coordinator_id,
-			'receptor' => $receptorUser->name]);
+			return response()->json(['id' => $proposition->id,
+			'receptor' => $receptorUser->name,
+			'propuestasPrevias' => $previousProposition]);
+		}
 		
 	}
 
@@ -153,7 +170,7 @@ class PropositionController extends Controller {
 	 */
 	public function show($id)
 	{
-		$proposition = Proposition::where('professor_id', $id)->get()->first();
+		$proposition = Proposition::where('professor_id', $id)->where('active', true)->get()->first();
 
 		if($proposition->status == 2 || $proposition->status == 4) {
 			$rejection = Rejection::where('proposition_id', $proposition->id)->where('active', true)->get()->first();
@@ -216,7 +233,7 @@ class PropositionController extends Controller {
 
 		$userDepartmentHead = User::where('email', 'jefe@ciens.ucv.ve')->first();
 
-		$proposition = Proposition::where('professor_id', $id)->update([
+		$proposition = Proposition::where('professor_id', $id)->where('active', true)->update([
 			'course_option_1' => json_encode($request->course1),
 			'course_option_2' => json_encode($request->course2),
 			'course_option_3' => json_encode($request->course3),
@@ -367,25 +384,31 @@ class PropositionController extends Controller {
 
 			$center = Professor::where('id', $id)->select('center_id')->first();
 
-			$coordinator = Center::where('id', '=', $center->center_id)
+			if($center->center_id > 0) {
+				$coordinator = Center::where('id', '=', $center->center_id)
 				->join('center_center_coordinator', 'center_center_coordinator.center_id', '=', 'centers.id')
 				->select('center_center_coordinator.professor_id as coordinator_id')
 				->first();
 
-			$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
+				$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
 
-			$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
+				$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
+			}
+			
+
+			if($center->center_id > 0 && ($receptorUser->id != $userModified->id)) {
+
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $receptorUser->id,
+					'read' => '0',
+					'redirection' => 'centerCoordinator.semesterPlanning',
+					'message'  => "ha rechazado las propuestas del profesor ".$userModified->name." ".$userModified->lastname,
+					'creator_role' => 'departmenthead'
+				]);
+			}
 
 			//***************************************************************************************//
-
-			$notification = Notification::create([
-				'creator_id' => $user->id,
-				'receptor_id' => $receptorUser->id,
-				'read' => '0',
-				'redirection' => 'centerCoordinator.semesterPlanning',
-				'message'  => "ha rechazado las propuestas del profesor ".$userModified->name." ".$userModified->lastname,
-				'creator_role' => 'departmenthead'
-			]);
 
 			$notification = Notification::create([
 				'creator_id' => $user->id,
@@ -396,7 +419,7 @@ class PropositionController extends Controller {
 				'creator_role' => 'departmenthead'
 			]);
 
-			$propositionId = Proposition::where('professor_id', $id)->select('id')->first();
+			$propositionId = Proposition::where('professor_id', $id)->where('active', true)->select('id')->first();
 
 			$previousRejection = Rejection::where('user_id', $userModified->id)->first();
 
@@ -447,18 +470,20 @@ class PropositionController extends Controller {
 
 			$center = Professor::where('id', $id)->select('center_id')->first();
 
-			$coordinator = Center::where('id', '=', $center->center_id)
-				->join('center_center_coordinator', 'center_center_coordinator.center_id', '=', 'centers.id')
-				->select('center_center_coordinator.professor_id as coordinator_id')
-				->first();
+			if($center->center_id > 0) {
+				$coordinator = Center::where('id', '=', $center->center_id)
+					->join('center_center_coordinator', 'center_center_coordinator.center_id', '=', 'centers.id')
+					->select('center_center_coordinator.professor_id as coordinator_id')
+					->first();
 
-			$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
+				$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
 
-			$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
+				$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
+			}
 
 			//***************************************************************************************//
 			
-			if($receptorUser->id != $userModified->id) {
+			if($center->center_id > 0 && $receptorUser->id != $userModified->id) {
 				$notification = Notification::create([
 					'creator_id' => $user->id,
 					'receptor_id' => $receptorUser->id,
