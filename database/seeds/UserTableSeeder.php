@@ -408,8 +408,8 @@ class UserTableSeeder extends Seeder {
         $user = User::create([
             'email' => 'prof1c44@ciens.ucv.ve',
             'password' => Hash::make('prof1c44'),
-            'name' => 'Victor',
-            'lastname' => 'Felipe'
+            'name' => 'Jesús',
+            'lastname' => 'Lares'
         ]);
 
         $user->attachRole($role_profesor);
@@ -484,6 +484,30 @@ class UserTableSeeder extends Seeder {
             'password' => Hash::make('prof2c44'),
             'name' => 'Jaime',
             'lastname' => 'Parada'
+        ]);
+
+        $user -> attachRole($role_profesor);
+
+        $professor = Professor::create([
+          'dedication' => 'Completa',
+          'center_id' => '44',
+          'status' => 'Activo',
+          'proposition_sent' => false
+        ]);
+
+        $professor->user()->associate($user);
+
+        $professor->save();
+
+                /**********************************************************
+        ******************* Profesor 3 Centro 44 ******************
+        ***********************************************************/
+
+        $user = User::create([
+            'email' => 'prof3c44@ciens.ucv.ve',
+            'password' => Hash::make('prof3c44'),
+            'name' => 'Livia',
+            'lastname' => 'Bernal'
         ]);
 
         $user -> attachRole($role_profesor);
@@ -601,17 +625,24 @@ class UserTableSeeder extends Seeder {
         ***********************************************************/
 
         User::create([
-            'email' => 'aux1@ciens.ucv.ve',
+            'email' => 'christianbrites@gmail.com',
             'password' => Hash::make('aux1'),
             'name' => 'Christian',
             'lastname' => 'Brites'
         ]) -> attachRole($role_auxiliar);
 
         User::create([
-            'email' => 'aux2@ciens.ucv.ve',
+            'email' => 'adefreitas12@gmail.com',
             'password' => Hash::make('aux2'),
             'name' => 'Andrés',
             'lastname' => 'De Freitas'
+        ]) -> attachRole($role_auxiliar);
+
+        User::create([
+            'email' => 'danielhg7@gmail.com',
+            'password' => Hash::make('mecomiunasalchipapa21$'),
+            'name' => 'Daniel',
+            'lastname' => 'Hernández'
         ]) -> attachRole($role_auxiliar);
 
 

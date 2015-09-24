@@ -287,7 +287,7 @@ class PropositionController extends Controller {
 				'creator_role' => 'coordinator'
 			]);
 
-			$propositionId = Proposition::where('professor_id', $id)->select('id')->first();
+			$propositionId = Proposition::where('professor_id', $id)->select('id')->where('active', true)->first();
 
 			$previousRejection = Rejection::where('user_id', $userModified->id)->first();
 

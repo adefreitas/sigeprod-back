@@ -34,7 +34,7 @@ Route::post('/signup', function(){
 
 });
 
-Route::post('/signin', function(){
+Route::post('/signin', function() {
 
     $credentials = Input::only('email', 'password');
     $email = Input::only('email');
@@ -50,6 +50,36 @@ Route::post('/signin', function(){
 
 });
 
+Route::post('/recover', function() {
+
+    $email = Input::only('email');
+
+    $user = User::where('email', $email)->first();
+    
+    $random = str_random(10);
+        //se envia el array y la vista lo recibe en llaves individuales {{ $name }} , {{ $lastname }}...
+       \Mail::send('emails.recover', ['name' => $user['name'], 'lastname' => $user['lastname'], 'password' => $random], function($message) use ($user)
+       {
+           //remitente
+           $message->from('noreply@sigeprod.com', 'SIGEPROD');
+
+           //asunto
+           $message->subject('Recuperación de contraseña');
+ 
+           //receptor
+           $message->to($user['email'], $user['name']);
+ 
+       });
+
+       $user = User::where('email', $user->email)->update([
+        'password' => \Hash::make($random)
+      ]);
+
+       return response()->json(['message' => 'success', 
+                    'user' => $user,
+                    'from' => env('CONTACT_MAIL')
+                  ]);
+});
 
 Route::get('/profile', ['before' => 'jwt-auth',
     function(){
@@ -75,6 +105,16 @@ Route::get('/profile', ['before' => 'jwt-auth',
         ]);
     }
 ]);
+
+  Route::get('/mailer', function()
+        {
+          
+          Mail::send('emails.test', ['name' => 'Dani'], function($message)
+          {
+              $message->to("danielhg7@gmail.com", "Daniel")->from('noreply@sigeprod.com', 'SIGEPROD')->subject('Welcome!');
+          });
+        }
+  );
 
   Route::get('users/{id}/professor', 'ProfessorController@professor');
 
