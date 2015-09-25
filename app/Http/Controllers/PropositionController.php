@@ -110,11 +110,6 @@ class PropositionController extends Controller {
 
 		$proposition->save();
 
-		Log::create([
-			'user_id' => $user->id,
-			'activity' => 'Envió sus propuestas para la planificación docente'
-		]);
-
 		if($request->viewer == 'centerCoordinator') {
 
 			$center = Professor::where('id', $professor_id)->select('center_id')->first();
@@ -127,14 +122,24 @@ class PropositionController extends Controller {
 			$receptorProfessor = Professor::where('id', $coordinator->coordinator_id)->select('user_id')->first();
 
 			$receptorUser = User::where('id', $receptorProfessor->user_id)->first();
-			$notification = Notification::create([
-				'creator_id' => $request->user_id,
-				'receptor_id' => $receptorUser->id,
-				'read' => '0',
-				'redirection' => 'centerCoordinator.semesterPlanning',
-				'message'  => 'ha enviado sus propuestas',
-				'creator_role' => 'professor'
-			]);
+			
+
+			if($request->user_id != $receptorUser->id) {
+
+				$notification = Notification::create([
+					'creator_id' => $request->user_id,
+					'receptor_id' => $receptorUser->id,
+					'read' => '0',
+					'redirection' => 'centerCoordinator.semesterPlanning',
+					'message'  => 'ha enviado sus propuestas',
+					'creator_role' => 'professor'
+				]);
+				
+				Log::create([
+					'user_id' => $user->id,
+					'activity' => 'Envió sus propuestas para la programación docente'
+				]);
+			}
 
 			return response()->json(['id' => $proposition->id,
 			'coordinator_id' => $coordinator->coordinator_id,
@@ -143,6 +148,11 @@ class PropositionController extends Controller {
 		}
 
 		else if($request->viewer == 'departmentHead') {
+
+			Log::create([
+				'user_id' => $user->id,
+				'activity' => 'Envió sus propuestas para la programación docente'
+			]);
 
 			$receptorUser = User::where('email', '=', 'jefe@ciens.ucv.ve')->get()->first();
 
@@ -341,13 +351,13 @@ class PropositionController extends Controller {
 					'receptor_id' => $userDepartmentHead->id,
 					'read' => '0',
 					'redirection' => 'departmentHead.semesterPlanning',
-					'message'  =>"ha enviado sus propuestas ",
+					'message'  =>"ha enviado sus propuestas",
 					'creator_role' => 'coordinator'
 				]);
 
 				Log::create([
 				'user_id' => $user->id,
-				'activity' => "Envió sus propuestas"
+				'activity' => "Envió sus propuestas para la programación docente"
 				]);
 			}
 
