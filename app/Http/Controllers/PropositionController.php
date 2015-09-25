@@ -134,7 +134,7 @@ class PropositionController extends Controller {
 					'message'  => 'ha enviado sus propuestas',
 					'creator_role' => 'professor'
 				]);
-				
+
 				Log::create([
 					'user_id' => $user->id,
 					'activity' => 'Envió sus propuestas para la programación docente'
@@ -288,15 +288,6 @@ class PropositionController extends Controller {
 
 		else if($request->status == 2) {
 
-			$notification = Notification::create([
-				'creator_id' => $user->id,
-				'receptor_id' => $userModified->id,
-				'read' => '0',
-				'redirection' => 'professor.semesterPlanning',
-				'message'  => 'ha rechazado sus propuestas',
-				'creator_role' => 'coordinator'
-			]);
-
 			$propositionId = Proposition::where('professor_id', $id)->select('id')->where('active', true)->first();
 
 			$previousRejection = Rejection::where('user_id', $userModified->id)->first();
@@ -326,14 +317,17 @@ class PropositionController extends Controller {
 				]);
 			}
 
-			if($user->id == $userModified->id) {
-				Log::create([
-				'user_id' => $user->id,
-				'activity' => "Rechazó sus propuestas "
+			if($user->id != $userModified->id) {
+				
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userModified->id,
+					'read' => '0',
+					'redirection' => 'professor.semesterPlanning',
+					'message'  => 'ha rechazado sus propuestas',
+					'creator_role' => 'coordinator'
 				]);
-			}
-
-			else {
+				
 				Log::create([
 				'user_id' => $user->id,
 				'activity' => "Rechazó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
