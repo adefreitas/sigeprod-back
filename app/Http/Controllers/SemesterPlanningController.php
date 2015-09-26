@@ -49,7 +49,14 @@ class SemesterPlanningController extends Controller {
 	 */
 	public function store(Request $request)
 	{
-	
+		
+		$previousPlanning = SemesterPlanning::where('active', true)->get()->first();
+
+		if($previousPlanning != null) {
+			$previousPlanning->active = false;
+			$previousPlanning->save();
+		}
+
 		$semesterPlanning = new SemesterPlanning();
 
 		$semesterPlanning->content = json_encode($request->actual);
