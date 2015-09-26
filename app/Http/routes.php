@@ -115,7 +115,9 @@ Route::get('/profile', ['before' => 'jwt-auth',
           });
         }
   );
-
+  
+  Route::resource('semesterplanning', 'SemesterPlanningController');
+  
   Route::get('users/{id}/professor', 'ProfessorController@professor');
 
   Route::get('professors/propositions', 'ProfessorController@showWithPropositions');
