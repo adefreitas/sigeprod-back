@@ -384,7 +384,7 @@ class UserTableSeeder extends Seeder {
         $user = User::create([
             'email' => 'cm112@ciens.ucv.ve',
             'password' => Hash::make('cm112'),
-            'name' => 'Libia',
+            'name' => 'Livia',
             'lastname' => 'Bernal'
         ]);
 

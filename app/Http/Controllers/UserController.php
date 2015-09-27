@@ -163,29 +163,38 @@ class UserController extends Controller {
 
 	public function updatePreapprovedUser(Request $request, $id) //función para actualizar el estado de los usuarios preaprobados
 	{
-		$user = \DB::table('preapproved_users')
-			->where('personal_id', '=', $id)
-			->where('id', '!=', $request->id)
-			->where('activated', '=', true)
-			->first();
-		if($user){
-			$user = User::find($id);
-			$user->name = $request->name;
-			$user->lastname = $request->lastname;
-			$user->email = $request->email;
-			$user->save();
-			return response()->json(['success'=>true]);
+		if($request->discard){
+			\DB::table('preapproved_users')
+			->where('id', '=', $id)
+			->delete();
+			
+			return response()->json(['success' => true]);
 		}
 		else{
 			$user = \DB::table('preapproved_users')
-			->where('personal_id', '=', $id)
-			->update([
-				'personal_id' => $request->personal_id,
-				'name' => $request->name,
-				'lastname' => $request->lastname,
-				'email' => $request->email
-			]);
-			return response()->json(['success' => true]);
+				->where('personal_id', '=', $id)
+				->where('id', '!=', $request->id)
+				->where('activated', '=', true)
+				->first();
+			if($user){
+				$user = User::find($id);
+				$user->name = $request->name;
+				$user->lastname = $request->lastname;
+				$user->email = $request->email;
+				$user->save();
+				return response()->json(['success'=>true]);
+			}
+			else{
+				$user = \DB::table('preapproved_users')
+				->where('personal_id', '=', $id)
+				->update([
+					'personal_id' => $request->personal_id,
+					'name' => $request->name,
+					'lastname' => $request->lastname,
+					'email' => $request->email
+				]);
+				return response()->json(['success' => true]);
+			}
 		}
 	}
 
