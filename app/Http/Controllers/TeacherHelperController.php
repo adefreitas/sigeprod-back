@@ -67,6 +67,20 @@ class TeacherHelperController extends Controller {
 				->orderBy('updated_at', 'desc')
 				->get();
 			}
+			$pendings = \DB::table("preapproved_users")
+				->join('contests', 'contests.id', '=', 'preapproved_users.contest_id', 'left outer')
+				->join('center_contest', 'center_contest.contest_id', '=', 'preapproved_users.contest_id', 'left outer')
+				->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
+				->join('contest_course', 'contest_course.contest_id', '=', 'preapproved_users.contest_id', 'left outer')
+				->join('courses', 'courses.id', '=', 'contest_course.course_id', 'left outer')
+				->select('preapproved_users.id as preapproved_users_id','preapproved_users.email as email', 'preapproved_users.name as name',
+				'preapproved_users.lastname as lastname', 'preapproved_users.personal_id as personal_id', 'preapproved_users.activated as activated',
+				'preapproved_users.type as type',
+				'centers.id as center_id', 'centers.name as center_name',
+				'courses.id as course_id', 'courses.name as course_name')
+				->where('activated', '=', false)
+				->groupBy('preapproved_users.id', 'centers.id', 'courses.id')
+				->get();
 
 
 		}
@@ -124,10 +138,28 @@ class TeacherHelperController extends Controller {
 				->get();
 			}
 
+			$pendings = \DB::table("preapproved_users")
+				->join('contests', 'contests.id', '=', 'preapproved_users.contest_id', 'left outer')
+				->join('center_contest', 'center_contest.contest_id', '=', 'preapproved_users.contest_id', 'left outer')
+				->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
+				->join('contest_course', 'contest_course.contest_id', '=', 'preapproved_users.contest_id', 'left outer')
+				->join('courses', 'courses.id', '=', 'contest_course.course_id', 'left outer')
+				->select('preapproved_users.id as preapproved_users_id','preapproved_users.email as email', 'preapproved_users.name as name',
+				'preapproved_users.lastname as lastname', 'preapproved_users.personal_id as personal_id', 'preapproved_users.activated as activated',
+				'preapproved_users.type as type',
+				'centers.id as center_id', 'centers.name as center_name',
+				'courses.id as course_id', 'courses.name as course_name')
+				->where('preapproved_users.activated', '=', false)
+				->whereIn('contest_course.course_id', $courses_ids)
+				->orWhereIn('center_contest.center_id', $centers_ids)
+				->groupBy('preapproved_users.id', 'centers.id', 'courses.id')
+				->get();
+
 		}
 
 		return response()->json([
-			'helpers' => $helpers
+			'helpers' => $helpers,
+			'pendings' => $pendings
 			]);
 
 			return response()->json([ 'message' => 'No autorizado' ], 404);
