@@ -136,6 +136,8 @@ Route::get('/profile', ['before' => 'jwt-auth',
 
   Route::resource('contests', 'ContestController');
 
+  Route::get('contests/{id}/discard', 'ContestController@discard');
+
   Route::resource('courses', 'CourseController');
 
   Route::resource('course_coordinators', 'CourseCoordinatorController');

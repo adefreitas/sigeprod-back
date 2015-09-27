@@ -39,8 +39,9 @@ class CreateTeacherHelpersTable extends Migration {
 
 			$table->integer('status');
 			$table->timestamps();
+			$table->softDeletes();
 		});
-		
+
 		Schema::create('teacher_helpers', function(Blueprint $table)
 		{
 			$table->increments('id');

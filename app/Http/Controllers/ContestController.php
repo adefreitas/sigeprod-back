@@ -677,7 +677,10 @@ class ContestController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		//
+		Contest::find($id)->delete();
+
+		return response()->json(['success' => true]);
+		
 	}
 
 }
