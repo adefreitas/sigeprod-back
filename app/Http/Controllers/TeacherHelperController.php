@@ -166,16 +166,6 @@ class TeacherHelperController extends Controller {
 		}
 
 		/**
-		* Show the form for creating a new resource.
-		*
-		* @return Response
-		*/
-		public function create()
-		{
-			//
-		}
-
-		/**
 		* Store a newly created resource in storage.
 		*
 		* @return Response
@@ -193,18 +183,58 @@ class TeacherHelperController extends Controller {
 		*/
 		public function show($id)
 		{
-			//
-		}
+			try {
+				JWTAuth::parseToken();
+				$token = JWTAuth::getToken();
+			} catch (Exception $e){
+					return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+			}
+			$tokenOwner = JWTAuth::toUser($token);
 
-		/**
-		* Show the form for editing the specified resource.
-		*
-		* @param  int  $id
-		* @return Response
-		*/
-		public function edit($id)
-		{
-			//
+			$user = User::where('email', $tokenOwner->email)->first();
+
+			if($user->id == $id){
+				$helper = \DB::table('teacher_helpers_users')
+				->join('teacher_helpers', 'teacher_helpers.id', '=', 'teacher_helpers_users.teacher_helper_id')
+				->join('users', 'users.id', '=', 'teacher_helpers_users.user_id')
+				->join('courses_teacher_helpers', 'courses_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id', 'left outer')
+				->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id', 'left outer')
+				->join('centers_teacher_helpers', 'centers_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id', 'left outer')
+				->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id', 'left outer')
+				// ->where('teacher_helpers_users.active', '=', true)
+				->orderBy('teacher_helpers.type', 'asc')
+				->orderBy('users.id', 'asc')
+				->select(
+				'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
+				'users.id as user_id', 'users.local_phone', 'users.cell_phone',
+				'users.state', 'users.municipality', 'users.address',
+				'teacher_helpers.id as teacher_helper_id',
+				'courses.name as course_name', 'courses.id as course_id',
+				'centers.name as center_name', 'centers.id as center_id',
+				'teacher_helpers.updated_at', 'teacher_helpers.created_at',
+				'teacher_helpers_users.id as thu_id',
+				'teacher_helpers.type as type', 'courses_teacher_helpers.active as course_active', 'centers_teacher_helpers.active as center_active',
+				'teacher_helpers_users.contest_id'
+				)
+				->where('users.id', '=', $id)
+				->first();
+
+
+				$pre = \DB::table('preapproved_users')
+				->where('email', '=', $helper->user_email)
+				->orderBy('updated_at', 'desc')
+				->get();
+				$helper->files = \DB::table('fileentries')
+				->where('fileentries.preapproved_id', '=', $pre[0]->id)
+				->orderBy('updated_at', 'desc')
+				->get();
+
+				return response()->json([
+					'helper' => $helper
+					]);
+			}
+			return response()->json([ 'message' => 'No autorizado' ], 404);
+
 		}
 
 		/**

@@ -9,6 +9,7 @@ use App\Contest;
 use App\Notification;
 use App\TeacherHelper;
 use App\Http\Requests;
+use Bican\Roles\Models\Role;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 
@@ -167,7 +168,7 @@ class UserController extends Controller {
 			\DB::table('preapproved_users')
 			->where('id', '=', $id)
 			->delete();
-			
+
 			return response()->json(['success' => true]);
 		}
 		else{
@@ -209,6 +210,7 @@ class UserController extends Controller {
 		$newUser = ($user == null);
 
 		if($newUser){
+			$role = Role::where('slug', '=', 'teacherhelper')->first();
 			$user = User::create([
 				'name' => $preapproved->name,
 				'lastname' => $preapproved->lastname,
@@ -216,6 +218,7 @@ class UserController extends Controller {
 				'password' => Hash::make($preapproved->password),
 				'id' => $preapproved->personal_id
 			]);
+			$user->attachRole($role->id);
 		}
 
 		$user->name = $preapproved->name;
