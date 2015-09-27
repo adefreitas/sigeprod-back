@@ -165,6 +165,22 @@ class UserController extends Controller {
 	public function updatePreapprovedUser(Request $request, $id) //función para actualizar el estado de los usuarios preaprobados
 	{
 		if($request->discard){
+
+
+			$preapproved_user = \DB::table('preapproved_users')
+			->where('id', '=', $id)
+			->first();
+
+			TeacherHelper::where('reserved_for', '=', $preapproved_user->contest_id)
+			->where('type', '=', $preapproved_user->type)
+			->where('available', '=', true)
+			->first()
+			->update([
+				"available" => true,
+				"reserved" => false,
+				"reserved_for" => null
+			]);
+
 			\DB::table('preapproved_users')
 			->where('id', '=', $id)
 			->delete();
