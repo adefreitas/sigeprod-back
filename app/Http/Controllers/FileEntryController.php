@@ -24,7 +24,7 @@ class FileEntryController extends Controller {
 
 		$id = \DB::table('preapproved_users')
 			->where('personal_id', '=', $request["id"])
-			->where('activated', '=', false)
+			// ->where('activated', '=', false)
 			->orderBy('updated_at', 'desc')
 			->first()
 			->id;
