@@ -13,51 +13,52 @@ class TeacherHelper extends Model {
 	}
 
 	public function setCourse($course_id, $contest_id){
+		if(count($course_id)){
+			$user = $this->user->first();
+			\Log::info($this);
+			\Log::info($user);
+			$helper = \DB::table('teacher_helpers_users')
+				->where('active', '=', true)
+				->where('user_id', '=', $user->id)
+				// ->where('contest_id', '=', $contest_id)
+				->select('id')
+				->first();
 
-		$user = $this->user->first();
-		\Log::info($this);
-		\Log::info($user);
-		$helper = \DB::table('teacher_helpers_users')
-			->where('active', '=', true)
-			->where('user_id', '=', $user->id)
-			// ->where('contest_id', '=', $contest_id)
-			->select('id')
-			->first();
+			$result = \DB::table('courses_teacher_helpers')
+				->insert([
+					"course_id" => $course_id,
+					"helper_id" => $helper->id,
+					"created_at" => Carbon::now(),
+					"updated_at" => Carbon::now()
+			]);
 
-		$result = \DB::table('courses_teacher_helpers')
-			->insert([
-				"course_id" => $course_id,
-				"helper_id" => $helper->id,
-				"created_at" => Carbon::now(),
-				"updated_at" => Carbon::now()
-		]);
+			return $result;
 
-		return $result;
-
+		}
 	}
 
 	public function setCenter($center_id, $contest_id){
+		if(count($center_id)){
+			$user = $this->user->first();
+			\Log::info($this);
+			\Log::info($this->user);
+			\Log::info($user);
+			$helper = \DB::table('teacher_helpers_users')
+				->where('active', '=', true)
+				->where('teacher_helper_id', '=', $this->id)
+				// ->where('contest_id', '=', $contest_id)
+				->select('id')
+				->first();
+			$result = \DB::table('centers_teacher_helpers')
+				->insert([
+					"center_id" => $center_id,
+					"helper_id" => $helper->id,
+					"created_at" => Carbon::now(),
+					"updated_at" => Carbon::now()
+			]);
 
-		$user = $this->user->first();
-		\Log::info($this);
-		\Log::info($this->user);
-		\Log::info($user);
-		$helper = \DB::table('teacher_helpers_users')
-			->where('active', '=', true)
-			->where('teacher_helper_id', '=', $this->id)
-			// ->where('contest_id', '=', $contest_id)
-			->select('id')
-			->first();
-
-		$result = \DB::table('centers_teacher_helpers')
-			->insert([
-				"center_id" => $center_id,
-				"helper_id" => $helper->id,
-				"created_at" => Carbon::now(),
-				"updated_at" => Carbon::now()
-		]);
-
-		return $result;
+			return $result;
+		}
 	}
 
 	public function courses(){
@@ -200,6 +201,8 @@ class TeacherHelper extends Model {
 		$this->reserved_for = null;
 		$this->reserved = false;
 		$this->available = true;
+
+		$this->save();
 
 		$helpers = \DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)

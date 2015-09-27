@@ -72,7 +72,7 @@ class UserController extends Controller {
 	{
 		//
 	}
-	
+
 	/**
 	 * Show the form for editing the specified resource.
 	 *
@@ -156,7 +156,7 @@ class UserController extends Controller {
 		$user = \DB::table('preapproved_users')
 			->where('personal_id', '=', $id)
 			->where('activated', '=', false)
-			->first();
+			->get();
 
 		return response()->json(['user' => $user]);
 	}
@@ -190,12 +190,6 @@ class UserController extends Controller {
 	}
 
 	public function createPreapprovedUser(Request $request, $id){ //función para registrar o actualizar a los usuarios preaprobados
-		$exists = \DB::table('preapproved_users')
-			->where('personal_id', '=', $request->personal_id)
-			->where('activated', '=', false)
-			->orderBy('created_at', 'desc')
-			->first();
-
 		$preapproved = $request;
 
 		if($preapproved == null){
@@ -203,7 +197,7 @@ class UserController extends Controller {
 		}
 
 		$user = User::find($id);
-		$newUser = $user == null;
+		$newUser = ($user == null);
 
 		if($newUser){
 			$user = User::create([
@@ -220,18 +214,36 @@ class UserController extends Controller {
 		$user->email = $preapproved->email;
 		$user->password = Hash::make($preapproved->password);
 
-
-
-		// $preapproved->activated = true;
-
-		// $preapproved->save();
-
 		$user->save();
 
-		$contest = Contest::find($preapproved->contest_id);
+		$preapprovedUsers = \DB::table('preapproved_users')
+			->where('personal_id', '=', $request->personal_id)
+			->where('activated', '=', false)
+			->get();
 
-		$center = $contest->center;
-		$course = $contest->course;
+		$contestsIds = array();
+
+		foreach ($preapprovedUsers as $preapprovedUser) {
+				array_push($contestsIds, $preapprovedUser->contest_id);
+		}
+
+		$centersIds = array();
+		$coursesIds = array();
+		$centersInfo = array();
+		$coursesInfo = array();
+
+		$contests = Contest::whereIn("id", $contestsIds)->get();
+
+		foreach ($contests as $contest) {
+			if(count($contest->center)){
+				array_push($centersIds, $contest->center->first()->id);
+				array_push($centersInfo, Center::find($contest->center->first()->id));
+			}
+			if(count($contest->course)){
+				array_push($coursesIds, $contest->course->first()->id);
+				array_push($coursesInfo, Course::find($contest->course->first()->id));
+			}
+		}
 
 		$isHelper = false;
 
@@ -263,21 +275,38 @@ class UserController extends Controller {
 					TeacherHelper::where('type', '=', $preapproved->type)
 						->where('available', '=', true)
 						->where('reserved', '=', true)
-						->where('reserved_for', '=', $contest->contest_id)
+						->where('reserved_for', '=', $preapproved->contest_id)
 						->update([
 							'reserved' => false,
 							'reserved_for' => null,
 							'available' => true
 					]);
-					$helper->user()->attach($user->id, ['contest_id'=> $preapproved->contest_id, 'type' => $preapproved->type]);
 
-					if(count($center) > 0){
-						$center = $center[0]->id;
-						$helper->setCenter($center, $preapproved->contest_id);
-					}
-					if(count($course) > 0){
-						$course = $course[0]->id;
-						$helper->setCourse($course, $preapproved->contest_id);
+					foreach ($preapprovedUsers as $preapprovedUser) {
+
+						$contests = Contest::where("id", "=", $preapprovedUser->contest_id)->get();
+
+						TeacherHelper::where('type', '=', $preapprovedUser->type)
+							->where('available', '=', true)
+							->where('reserved', '=', true)
+							->where('reserved_for', '=', $preapprovedUser->contest_id)
+							->first()
+							->update([
+								'reserved' => false,
+								'reserved_for' => null,
+								'available' => true
+						]);
+
+						foreach ($contests as $contest) {
+							$helper->user()->attach($user->id, ['contest_id'=> $preapprovedUser->contest_id, 'type' => $preapprovedUser->type]);
+
+							if(count($contest->center)){
+								$helper->setCenter($contest->center->first()->id, $preapprovedUser->contest_id);
+							}
+							if(count($contest->course)){
+								$helper->setCourse($contest->course->first()->id, $preapprovedUser->contest_id);
+							}
+						}
 					}
 
 					$helper->available = false;
@@ -291,7 +320,33 @@ class UserController extends Controller {
 
 					$foundHelper->available = false;
 
-					$foundHelper->user()->attach($id, ['contest_id'=> $preapproved->contest_id, 'type' => $preapproved->type]);
+					foreach ($preapprovedUsers as $preapprovedUser) {
+
+						$contests = Contest::where("id", "=", $preapprovedUser->contest_id)->get();
+
+						TeacherHelper::where('type', '=', $preapprovedUser->type)
+							->where('available', '=', true)
+							->where('reserved', '=', true)
+							->where('reserved_for', '=', $preapprovedUser->contest_id)
+							->first()
+							->update([
+								'reserved' => false,
+								'reserved_for' => null,
+								'available' => true
+						]);
+
+						foreach ($contests as $contest) {
+							$foundHelper->user()->attach($user->id, ['contest_id'=> $preapprovedUser->contest_id, 'type' => $preapprovedUser->type]);
+
+							if(count($contest->center)){
+								$foundHelper->setCenter($contest->center->first()->id, $preapprovedUser->contest_id);
+							}
+							if(count($contest->course)){
+								$foundHelper->setCourse($contest->course->first()->id, $preapprovedUser->contest_id);
+							}
+						}
+					}
+
 					$foundHelper->save();
 
 					foreach($centers as $center_item){
@@ -306,17 +361,12 @@ class UserController extends Controller {
 
 					$foundHelper->save();
 
-					if(count($center) > 0){
-						foreach($center as $ce){
-							$foundHelper->setCenter($ce->id, $ce->contest_id);
-						}
-					}
-
-					if(count($course) > 0){
-						foreach($course as $co){
-							$foundHelper->setCourse($co->id, $co->contest_id);
-						}
-					}
+					// foreach($centersIds as $centerId){
+					// 	$foundHelper->setCenter($centerId, $preapproved->contest_id);
+					// }
+					// foreach($coursesIds as $courseId){
+					// 	$foundHelper->setCourse($courseId, $preapproved->contest_id);
+					// }
 
 					$foundHelper->save();
 
@@ -332,16 +382,41 @@ class UserController extends Controller {
 
 
 			if($helper){
-				$helper->user()->attach($user->id, ['contest_id'=> $preapproved->contest_id, 'type' => $preapproved->type]);
 
-				if(count($center) > 0){
-					$center = $center[0]->id;
-					$helper->setCenter($center, $preapproved->contest_id);
+				foreach ($preapprovedUsers as $preapprovedUser) {
+
+					$contests = Contest::where("id", "=", $preapprovedUser->contest_id)->get();
+
+					TeacherHelper::where('type', '=', $preapprovedUser->type)
+						->where('available', '=', true)
+						->where('reserved', '=', true)
+						->where('reserved_for', '=', $preapprovedUser->contest_id)
+						->first()
+						->update([
+							'reserved' => false,
+							'reserved_for' => null,
+							'available' => true
+					]);
+
+					foreach ($contests as $contest) {
+						$helper->user()->attach($user->id, ['contest_id'=> $preapprovedUser->contest_id, 'type' => $preapprovedUser->type]);
+
+						if(count($contest->center)){
+							$helper->setCenter($contest->center->first()->id, $preapprovedUser->contest_id);
+						}
+						if(count($contest->course)){
+							$helper->setCourse($contest->course->first()->id, $preapprovedUser->contest_id);
+						}
+					}
 				}
-				if(count($course) > 0){
-					$course = $course[0]->id;
-					$helper->setCourse($course, $preapproved->contest_id);
-				}
+
+
+				// foreach($centersIds as $centerId){
+				// 	$helper->setCenter($centerId, $preapproved->contest_id);
+				// }
+				// foreach($coursesIds as $courseId){
+				// 	$helper->setCourse($courseId, $preapproved->contest_id);
+				// }
 
 				$helper->available = false;
 				$helper->save();
@@ -350,18 +425,14 @@ class UserController extends Controller {
 				return response()->json(['error' => 'No hay plazas disponibles para éste tipo de preparador'], 404);
 			}
 		}
-		$thu = \DB::table('preapproved_users')
-			->where('personal_id', '=', $request->personal_id)
-			->where('activated', '=', false)
-			->select('id')
-			->get();
 
 		\DB::table('preapproved_users')
-			->where('id', '=', $thu[0]->id)
+			->where('personal_id', '=', $request->personal_id)
 			->update([
 				"activated" => true
 			]);
-		return response()->json(['success'=>true]);
+
+		return response()->json(['success'=>true, 'centers' => $centersInfo, 'courses' => $coursesInfo, 'newUser' => $newUser]);
 
 	}
 

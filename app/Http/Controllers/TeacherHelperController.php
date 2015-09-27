@@ -31,7 +31,7 @@ class TeacherHelperController extends Controller {
 
 		$helpers = [];
 
-		if($user->is('departmenthead') || $user->is('departmentsecretary')){
+		if($user->is('departmenthead') || $user->is('departmentsecretary') || $user->is('directionsecretary')){
 
 			$helpers = \DB::table('teacher_helpers_users')
 			->join('teacher_helpers', 'teacher_helpers.id', '=', 'teacher_helpers_users.teacher_helper_id')
@@ -376,7 +376,7 @@ class TeacherHelperController extends Controller {
 						foreach($old_courses_ids as $old_course_id){
 							$newhelper->setCourse($old_course_id, $request->contest_id);
 						}
-
+						$newhelper->save();
 						$currenthelper->clear();
 
 						\DB::table('teacher_helpers_users')

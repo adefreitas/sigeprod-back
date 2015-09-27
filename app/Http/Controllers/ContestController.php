@@ -44,50 +44,63 @@ class ContestController extends Controller {
 	     *  Si el usuario es coordinador de materia y coordinador de centro
 	     */
 	    if($user->is('coursecoordinator') && $user->is('centercoordinator')){
+				$centers = $user->professor->centerCoordinator;
+				$courses = $user->professor->courseCoordinator;
 
-			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
-				->join('users', 'users.id', '=', 'professors.user_id')
-				->join('contest_course', 'contest_course.contest_id', '=', 'contests.id', 'left outer')
-				->join('courses', 'courses.id', '=', 'contest_course.course_id', 'left outer')
-				->join('center_contest', 'center_contest.contest_id', '=', 'contests.id', 'left outer')
-				->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
-				->select(
-					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
-					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
-					'courses.name as course_name', 'courses.id as course_id',
-					'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
+				$centers_ids = array();
+				$courses_ids = array();
 
-				)
-				->orderBy('contests.created_at', 'desc')
-				->get();
+				foreach($centers as $center){
+					array_push($centers_ids, $center->id);
+				}
+				foreach($courses as $course){
+					array_push($courses_ids, $course->id);
+				}
 
-			$result = array();
-
-			foreach($everything as $item){
-				$item->observations =
-					Observation::where('contest_id', '=', $item->contest_id)
-					->join('users', 'users.id', '=', 'observations.user_id')
-					->orderBy('observations.created_at', 'desc')
+				$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
+					->join('users', 'users.id', '=', 'professors.user_id')
+					->join('contest_course', 'contest_course.contest_id', '=', 'contests.id', 'left outer')
+					->join('courses', 'courses.id', '=', 'contest_course.course_id', 'left outer')
+					->join('center_contest', 'center_contest.contest_id', '=', 'contests.id', 'left outer')
+					->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
 					->select(
-						'observations.created_at', 'observations.description',
-						'users.lastname', 'users.name', 'users.id as user_id',
-						'observations.id as observation_id'
+						'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
+						'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
+						'courses.name as course_name', 'courses.id as course_id',
+						'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
 					)
+					->whereIn('contest_course.course_id', $courses_ids)
+					->orWhereIn('contest_center.center_id', $centers_ids)
+					->orderBy('contests.created_at', 'desc')
 					->get();
 
-				$item->preapproved_users =
-					PreapprovedUser::where('contest_id', '=', $item->contest_id)
-					->orderBy('preapproved_users.type', 'asc')
-					->orderBy('preapproved_users.personal_id', 'asc')
-					->select(
-						'preapproved_users.name', 'preapproved_users.lastname', 'preapproved_users.email',
-						'preapproved_users.personal_id', 'preapproved_users.name', 'preapproved_users.type',
-						'preapproved_users.contest_id'
-					)
-					->get();
+				$result = array();
 
-				array_push($result, $item);
-			}
+				foreach($everything as $item){
+					$item->observations =
+						Observation::where('contest_id', '=', $item->contest_id)
+						->join('users', 'users.id', '=', 'observations.user_id')
+						->orderBy('observations.created_at', 'desc')
+						->select(
+							'observations.created_at', 'observations.description',
+							'users.lastname', 'users.name', 'users.id as user_id',
+							'observations.id as observation_id'
+						)
+						->get();
+
+					$item->preapproved_users =
+						PreapprovedUser::where('contest_id', '=', $item->contest_id)
+						->orderBy('preapproved_users.type', 'asc')
+						->orderBy('preapproved_users.personal_id', 'asc')
+						->select(
+							'preapproved_users.name', 'preapproved_users.lastname', 'preapproved_users.email',
+							'preapproved_users.personal_id', 'preapproved_users.name', 'preapproved_users.type',
+							'preapproved_users.contest_id'
+						)
+						->get();
+
+					array_push($result, $item);
+				}
 
 	        return response()->json([
 	            'contests' => $result,

@@ -31,7 +31,7 @@ class CreateSemesterPlanningTable extends Migration {
 	 */
 	public function down()
 	{
-		//
+		Schema::drop('semester_planning');
 	}
 
 }
