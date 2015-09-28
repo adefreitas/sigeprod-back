@@ -176,7 +176,6 @@ class UserController extends Controller {
 			->where('available', '=', true)
 			->first()
 			->update([
-				"available" => true,
 				"reserved" => false,
 				"reserved_for" => null
 			]);
@@ -288,7 +287,7 @@ class UserController extends Controller {
 			if($isHelper){
 				$foundHelper = TeacherHelper::where('type', '=', $preapproved->type)
 					->where('available', '=', true)
-					->where('reserved', '=', true)
+					->where('reserved', '=', false)
 					->first();
 
 				$helper_id = \DB::table('teacher_helpers_users')
