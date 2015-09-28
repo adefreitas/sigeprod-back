@@ -75,10 +75,9 @@ Route::post('/recover', function() {
         'password' => \Hash::make($random)
       ]);
 
-       return response()->json(['message' => 'success',
-                    'user' => $user,
-                    'from' => env('CONTACT_MAIL')
-                  ]);
+       return response()->json(['message' => 'success', 
+                            'user' => $user
+                        ]);
 });
 
 Route::get('/profile', ['before' => 'jwt-auth',
@@ -105,16 +104,6 @@ Route::get('/profile', ['before' => 'jwt-auth',
         ]);
     }
 ]);
-
-  Route::get('/mailer', function()
-        {
-
-          Mail::send('emails.test', ['name' => 'Dani'], function($message)
-          {
-              $message->to("danielhg7@gmail.com", "Daniel")->from('noreply@sigeprod.com', 'SIGEPROD')->subject('Welcome!');
-          });
-        }
-  );
 
   Route::resource('semesterplanning', 'SemesterPlanningController');
 
