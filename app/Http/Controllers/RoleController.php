@@ -140,8 +140,6 @@ class RoleController extends Controller {
 		        //     'proposition_sent' => false
 		        // ]);
 
-						echo $professor;
-
 						$professor->save();
 
 
@@ -255,68 +253,57 @@ class RoleController extends Controller {
 
 			$check = $userToAddRole -> getRoles()->contains('slug', $request->role['slug']);
 
-			if(!$check)
-			{
+			$isThereCoordinator = Course::find($request->course['id'])->courseCoordinator()->get()->first();
 
-				$isThereCoordinator = Course::find($request->course['id'])->courseCoordinator()->get()->first();
+			if($isThereCoordinator == null) {
 
-				if($isThereCoordinator == null) {
+				$professorToAddRole = Professor::where('user_id', $userToAddRole->id)->get()->first();
 
-					$professorToAddRole = Professor::where('user_id', $userToAddRole->id)->get()->first();
+				if($professorToAddRole != null) {
 
-					if($professorToAddRole != null) {
+					$userToAddRole -> attachRole($roleToAttach);
 
-						$userToAddRole -> attachRole($roleToAttach);
-
-						$course = Course::find($request->course['id']);
+					$course = Course::find($request->course['id']);
 
 
-				        $course->courseCoordinator()->attach(
-				            User::where('id', $id)->firstOrFail()->professor
-				        );
+			        $course->courseCoordinator()->attach(
+			            User::where('id', $id)->firstOrFail()->professor
+			        );
 
-				        $course->save();
+			        $course->save();
 
-				        $notification = Notification::create([
-							'creator_id' => $user->id,
-							'receptor_id' => $userToAddRole->id,
-							'read' => '0',
-							'redirection' => 'courseCoordinator.helperContest',
-							'message'  => 'le ha asignado el rol de '.$request->role['description'],
-							'creator_role' => 'departmenthead'
-						]);
-
-						Log::create([
-							'user_id' => $user->id,
-							'activity' => 'Le asignó el rol de '.$request->role['description'].' al profesor ' . $userToAddRole->name . ' ' . $userToAddRole->lastname
-						]);
-
-				        return response()->json([
-				        	'success' => true,
-							'message' => 'El coordinador ha sido asignado a la materia satisfactoriamente'
-						]);
-				    }
-				    else {
-						return response()->json([
-								'success' => false,
-								'message' => 'El usuario no posee el rol de profesor, por lo tanto no puede ser coordinador de materia',
-								'center_coordinator' => $isThereCoordinator
-							]);
-					}
-				}
-
-				else {
-					return response()->json([
-						'success' => false,
-						'message' => 'La materia ya posee coordinador'
+			        $notification = Notification::create([
+						'creator_id' => $user->id,
+						'receptor_id' => $userToAddRole->id,
+						'read' => '0',
+						'redirection' => 'courseCoordinator.helperContest',
+						'message'  => 'le ha asignado el rol de '.$request->role['description'],
+						'creator_role' => 'departmenthead'
 					]);
+
+					Log::create([
+						'user_id' => $user->id,
+						'activity' => 'Le asignó el rol de '.$request->role['description'].' al profesor ' . $userToAddRole->name . ' ' . $userToAddRole->lastname
+					]);
+
+			        return response()->json([
+			        	'success' => true,
+						'message' => 'El coordinador ha sido asignado a la materia satisfactoriamente'
+					]);
+			    }
+			    else {
+					return response()->json([
+							'success' => false,
+							'message' => 'El usuario no posee el rol de profesor, por lo tanto no puede ser coordinador de materia',
+							'center_coordinator' => $isThereCoordinator
+						]);
 				}
 			}
 
 			else {
 				return response()->json([
-	        		'success' => false,
-					'message' => 'El usuario ya posee el rol especificado'
+					'success' => false,
+					'message' => 'La materia ya posee coordinador'
 				]);
 			}
 		}
