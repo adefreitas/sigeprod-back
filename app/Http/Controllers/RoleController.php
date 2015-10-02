@@ -326,14 +326,49 @@ class RoleController extends Controller {
 			{
 				$userToAddRole -> attachRole($roleToAttach);
 
-				$notification = Notification::create([
-					'creator_id' => $user->id,
-					'receptor_id' => $userToAddRole->id,
-					'read' => '0',
-					'redirection' => '',
-					'message'  => 'le ha asignado el rol de '.$request->role['description'],
-					'creator_role' => 'departmenthead'
-				]);
+				if($request->role['slug']== "departmenthead"){
+					$notification = Notification::create([
+						'creator_id' => $user->id,
+						'receptor_id' => $userToAddRole->id,
+						'read' => '0',
+						'redirection' => 'admin.log',
+						'message'  => 'le ha asignado el rol de '.$request->role['description'],
+						'creator_role' => 'departmenthead'
+					]);
+				}
+				
+				else if($request->role['slug']== "admin") {
+					$notification = Notification::create([
+						'creator_id' => $user->id,
+						'receptor_id' => $userToAddRole->id,
+						'read' => '0',
+						'redirection' => 'admin.log',
+						'message'  => 'le ha asignado el rol de '.$request->role['description'],
+						'creator_role' => 'departmenthead'
+					]);
+				}
+
+				else if($request->role['slug']== "departmentsecretary" || $request->role['slug']== "directionsecretary") {
+					$notification = Notification::create([
+						'creator_id' => $user->id,
+						'receptor_id' => $userToAddRole->id,
+						'read' => '0',
+						'redirection' => 'secretary.semesterPlanning',
+						'message'  => 'le ha asignado el rol de '.$request->role['description'],
+						'creator_role' => 'departmenthead'
+					]);
+				}
+
+				else {
+					$notification = Notification::create([
+						'creator_id' => $user->id,
+						'receptor_id' => $userToAddRole->id,
+						'read' => '0',
+						'redirection' => '',
+						'message'  => 'le ha asignado el rol de '.$request->role['description'],
+						'creator_role' => 'departmenthead'
+					]);
+				}
 
 				$professorToAddRole = Professor::where('user_id', $userToAddRole->id)->get()->first();
 
