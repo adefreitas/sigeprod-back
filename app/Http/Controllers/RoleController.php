@@ -183,13 +183,13 @@ class RoleController extends Controller {
 								'receptor_id' => $userToAddRole->id,
 								'read' => '0',
 								'redirection' => 'centerCoordinator.semesterPlanning',
-								'message'  => 'le ha asignado el rol de Coordinador de Centro',
+								'message'  => 'le ha asignado el rol de '.$request->role['description'],
 								'creator_role' => 'departmenthead'
 							]);
 
 							Log::create([
 								'user_id' => $user->id,
-								'activity' => 'Le asignó el rol de Coordinador de Centro al profesor ' . $userToAddRole->name . ' ' . $userToAddRole->lastname
+								'activity' => 'Le asignó el rol de '.$request->role['description'].' al profesor ' . $userToAddRole->name . ' ' . $userToAddRole->lastname
 							]);
 
 					        return response()->json([
@@ -265,6 +265,20 @@ class RoleController extends Controller {
 
 				        $course->save();
 
+				        $notification = Notification::create([
+							'creator_id' => $user->id,
+							'receptor_id' => $userToAddRole->id,
+							'read' => '0',
+							'redirection' => 'courseCoordinator.helperContest',
+							'message'  => 'le ha asignado el rol de '.$request->role['description'],
+							'creator_role' => 'departmenthead'
+						]);
+
+						Log::create([
+							'user_id' => $user->id,
+							'activity' => 'Le asignó el rol de '.$request->role['description'].' al profesor ' . $userToAddRole->name . ' ' . $userToAddRole->lastname
+						]);
+
 				        return response()->json([
 				        	'success' => true,
 							'message' => 'El coordinador ha sido asignado a la materia satisfactoriamente'
@@ -301,6 +315,31 @@ class RoleController extends Controller {
 			if(!$check)
 			{
 				$userToAddRole -> attachRole($roleToAttach);
+
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userToAddRole->id,
+					'read' => '0',
+					'redirection' => '',
+					'message'  => 'le ha asignado el rol de '.$request->role['description'],
+					'creator_role' => 'departmenthead'
+				]);
+
+				$professorToAddRole = Professor::where('user_id', $userToAddRole->id)->get()->first();
+
+				if($professorToAddRole != null) {
+					Log::create([
+						'user_id' => $user->id,
+						'activity' => 'Le asignó el rol de '.$request->role['description'].' al profesor ' . $userToAddRole->name . ' ' . $userToAddRole->lastname
+					]);
+				}
+
+				else {
+					Log::create([
+						'user_id' => $user->id,
+						'activity' => 'Le asignó el rol de '.$request->role['description'].' al usuario ' . $userToAddRole->name . ' ' . $userToAddRole->lastname
+					]);
+				}
 
 				return response()->json([
 					'success' => true,
@@ -356,6 +395,20 @@ class RoleController extends Controller {
 
 				$userToDeleteRole -> detachRole($roleToDetach);
 
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userToDeleteRole->id,
+					'read' => '0',
+					'redirection' => '',
+					'message'  => 'le ha eliminado el rol de '.$request->role['description'],
+					'creator_role' => 'departmenthead'
+				]);
+
+				Log::create([
+					'user_id' => $user->id,
+					'activity' => 'Le eliminó el rol de '.$request->role['description'].' al profesor ' . $userToDeleteRole->name . ' ' . $userToDeleteRole->lastname
+				]);
+
 				return response()->json([
 					'success' => true,
 					'message' => 'El rol ha sido eliminado satisfactoriamente'
@@ -388,6 +441,20 @@ class RoleController extends Controller {
 
 					$userToDeleteRole -> detachRole($roleToDetach);
 
+					$notification = Notification::create([
+						'creator_id' => $user->id,
+						'receptor_id' => $userToDeleteRole->id,
+						'read' => '0',
+						'redirection' => '',
+						'message'  => 'le ha eliminado el rol de '.$request->role['description'],
+						'creator_role' => 'departmenthead'
+					]);
+
+					Log::create([
+						'user_id' => $user->id,
+						'activity' => 'Le eliminó el rol de '.$request->role['description'].' al profesor ' . $userToDeleteRole->name . ' ' . $userToDeleteRole->lastname
+					]);
+
 					return response()->json([
 						'success' => true,
 						'message' => 'El rol ha sido eliminado satisfactoriamente',
@@ -419,6 +486,32 @@ class RoleController extends Controller {
 			if($check) {
 
 				$userToDeleteRole -> detachRole($roleToDetach);
+
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userToDeleteRole->id,
+					'read' => '0',
+					'redirection' => '',
+					'message'  => 'le ha eliminado el rol de '.$request->role['description'],
+					'creator_role' => 'departmenthead'
+				]);
+
+				$professorToDeleteRole = Professor::where('user_id', $userToDeleteRole->id)->get()->first();
+
+				if($professorToDeleteRole != null) {
+					Log::create([
+						'user_id' => $user->id,
+						'activity' => 'Le eliminó el rol de '.$request->role['description'].' al profesor ' . $userToDeleteRole->name . ' ' . $userToDeleteRole->lastname
+					]);
+				}
+
+				else {
+					Log::create([
+						'user_id' => $user->id,
+						'activity' => 'Le eliminó el rol de '.$request->role['description'].' al usuario ' . $userToDeleteRole->name . ' ' . $userToDeleteRole->lastname
+					]);
+				}
+				
 
 				return response()->json([
 					'success' => true,
