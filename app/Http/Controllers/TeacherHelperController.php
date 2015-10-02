@@ -271,8 +271,9 @@ class TeacherHelperController extends Controller {
 			'teacher_helpers_users.contest_id'
 			)
 			->first();
-
-			$data = array('name'=>'John Smith', 'date'=>'1/29/15', 'id' => $id, 'helper' => $helper);
+			$today = Carbon::now();
+			$todayFormated = Carbon::createFromFormat('d/M/Y', $today)->toDateString();
+			$data = array('name'=>'John Smith', 'date'=> $todayFormated, 'id' => $id, 'helper' => $helper);
 			$pdf = \DPDF::loadView('prueba', $data);
 			return $pdf->stream('temp.pdf');
 

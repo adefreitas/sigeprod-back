@@ -128,18 +128,30 @@ class RoleController extends Controller {
 			if(!$check)
 			 {
 
-		        $professor =   Professor::create([
-		            'dedication' => $request->dedication['name'],
-		            'center_id' => '44',
-		            'status' => 'Activo',
-		            'proposition_sent' => false
-		        ]);
+				 		$professor = new Professor;
+						$professor->dedication = $request->dedication['name'];
+						$professor->center_id = $request->center['id'];
+						$professor->status = 'Activo';
+						$professor->proposition_sent = false;
+		        // $professor =   Professor::create([
+		        //     'dedication' => $request->dedication['name'],
+		        //     'center_id' => $request->center['id'],
+		        //     'status' => 'Activo',
+		        //     'proposition_sent' => false
+		        // ]);
+
+						echo $professor;
+
+						$professor->save();
+
 
 		        $professor->user()->associate($userToAddRole);
 
 	        	$professor->save();
 
 	        	$userToAddRole -> attachRole($roleToAttach);
+
+						$userToAddRole->save();
 
 	        	return response()->json([
 	        		'success' => true,
@@ -154,7 +166,7 @@ class RoleController extends Controller {
 				]);
 			}
 
-        	
+
 		}
 
 		else if($request->role['slug'] == "centercoordinator") {
@@ -214,8 +226,8 @@ class RoleController extends Controller {
 								'center_coordinator' => $isThereCoordinator
 							]);
 					}
-					
-					
+
+
 				}
 
 				else {
@@ -234,9 +246,9 @@ class RoleController extends Controller {
 				]);
 			}
 
-			
 
-			
+
+
 		}
 
 		else if($request->role['slug']== "coursecoordinator") {
@@ -356,7 +368,7 @@ class RoleController extends Controller {
 				]);
 			}
 		}
-		
+
 
 	}
 
@@ -511,7 +523,7 @@ class RoleController extends Controller {
 						'activity' => 'Le eliminó el rol de '.$request->role['description'].' al usuario ' . $userToDeleteRole->name . ' ' . $userToDeleteRole->lastname
 					]);
 				}
-				
+
 
 				return response()->json([
 					'success' => true,
@@ -525,7 +537,7 @@ class RoleController extends Controller {
 					'message' => 'El usuario no posee el rol especificado'
 				]);
 			}
-			
+
 		}
 	}
 

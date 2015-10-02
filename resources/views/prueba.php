@@ -63,7 +63,7 @@
 
 				<br>
 
-				<h6 class="text-right"><b>FECHA: //2015</b></h6>
+				<h6 class="text-right"><b>FECHA: </b></h6>
 
 				<hr>
 

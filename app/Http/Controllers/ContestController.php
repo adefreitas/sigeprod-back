@@ -50,12 +50,6 @@ class ContestController extends Controller {
 				$centers_ids = array();
 				$courses_ids = array();
 
-				/*return response()->json([
-		        	'success' => true,
-					'courses' => $courses,
-					'centers' => $centers
-				]);*/
-
 				foreach($centers as $center){
 					array_push($centers_ids, $center->id);
 				}
@@ -76,7 +70,7 @@ class ContestController extends Controller {
 						'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
 					)
 					->whereIn('contest_course.course_id', $courses_ids)
-					->orWhereIn('contest_center.center_id', $centers_ids)
+					->orWhereIn('center_contest.center_id', $centers_ids)
 					->orderBy('contests.created_at', 'desc')
 					->get();
 
@@ -120,12 +114,6 @@ class ContestController extends Controller {
 		else if($user->is('coursecoordinator')){
 
 			$course = $user->Professor->courseCoordinator[0];
-
-			/*return response()->json([
-	        	'success' => true,
-				'message' => 'El coordinador ha sido asignado a la materia satisfactoriamente',
-				'course' => $course
-			]);*/
 
 			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
 				->join('users', 'users.id', '=', 'professors.user_id')
@@ -692,7 +680,7 @@ class ContestController extends Controller {
 		Contest::find($id)->delete();
 
 		return response()->json(['success' => true]);
-		
+
 	}
 
 }
