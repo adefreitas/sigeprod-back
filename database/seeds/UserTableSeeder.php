@@ -352,8 +352,6 @@ class UserTableSeeder extends Seeder {
 
         $user->attachRole($role_cm);
 
-        $user->attachRole($role_cc);
-
         $professor = Professor::create([
           'dedication' => 'Medio Tiempo',
           'center_id' => '33',
