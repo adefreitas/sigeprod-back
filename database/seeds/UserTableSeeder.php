@@ -164,17 +164,6 @@ class UserTableSeeder extends Seeder {
 
         $user->attachRole($role_cc);
 
-        $professor = Professor::create([
-          'dedication' => 'Completa',
-          'center_id' => '11',
-          'status' => 'Activo',
-          'proposition_sent' => false
-        ]);
-
-        $professor->user()->associate($user);
-
-        $professor->save();
-
                 /**********************************************************
         ***************** Coordinador de Centro 22 ****************
         ***********************************************************/
@@ -186,7 +175,6 @@ class UserTableSeeder extends Seeder {
           'lastname' => 'Carmona'
         ]);
 
-        $user->attachRole($role_cc);
         $user -> attachRole($role_profesor);
 
         $professor = Professor::create([

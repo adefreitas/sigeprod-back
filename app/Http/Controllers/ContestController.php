@@ -50,6 +50,12 @@ class ContestController extends Controller {
 				$centers_ids = array();
 				$courses_ids = array();
 
+				/*return response()->json([
+		        	'success' => true,
+					'courses' => $courses,
+					'centers' => $centers
+				]);*/
+
 				foreach($centers as $center){
 					array_push($centers_ids, $center->id);
 				}
@@ -114,6 +120,12 @@ class ContestController extends Controller {
 		else if($user->is('coursecoordinator')){
 
 			$course = $user->Professor->courseCoordinator[0];
+
+			/*return response()->json([
+	        	'success' => true,
+				'message' => 'El coordinador ha sido asignado a la materia satisfactoriamente',
+				'course' => $course
+			]);*/
 
 			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
 				->join('users', 'users.id', '=', 'professors.user_id')

@@ -107,6 +107,12 @@ Route::get('/profile', ['before' => 'jwt-auth',
 
   Route::resource('semesterplanning', 'SemesterPlanningController');
 
+  Route::resource('roles', 'RoleController');
+
+  Route::put('roles/{id}/addRoleToUser', 'RoleController@addRoleToUser');
+
+  Route::put('roles/{id}/deleteRoleToUser', 'RoleController@deleteRoleToUser');
+
   Route::get('users/{id}/professor', 'ProfessorController@professor');
 
   Route::get('professors/propositions', 'ProfessorController@showWithPropositions');
