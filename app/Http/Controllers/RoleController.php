@@ -128,11 +128,11 @@ class RoleController extends Controller {
 			if(!$check)
 			 {
 
-				 		$professor = new Professor;
-						$professor->dedication = $request->dedication['name'];
-						$professor->center_id = $request->center['id'];
-						$professor->status = 'Activo';
-						$professor->proposition_sent = false;
+		 		$professor = new Professor;
+				$professor->dedication = $request->dedication['name'];
+				$professor->center_id = $request->center['id'];
+				$professor->status = 'Activo';
+				$professor->proposition_sent = false;
 		        // $professor =   Professor::create([
 		        //     'dedication' => $request->dedication['name'],
 		        //     'center_id' => $request->center['id'],
@@ -140,16 +140,27 @@ class RoleController extends Controller {
 		        //     'proposition_sent' => false
 		        // ]);
 
-						$professor->save();
-
-
 		        $professor->user()->associate($userToAddRole);
 
 	        	$professor->save();
 
 	        	$userToAddRole -> attachRole($roleToAttach);
 
-						$userToAddRole->save();
+				$userToAddRole->save();
+
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userToAddRole->id,
+					'read' => '0',
+					'redirection' => 'professor.semesterPlanning',
+					'message'  => 'le ha asignado el rol de '.$request->role['description'],
+					'creator_role' => 'departmenthead'
+				]);
+
+				Log::create([
+					'user_id' => $user->id,
+					'activity' => 'Le asignó el rol de '.$request->role['description'].' al usuario ' . $userToAddRole->name . ' ' . $userToAddRole->lastname
+				]);
 
 	        	return response()->json([
 	        		'success' => true,
