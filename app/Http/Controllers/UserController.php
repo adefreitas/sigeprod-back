@@ -258,12 +258,12 @@ class UserController extends Controller {
 		if($userToDelete != null) {
 			$userToDelete->delete();
 
-			return response()->json(['success' => true, 
+			return response()->json(['success' => true,
 					'message' => "El usuario ha sido eliminado satisfactoriamente"]);
 		}
 
 		else {
-			return response()->json(['success' => false, 
+			return response()->json(['success' => false,
 					'message' => "El usuario especificado no se encuentra registrado en el sistema"]);
 		}
 
@@ -309,24 +309,34 @@ class UserController extends Controller {
 				->where('id', '!=', $request->id)
 				->where('activated', '=', true)
 				->first();
+
 			if($user){
 				$user = User::find($id);
 				$user->name = $request->name;
 				$user->lastname = $request->lastname;
 				$user->email = $request->email;
 				$user->save();
-				return response()->json(['success'=>true]);
+				return response()->json(['success'=>"asdf"]);
 			}
 			else{
-				$user = \DB::table('preapproved_users')
-				->where('personal_id', '=', $id)
-				->update([
-					'personal_id' => $request->personal_id,
-					'name' => $request->name,
-					'lastname' => $request->lastname,
-					'email' => $request->email
-				]);
-				return response()->json(['success' => true]);
+				$checkingEmail = User::where("email", "=", $request->email)->get();
+				// echo $checkingEmail;
+				if(count($checkingEmail) > 0){
+					return response()->json(['error' => 'Ya existe un usuario con ese correo'], 404);
+				}
+				else{
+					$user = \DB::table('preapproved_users')
+					->where('personal_id', '=', $id)
+					->update([
+						'personal_id' => $request->personal_id,
+						'name' => $request->name,
+						'lastname' => $request->lastname,
+						'email' => $request->email
+					]);
+					return response()->json(['success' => true]);
+				}
+
+
 			}
 		}
 	}
@@ -340,7 +350,10 @@ class UserController extends Controller {
 
 		$user = User::find($id);
 		$newUser = ($user == null);
-
+		$checkingEmail = User::where("email", "=", $preapproved->email)->get();
+		if($newUser && $checkingEmail->count() > 0){
+			return response()->json(['error' => 'Ya existe un usuario con ese correo'], 404);
+		}
 		if($newUser){
 			$role = Role::where('slug', '=', 'teacherhelper')->first();
 			$user = User::create([
@@ -575,6 +588,46 @@ class UserController extends Controller {
 			->update([
 				"activated" => true
 			]);
+
+
+			$secretaries =  User::join("role_user", "role_user.user_id", "=", "users.id")
+				->join("roles", "roles.id", "=", "role_user.role_id")
+				->where("slug", "=", "directionsecretary")
+				->select("users.id")
+				->get();
+
+			foreach($secretaries as $secretary){
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $secretary->id,
+					'read' => '0',
+					'redirection' => 'secretary.manageTeacherHelpers',
+					'message'  => 'se ha registrado como preparador',
+					'creator_role' => ''
+				]);
+			}
+
+			foreach($centersInfo as $centerInfo){
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $centerInfo->centerCoordinator->first()->user->id,
+					'read' => '0',
+					'redirection' => 'centerCoordinator.manageTeacherHelpers',
+					'message'  => 'se ha registrado como preparador',
+					'creator_role' => ''
+				]);
+			}
+			foreach($coursesInfo as $courseInfo){
+				$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $courseInfo->courseCoordinator->first()->user->id,
+					'read' => '0',
+					'redirection' => 'courseCoordinator.manageTeacherHelpers',
+					'message'  => 'se ha registrado como preparador',
+					'creator_role' => ''
+				]);
+			}
+
 
 		return response()->json(['success'=>true, 'centers' => $centersInfo, 'courses' => $coursesInfo, 'newUser' => $newUser]);
 

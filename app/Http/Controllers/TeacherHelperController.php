@@ -78,7 +78,7 @@ class TeacherHelperController extends Controller {
 				'preapproved_users.type as type',
 				'centers.id as center_id', 'centers.name as center_name',
 				'courses.id as course_id', 'courses.name as course_name')
-				->where('activated', '=', false)
+				->where('preapproved_users.activated', '=', false)
 				->groupBy('preapproved_users.id', 'centers.id', 'courses.id')
 				->get();
 
@@ -149,9 +149,9 @@ class TeacherHelperController extends Controller {
 				'preapproved_users.type as type',
 				'centers.id as center_id', 'centers.name as center_name',
 				'courses.id as course_id', 'courses.name as course_name')
-				->where('preapproved_users.activated', '=', false)
 				->whereIn('contest_course.course_id', $courses_ids)
 				->orWhereIn('center_contest.center_id', $centers_ids)
+				->where('preapproved_users.activated', '=', false)
 				->groupBy('preapproved_users.id', 'centers.id', 'courses.id')
 				->get();
 
