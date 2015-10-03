@@ -168,9 +168,8 @@ class ContestController extends Controller {
 	     */
 
 	    else if($user->is('centercoordinator')){
-
+				
 			$center = $user->Professor->centerCoordinator[0];
-
 			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
 				->join('users', 'users.id', '=', 'professors.user_id')
 				->join('contest_course', 'contest_course.contest_id', '=', 'contests.id', 'left outer')
