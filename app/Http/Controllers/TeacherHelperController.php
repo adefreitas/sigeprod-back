@@ -224,11 +224,20 @@ class TeacherHelperController extends Controller {
 				->where('email', '=', $helper->user_email)
 				->orderBy('updated_at', 'desc')
 				->get();
-				$helper->files = \DB::table('fileentries')
-				->where('fileentries.preapproved_id', '=', $pre[0]->id)
-				->orderBy('updated_at', 'desc')
-				->get();
 
+				$files = array();
+				$types = array("id","rif","proof","kardex","bank","photo");
+
+				foreach($types as $type){
+					array_push($files, \DB::table('fileentries')
+					->where('fileentries.preapproved_id', '=', $pre[0]->id)
+					->orderBy('updated_at', 'desc')
+					->where('type', '=', $type)
+					->first());
+				}
+
+
+				$helper->files = $files;
 				return response()->json([
 					'helper' => $helper
 					]);
