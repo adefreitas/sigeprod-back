@@ -33,7 +33,7 @@ class RoleController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
-		$roles = Role::select('id','name','slug','description')->get();
+		$roles = Role::get();
 
 		return response()->json([
 	            'roles' => $roles,

@@ -58,9 +58,38 @@ class UserController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
-		//
+		$user = new User();
+
+		$user->name = $request->name;
+
+		$user->lastname = $request->lastname;
+
+		$user->email = $request->email;
+
+		$user->alternate_email = $request->alternate_email;
+
+		$user->local_phone = $request->local_phone;
+
+		$user->cell_phone = $request->cell_phone;
+
+		$user->state = $request->state;
+
+		$user->municipality = $request->municipality;
+
+		$user->address = $request->address;
+
+		$user->password = \Hash::make($request->password);
+
+		$user->save();
+
+		Log::create([
+				'user_id' => $user->id,
+				'activity' => 'Creó el usuario con el id: ' . $user->id
+			]);
+
+		return response()->json(['success' => true]);
 	}
 
 	/**
@@ -104,13 +133,12 @@ class UserController extends Controller {
 
 		$user = User::where('email', $tokenOwner->email)->first();
 
-		Log::create([
-			'user_id' => $user->id,
-			'activity' => 'Actualizó su perfil de usuario: ' . $id
-		]);
-
-
 		if($user->id == $id){
+
+			Log::create([
+				'user_id' => $user->id,
+				'activity' => 'Actualizó su perfil de usuario: ' . $id
+			]);
 
 			$user->name = $request->name;
 			$user->lastname = $request->lastname;
@@ -131,13 +159,65 @@ class UserController extends Controller {
 				'creator_id' => $user->id,
 				'receptor_id' => $receptor->id,
 				'read' => '0',
-				'redirection' => 'user.dashboard',
+				'redirection' => 'admin.log',
 				'message'  => 'ha actualizado su perfil de usuario',
 				'creator_role' => 'professor'
 			]);
 
 			return response()->json(['success' => true]);
 
+		}
+
+		else if($request->role == "admin") {
+
+			$userToUpdate = User::where('id',$id)->get()->first();
+			$userToUpdate->name = $request->name;
+			$userToUpdate->lastname = $request->lastname;
+			$userToUpdate->email = $request->email;
+			$userToUpdate->alternate_email = $request->alternate_email;
+			$userToUpdate->password = \Hash::make($request->password);
+			$userToUpdate->local_phone = $request->local_phone;
+			$userToUpdate->cell_phone = $request->cell_phone;
+			$userToUpdate->state = $request->state;
+			$userToUpdate->municipality = $request->municipality;
+			$userToUpdate->address = $request->address;
+
+			$userToUpdate->save();
+
+			$departmentHead = User::join('role_user','role_user.user_id', '=', 'users.id')
+				->join('roles','roles.id', '=', 'role_user.role_id')
+				->where('roles.slug', 'departmenthead')
+				->select('roles.slug as role_slug','users.id as user_id')
+				->get();
+
+			foreach($departmentHead as $item){
+				if($user->id != $item->user_id){
+					$notification = Notification::create([
+						'creator_id' => $user->id,
+						'receptor_id' => $item->user_id,
+						'read' => '0',
+						'redirection' => 'admin.log',
+						'message'  => 'ha actualizado el perfil de '. $userToUpdate->name. ' '. $userToUpdate->lastname,
+						'creator_role' => 'admin'
+					]);
+				}
+			}
+
+			$notification = Notification::create([
+					'creator_id' => $user->id,
+					'receptor_id' => $userToUpdate->id,
+					'read' => '0',
+					'redirection' => '',
+					'message'  => 'ha actualizado su perfil',
+					'creator_role' => 'admin'
+				]);
+
+			Log::create([
+				'user_id' => $user->id,
+				'activity' => 'Actualizó el perfil del usuario con id: ' . $id
+			]);
+
+			return response()->json(['success' => true, 'jefes' => $departmentHead]);
 		}
 	}
 
@@ -149,7 +229,20 @@ class UserController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		//
+		$userToDelete = User::where('id', $id)->get()->first();
+
+		if($userToDelete != null) {
+			$userToDelete->delete();
+
+			return response()->json(['success' => true, 
+					'message' => "El usuario ha sido eliminado satisfactoriamente"]);
+		}
+
+		else {
+			return response()->json(['success' => false, 
+					'message' => "El usuario especificado no se encuentra registrado en el sistema"]);
+		}
+
 	}
 	public function showPreapprovedUser(Request $request, $id) //función para enviar a la vista la información de los usuarios preaprobados
 	{
