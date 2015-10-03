@@ -168,7 +168,7 @@ class ContestController extends Controller {
 	     */
 
 	    else if($user->is('centercoordinator')){
-				
+
 			$center = $user->Professor->centerCoordinator[0];
 			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
 				->join('users', 'users.id', '=', 'professors.user_id')
@@ -602,6 +602,39 @@ class ContestController extends Controller {
 									"created_at" => Carbon::now(),
 									"updated_at" => Carbon::now()
 							]);
+							$type;
+							if($item["type"] == 1){
+								$type = "Preparador I";
+							}
+							else if($item["type"] == 2){
+								$type = "Preparador II";
+							}
+							else{
+								$type = "Auxiliar Docente";
+							}
+							$place;
+							$placetype;
+							if(count($contest->course) > 0){
+								$place = " [".$contest->course()->first()->id."] ".$contest->course()->first()->name;
+								$placetype = " la materia ";
+							}
+							if(count($contest->center) > 0){
+								$place = " [".$contest->center()->first()->id."] ".$contest->center()->first()->name;
+								$placetype = " el centro ";
+							}
+							$message = "Usted ha resultado ganador de la plaza de ".$type." para".$placetype.$place.". Por favor ingrese al sistema SIGEPROD para completar o actualizar sus datos";
+							\Mail::send('emails.notification', ['name' => $item["name"], 'lastname' => $item["lastname"], 'bodyMessage' => $message], function($message) use ($item)
+				        {
+				             //remitente
+				            $message->from('noreply@sigeprod.com', 'SIGEPROD');
+
+				            //asunto
+				            $message->subject("Ha resultado ganador de un concurso");
+
+				            //receptor
+				            $message->to($item["email"], $item["name"] + ' ' + $item["lastname"]);
+
+				        });
 						}
 					}
 				}
