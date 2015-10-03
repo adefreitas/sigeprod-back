@@ -165,6 +165,68 @@ class TeacherHelperController extends Controller {
 			return response()->json([ 'message' => 'No autorizado' ], 404);
 		}
 
+		public function idunico(Request $request, $id)
+		{
+			try {
+				JWTAuth::parseToken();
+				$token = JWTAuth::getToken();
+			} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+			}
+
+			$tokenOwner = JWTAuth::toUser($token);
+
+			$user = User::where('email', $tokenOwner->email)->first();
+
+			//editar
+			if ($request->status == 1) {
+				DB::table('teacher_helpers')
+            		->where('id', '=', $request->id)
+            		->update(['id' => $request->nuevo]);
+
+            	return response()->json(['success'=>true]);
+			}
+			//borrar
+			else if ($request->status == 2) {
+				DB::table('teacher_helpers')
+					->where('id', '=', $request->id)->delete();
+
+				return response()->json(['success'=>true]);
+			}
+			//agregar
+			else if ($request->status == 3) {
+				DB::table('users')
+					->insert(['id' => $request->nuevo, 'available' => $request->available, 'reserved' => $request->reserved]);
+
+				return response()->json(['success'=>true]);
+			}
+		}
+
+		public function buscarid()
+		{
+			try {
+				JWTAuth::parseToken();
+				$token = JWTAuth::getToken();
+			} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+			}
+
+			$tokenOwner = JWTAuth::toUser($token);
+
+			$user = User::where('email', $tokenOwner->email)->first();
+
+			$buscar = \DB::table('teacher_helpers')
+				->where('available', '=', true)
+				->where('reserved', '=', false)
+				->orderBy('id', 'desc')
+				->select('id')
+				->get();
+
+			return response()->json(['id' => $buscar]);
+
+		}
+
+
 		/**
 		* Store a newly created resource in storage.
 		*
