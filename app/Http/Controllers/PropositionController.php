@@ -288,7 +288,7 @@ class PropositionController extends Controller {
 
 		else if($request->status == 2) {
 
-			$propositionId = Proposition::where('professor_id', $id)->select('id')->where('active', true)->first();
+			$propositionId = Proposition::where('professor_id', $id)->where('active', true)->select('id')->first();
 
 			$previousRejection = Rejection::where('user_id', $userModified->id)->first();
 
@@ -301,6 +301,7 @@ class PropositionController extends Controller {
 				Rejection::create([
 				'description' => $request->rejectionMessage,
 				'active' => true,
+				'limit_days' => $request->rejectionDays,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 			]);
@@ -311,7 +312,8 @@ class PropositionController extends Controller {
 
 				Rejection::create([
 				'description' => $request->rejectionMessage,
-				'active' => 'true',
+				'active' => true,
+				'limit_days' => $request->rejectionDays,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 				]);
@@ -436,6 +438,7 @@ class PropositionController extends Controller {
 				Rejection::create([
 				'description' => $request->rejectionMessage,
 				'active' => true,
+				'limit_days' => $request->rejectionDays,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 			]);
@@ -447,6 +450,7 @@ class PropositionController extends Controller {
 				Rejection::create([
 				'description' => $request->rejectionMessage,
 				'active' => 'true',
+				'limit_days' => $request->rejectionDays,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 				]);

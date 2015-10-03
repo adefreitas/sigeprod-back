@@ -56,7 +56,9 @@ Route::post('/recover', function() {
 
     $user = User::where('email', $email)->first();
 
+    // Se genera una clave de recuperación de 10 caracteres
     $random = str_random(10);
+
         //se envia el array y la vista lo recibe en llaves individuales {{ $name }} , {{ $lastname }}...
        \Mail::send('emails.recover', ['name' => $user['name'], 'lastname' => $user['lastname'], 'password' => $random], function($message) use ($user)
        {
