@@ -423,7 +423,48 @@ class RoleController extends Controller {
 		$roleToDetach = Role::where('id', $request->role['id'])->first();
 
 		if($request->role['slug']== "professor") {
+			$check = $userToDeleteRole -> getRoles()->contains('slug', $request->role['slug']);
+			if($check) {
+				$professorToDeleteRole = Professor::where('user_id', $userToDeleteRole->id)->get()->first();
 
+				if($professorToDeleteRole != null) {
+					$professorToDeleteRole->delete();
+					$userToDeleteRole -> detachRole($roleToDetach);
+
+					$notification = Notification::create([
+						'creator_id' => $user->id,
+						'receptor_id' => $userToDeleteRole->id,
+						'read' => '0',
+						'redirection' => '',
+						'message'  => 'le ha eliminado el rol de '.$request->role['description'],
+						'creator_role' => 'departmenthead'
+					]);
+
+					Log::create([
+						'user_id' => $user->id,
+						'activity' => 'Le eliminó el rol de '.$request->role['description'].' al usuario ' . $userToDeleteRole->name . ' ' . $userToDeleteRole->lastname
+					]);
+
+					return response()->json([
+						'success' => true,
+						'message' => 'El rol ha sido eliminado satisfactoriamente'
+					]);
+				}
+
+				else {
+					return response()->json([
+						'success' => false,
+						'message' => 'El usuario no posee el rol especificado'
+					]);
+				}
+			}
+
+			else {
+				return response()->json([
+					'success' => false,
+					'message' => 'El usuario no posee el rol especificado'
+				]);
+			}
 		}
 
 		else if($request->role['slug']== "centercoordinator") {
