@@ -60,33 +60,44 @@ class UserController extends Controller {
 	 */
 	public function store(Request $request)
 	{
-		$user = new User();
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
 
-		$user->name = $request->name;
+		$tokenOwner = JWTAuth::toUser($token);
 
-		$user->lastname = $request->lastname;
+		$user = User::where('email', $tokenOwner->email)->first();
 
-		$user->email = $request->email;
+		$userToCreate = new User();
 
-		$user->alternate_email = $request->alternate_email;
+		$userToCreate->name = $request->name;
 
-		$user->local_phone = $request->local_phone;
+		$userToCreate->lastname = $request->lastname;
 
-		$user->cell_phone = $request->cell_phone;
+		$userToCreate->email = $request->email;
 
-		$user->state = $request->state;
+		$userToCreate->alternate_email = $request->alternate_email;
 
-		$user->municipality = $request->municipality;
+		$userToCreate->local_phone = $request->local_phone;
 
-		$user->address = $request->address;
+		$userToCreate->cell_phone = $request->cell_phone;
 
-		$user->password = \Hash::make($request->password);
+		$userToCreate->state = $request->state;
 
-		$user->save();
+		$userToCreate->municipality = $request->municipality;
+
+		$userToCreate->address = $request->address;
+
+		$userToCreate->password = \Hash::make($request->password);
+
+		$userToCreate->save();
 
 		Log::create([
 				'user_id' => $user->id,
-				'activity' => 'Creó el usuario con el id: ' . $user->id
+				'activity' => 'Creó el usuario con el id: ' . $userToCreate->id
 			]);
 
 		return response()->json(['success' => true]);
