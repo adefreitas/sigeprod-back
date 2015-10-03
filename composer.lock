@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d19cd55ccc09a53655659adc50f4ca6c",
+    "hash": "c0caa900cd7e0751ad8544ed614a42d5",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -646,6 +646,75 @@
                 "password"
             ],
             "time": "2014-11-20 16:49:30"
+        },
+        {
+            "name": "itbz/fpdf",
+            "version": "1.7.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hanneskod/fpdf.git",
+                "reference": "06d02a7bf227a62d37691a4e7e9c3a35efcb41c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hanneskod/fpdf/zipball/06d02a7bf227a62d37691a4e7e9c3a35efcb41c3",
+                "reference": "06d02a7bf227a62d37691a4e7e9c3a35efcb41c3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "fpdf": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "no usage restriction"
+            ],
+            "description": "Unofficial PSR-0 compliant version of the FPDF library",
+            "homepage": "http://www.fpdf.org/",
+            "time": "2013-12-27 14:18:15"
+        },
+        {
+            "name": "itbz/fpdi",
+            "version": "1.5.2-patch2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hanneskod/fpdi.git",
+                "reference": "0dd5fb8da3c8d157f6efa87b4888b261e6d524dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hanneskod/fpdi/zipball/0dd5fb8da3c8d157f6efa87b4888b261e6d524dd",
+                "reference": "0dd5fb8da3c8d157f6efa87b4888b261e6d524dd",
+                "shasum": ""
+            },
+            "require": {
+                "itbz/fpdf": "1.7.*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*",
+                "tecnick.com/tcpdf": "6.*"
+            },
+            "suggest": {
+                "tecnick.com/tcpdf": "FPDI supports TCPDF as a replacement of FPDF."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "fpdi": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Unofficial PSR-0 compliant version of the FPDI library",
+            "time": "2014-07-30 11:04:43"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -1443,6 +1512,44 @@
                 "x509"
             ],
             "time": "2015-01-28 21:50:33"
+        },
+        {
+            "name": "plugmystore/pdf-merger",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/plugmystore/pdf-merger.git",
+                "reference": "8ae0e60e9d7960391d69d8441732c9358e025b8e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/plugmystore/pdf-merger/zipball/8ae0e60e9d7960391d69d8441732c9358e025b8e",
+                "reference": "8ae0e60e9d7960391d69d8441732c9358e025b8e",
+                "shasum": ""
+            },
+            "require": {
+                "itbz/fpdi": "1.5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/PDFMerger/PDFMerger.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Paul Clegg",
+                    "email": "paul@clegginabox.co.uk"
+                }
+            ],
+            "description": "PDF File Merger for PHP5",
+            "homepage": "https://github.com/plugmystore/pdf-merger",
+            "keywords": [
+                "merge",
+                "pdf"
+            ],
+            "time": "2015-07-10 15:34:10"
         },
         {
             "name": "psr/log",

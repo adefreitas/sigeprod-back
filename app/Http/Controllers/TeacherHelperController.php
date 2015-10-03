@@ -281,10 +281,34 @@ class TeacherHelperController extends Controller {
 			)
 			->first();
 			$today = Carbon::now();
-			$todayFormated = Carbon::createFromFormat('d/M/Y', $today)->toDateString();
-			$data = array('name'=>'John Smith', 'date'=> $todayFormated, 'id' => $id, 'helper' => $helper);
-			$pdf = \DPDF::loadView('prueba', $data);
-			return $pdf->stream('temp.pdf');
+			// $todayFormated = Carbon::createFromFormat('d/M/Y', $today)->toDateString();
+			$data = array('name'=>'John Smith', 'id' => $id, 'helper' => $helper);
+			$pdf = \DPDF::loadView('prueba', $data)->setPaper('a4');
+			$pdf->save('temp.pdf');
+
+
+			$mergerpdf = new \Clegginabox\PDFMerger\PDFMerger;
+
+			$storagePath  = \Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
+
+			$mergerpdf->addPDF('temp.pdf', 'all');
+
+			$kardexFileName = \App\Fileentry::where('filename', '=', $id.'kardex.pdf')->orderBy('updated_at', 'desc')->first();
+			$kardexFile = \Storage::disk('local')->get($kardexFileName->filename);
+
+			$rifFileName = \App\Fileentry::where('filename', '=', $id.'rif.pdf')->orderBy('updated_at', 'desc')->first();
+			$rifFile = \Storage::disk('local')->get($rifFileName->filename);
+
+			// $idFileName = \App\Fileentry::where('type', '=', 'id')->where('filename', 'like', $id."%")->orderBy('updated_at', 'desc')->first();
+			// $idFile = \Storage::disk('local')->get($idFileName->filename);
+
+			$mergerpdf->addPDF($storagePath."/".$kardexFileName->filename);
+			$mergerpdf->addPDF($storagePath."/".$rifFileName->filename);
+			// $mergerpdf->addPDF($storagePath."/".$idFileName->filename);
+
+			// $mergerpdf->addPDF($rifFile);
+			return $mergerpdf->merge('browser','P');
+
 
 			// $pdf = \DPDF::loadHTML('<h1>Test</h1>');
 			// return $pdf->download('invoice.pdf');

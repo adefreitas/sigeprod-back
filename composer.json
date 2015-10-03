@@ -11,7 +11,8 @@
 		"barryvdh/laravel-dompdf": "0.6.*",
 		"bican/roles": "1.7.*",
 		"nitmedia/wkhtml2pdf": "dev-master",
-		"guzzlehttp/guzzle": "~5.0"
+		"guzzlehttp/guzzle": "~5.0",
+		"plugmystore/pdf-merger": "^0.1.1"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",
