@@ -350,7 +350,7 @@ class TeacherHelperController extends Controller {
 		* @return Response
 		*/
 
-		public function prueba($id)
+		public function prueba($id, $type, $status)
 		{
 			$helper = \DB::table('teacher_helpers_users')
 			->join('teacher_helpers', 'teacher_helpers.id', '=', 'teacher_helpers_users.teacher_helper_id')
@@ -378,8 +378,45 @@ class TeacherHelperController extends Controller {
 			)
 			->first();
 			$today = Carbon::now();
+			$message;
+			$type_desc;
+			if($type == 1){
+				$type_desc = "PREPARADOR I";
+			}
+			else if($type == 2){
+				$type_desc = "PREPARADOR II";
+			}
+			else if($type == 3){
+				$type_desc = "AUXILIAR DOCENTE";
+			}
+			if($status == 0){
+				$message = "NOMBRAMIENTO DE LA Ó EL <b>BR.</b> COMO " . $type_desc . " EN LA ASIGNATURA A  PARTIR DEL <b> ____/____/________ </b> ";
+			}
+			else if($status == 3 || $status < 0){
+				$message = "RETIRO DE LA Ó EL <b>BR.</b> COMO " . $type_desc . " EN LA ASIGNATURA A  PARTIR DEL <b> ____/____/________ </b> ";
+			}
+			else if($status == 4){
+				$message = "AUMENTO DE HORAS DE <b>PREPARADOR I</b> a <b>PREPARADOR II</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+			}
+			else if($status == 5){
+				$message = "AUMENTO DE HORAS DE <b>PREPARADOR I</b> a <b>AUXILIAR DOCENTE</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+			}
+			else if($status == 6){
+				$message = "AUMENTO DE HORAS DE <b>PREPARADOR II</b> a <b>AUXILIAR DOCENTE</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+			}
+			else if($status == 7){
+				$message = "DISMINUCIÓN DE HORAS DE <b>PREPARADOR II</b> a <b>PREPARADOR I</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+			}
+			else if($status == 8){
+				$message = "DISMINUCIÓN DE HORAS DE <b>AUXILIAR DOCENTE</b> a <b>PREPARADOR I</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+			}
+			else if($status == 9){
+				$message = "DISMINUCIÓN DE HORAS DE <b>AUXILIAR DOCENTE</b> a <b>PREPARADOR II</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+			}
+
+
 			// $todayFormated = Carbon::createFromFormat('d/M/Y', $today)->toDateString();
-			$data = array('name'=>'John Smith', 'id' => $id, 'helper' => $helper);
+			$data = array('id' => $id, 'helper' => $helper, 'message' => $message);
 			$pdf = \DPDF::loadView('prueba', $data)->setPaper('a4');
 			$pdf->save('temp.pdf');
 
@@ -449,7 +486,7 @@ class TeacherHelperController extends Controller {
 				->first();
 
 			//Si se esta ratificando el preparador para ese concurso, se modifica la fecha de actualizacion
-			if(!$request->retiring)
+			if(!$request->retiring && !$request->finish)
 			{
 
 				\DB::table('teacher_helpers_users')
@@ -464,7 +501,7 @@ class TeacherHelperController extends Controller {
 
 			}
 			//Sino
-			else if($request->retiring)
+			else if($request->retiring && !$request->finish)
 			{
 				\Log::info('current->type'.$current->type);
 				$current_type = $current->type;
@@ -604,6 +641,15 @@ class TeacherHelperController extends Controller {
 					}
 					return response()->json(['success' => true]);
 				}
+			}
+			else if($request->finish){
+				TeacherHelper::where('id', '=', $request->teacher_helper_id)
+					->update([
+						'available' => true,
+						'reserved' => false,
+						'reserved_for' => null,
+						'status' => 0
+				]);
 			}
 			return response()->json(['success', true]);
 		}

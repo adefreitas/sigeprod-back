@@ -68,7 +68,7 @@
 				<hr>
 
 				<h6 class="text-left">
-					<b>ASUNTO:</b> NOMBRAMIENTO DE LA Ó EL <b>BR.</b> COMO PREPARADOR II EN LA ASIGNATURA A  PARTIR DEL <b> ____/____/________ </b> PREVIA APROBACION DE CONSEJO DE ESCUELA  EN SESION DEL DIA: <b> ____/____/________</b>
+					<b>ASUNTO:</b> <?php echo $message;?> PREVIA APROBACION DE CONSEJO DE ESCUELA  EN SESION DEL DIA: <b> ____/____/________</b>
 				</h6>
 
 				<hr>

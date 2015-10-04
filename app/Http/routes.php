@@ -77,7 +77,7 @@ Route::post('/recover', function() {
         'password' => \Hash::make($random)
       ]);
 
-       return response()->json(['message' => 'success', 
+       return response()->json(['message' => 'success',
                             'user' => $user
                         ]);
 });
@@ -165,7 +165,7 @@ Route::get('/profile', ['before' => 'jwt-auth',
 
   Route::get('fileentry', 'FileEntryController@index');
 
-  Route::get('prueba/{id}', 'TeacherHelperController@prueba');
+  Route::get('prueba/{id}/{type}/{status}', 'TeacherHelperController@prueba');
 
   Route::get('buscarid', 'TeacherHelperController@buscarid');
 

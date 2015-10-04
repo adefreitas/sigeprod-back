@@ -60,8 +60,11 @@ class CreateTeacherHelpersTable extends Migration {
 				6 = subido de 2 a 3
 				7 = bajado de 2 a 1
 				8 = bajado de 3 a 1
+
+				Negativos -> lo contrario
+				Una vez se retire por consejo de escuela, se actualzia en la vista de gestion de preparadores para que vuelva a 0
 			*/
-			$table->enum('status', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])->default(0);
+			$table->integer('status')->default(0);
 			$table->timestamps();
 		});
 

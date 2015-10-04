@@ -482,26 +482,32 @@ class UserController extends Controller {
 					// 6 = subido de 2 a 3
 					// 7 = bajado de 2 a 1
 					// 8 = bajado de 3 a 1
+					// 9 = bajado de 3 a 2
 
 					if($helper->type == 1 && $foundHelper->type == 2){
 						$foundHelper->status = 4;
+						$helper->status = -4;
 					}
 					if($helper->type == 1 && $foundHelper->type == 3){
 						$foundHelper->status = 5;
+						$helper->status = -5;
 					}
 					if($helper->type == 2 && $foundHelper->type == 3){
 						$foundHelper->status = 6;
+						$helper->status = -6;
 					}
 					if($helper->type == 2 && $foundHelper->type == 1){
 						$foundHelper->status = 7;
+						$helper->status = -7;
 					}
 					if($helper->type == 3 && $foundHelper->type == 1){
 						$foundHelper->status = 8;
+						$helper->status = -8;
 					}
 					if($helper->type == 3 && $foundHelper->type == 2){
 						$foundHelper->status = 9;
+						$helper->status = -9;
 					}
-					$helper->status = 0;
 
 					foreach ($preapprovedUsers as $preapprovedUser) {
 

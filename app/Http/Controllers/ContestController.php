@@ -504,7 +504,7 @@ class ContestController extends Controller {
 		$contest = Contest::find($id);
 
 		// $request = $request->all();
-
+		
 		if($user->is('coursecoordinator') || $user->is('centercoordinator') || $user->is('departmenthead')){
 			if($request->observations){
 				$observation = new Observation();
@@ -547,6 +547,7 @@ class ContestController extends Controller {
 						$helper = TeacherHelper::where('type', '=', 1)
 							->where('available', '=', true)
 							->where('reserved', '=', false)
+							->where('status', '=', 0)
 							->first();
 
 						$helper->reserved = true;
@@ -558,6 +559,7 @@ class ContestController extends Controller {
 						$helper = TeacherHelper::where('type', '=', 2)
 							->where('available', '=', true)
 							->where('reserved', '=', false)
+							->where('status', '=', 0)
 							->first();
 
 						$helper->reserved = true;
@@ -569,6 +571,7 @@ class ContestController extends Controller {
 						$helper = TeacherHelper::where('type', '=', 3)
 							->where('available', '=', true)
 							->where('reserved', '=', false)
+							->where('status', '=', 0)
 							->first();
 
 						$helper->reserved = true;
