@@ -33,30 +33,65 @@ class TeacherHelperController extends Controller {
 
 		if($user->is('departmenthead') || $user->is('departmentsecretary') || $user->is('directionsecretary')){
 
-			$helpers = \DB::table('teacher_helpers_users')
+			$helpers_courses = \DB::table('teacher_helpers_users')
 			->join('teacher_helpers', 'teacher_helpers.id', '=', 'teacher_helpers_users.teacher_helper_id')
 			->join('users', 'users.id', '=', 'teacher_helpers_users.user_id')
-			->join('courses_teacher_helpers', 'courses_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id', 'left outer')
-			->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id', 'left outer')
-			->join('centers_teacher_helpers', 'centers_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id', 'left outer')
-			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id', 'left outer')
+			->join('courses_teacher_helpers', 'courses_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id')
+			->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id')
+			// ->join('centers_teacher_helpers', 'centers_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id', 'left outer')
+			// ->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id', 'left outer')
 			// ->where('teacher_helpers_users.active', '=', true)
 			->orderBy('teacher_helpers.type', 'asc')
+			->orderBy('users.id', 'course_active', 'asc')
+			->select(
+			'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
+			'users.id as user_id', 'users.local_phone', 'users.cell_phone',
+			'users.state', 'users.municipality', 'users.address',
+			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status',
+			'courses.name as course_name', 'courses.id as course_id',
+			// 'centers.name as center_name', 'centers.id as center_id',
+			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
+			'teacher_helpers_users.id as thu_id',
+			// 'centers_teacher_helpers.type as center_type',
+			'courses_teacher_helpers.type as course_type',
+			'courses_teacher_helpers.active as course_active',
+			// 'centers_teacher_helpers.active as center_active',
+			'teacher_helpers_users.contest_id'
+			)
+			// ->groupBy('centers_teacher_helpers.type', 'courses_teacher_helpers.type')
+			// ->distinct()
+			->get();
+
+			$helpers_centers = \DB::table('teacher_helpers_users')
+			->join('teacher_helpers', 'teacher_helpers.id', '=', 'teacher_helpers_users.teacher_helper_id')
+			->join('users', 'users.id', '=', 'teacher_helpers_users.user_id')
+			// ->join('courses_teacher_helpers', 'courses_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id')
+			// ->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id')
+			->join('centers_teacher_helpers', 'centers_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id')
+			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id')
+			// ->where('teacher_helpers_users.active', '=', true)
+			->orderBy('teacher_helpers.type', 'center_active', 'asc')
 			->orderBy('users.id', 'asc')
 			->select(
 			'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
 			'users.id as user_id', 'users.local_phone', 'users.cell_phone',
 			'users.state', 'users.municipality', 'users.address',
-			'teacher_helpers.id as teacher_helper_id',
-			'courses.name as course_name', 'courses.id as course_id',
+			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status',
+			// 'courses.name as course_name', 'courses.id as course_id',
 			'centers.name as center_name', 'centers.id as center_id',
 			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
 			'teacher_helpers_users.id as thu_id',
-			'teacher_helpers.type as type', 'courses_teacher_helpers.active as course_active', 'centers_teacher_helpers.active as center_active',
+			'centers_teacher_helpers.type as center_type',
+			// 'courses_teacher_helpers.type as course_type',
+			// 'courses_teacher_helpers.active as course_active',
+			'centers_teacher_helpers.active as center_active',
 			'teacher_helpers_users.contest_id'
 			)
+			// ->groupBy('centers_teacher_helpers.type', 'courses_teacher_helpers.type')
+			// ->distinct()
 			->get();
 
+			$helpers = array_merge($helpers_courses, $helpers_centers);
 			foreach($helpers as $helper){
 				$pre = \DB::table('preapproved_users')
 				->where('email', '=', $helper->user_email)
@@ -283,7 +318,7 @@ class TeacherHelperController extends Controller {
 
 
 				$pre = \DB::table('preapproved_users')
-				->where('email', '=', $helper->user_email)
+				->where('personal_id', '=', $user->id)
 				->orderBy('updated_at', 'desc')
 				->get();
 
@@ -348,12 +383,34 @@ class TeacherHelperController extends Controller {
 			$pdf = \DPDF::loadView('prueba', $data)->setPaper('a4');
 			$pdf->save('temp.pdf');
 
+			$pre = \DB::table('preapproved_users')
+			->where('personal_id', '=', $helper->user_id)
+			->orderBy('updated_at', 'desc')
+			->get();
 
-			$mergerpdf = new \Clegginabox\PDFMerger\PDFMerger;
+			$files = array();
+			$types = array("id","proof","bank","photo");
 
 			$storagePath  = \Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
 
+			foreach($types as $type){
+				$file = \DB::table('fileentries')
+				->where('fileentries.preapproved_id', '=', $pre[0]->id)
+				->orderBy('updated_at', 'desc')
+				->where('type', '=', $type)
+				->first();
+				array_push($files, $storagePath."/".$file->filename);
+			}
+			$data = array("files" => $files);
+			$pdf2 = \DPDF::loadView('prueba2', $data)->setPaper('a4');
+			$pdf2->save('temp2.pdf');
+
+
+			$mergerpdf = new \Clegginabox\PDFMerger\PDFMerger;
+
+
 			$mergerpdf->addPDF('temp.pdf', 'all');
+			$mergerpdf->addPDF('temp2.pdf', 'all');
 
 			$kardexFileName = \App\Fileentry::where('filename', '=', $id.'kardex.pdf')->orderBy('updated_at', 'desc')->first();
 			$kardexFile = \Storage::disk('local')->get($kardexFileName->filename);

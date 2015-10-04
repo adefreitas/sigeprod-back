@@ -12,7 +12,7 @@ class TeacherHelper extends Model {
 		return $this->belongsToMany('App\User', 'teacher_helpers_users')->withTimestamps();
 	}
 
-	public function setCourse($course_id, $contest_id){
+	public function setCourse($course_id, $contest_id, $type){
 		if(count($course_id)){
 			$user = $this->user->first();
 			\Log::info($this);
@@ -28,6 +28,7 @@ class TeacherHelper extends Model {
 				->insert([
 					"course_id" => $course_id,
 					"helper_id" => $helper->id,
+					"type" 			=> $type,
 					"created_at" => Carbon::now(),
 					"updated_at" => Carbon::now()
 			]);
@@ -37,7 +38,7 @@ class TeacherHelper extends Model {
 		}
 	}
 
-	public function setCenter($center_id, $contest_id){
+	public function setCenter($center_id, $contest_id, $type){
 		if(count($center_id)){
 			$user = $this->user->first();
 			\Log::info($this);
@@ -53,6 +54,7 @@ class TeacherHelper extends Model {
 				->insert([
 					"center_id" => $center_id,
 					"helper_id" => $helper->id,
+					"type" 			=> $type,
 					"created_at" => Carbon::now(),
 					"updated_at" => Carbon::now()
 			]);
@@ -80,8 +82,8 @@ class TeacherHelper extends Model {
 			->whereIn('helper_id', $helper_ids_array)
 			->join('teacher_helpers_users', 'teacher_helpers_users.id', '=', 'courses_teacher_helpers.helper_id')
 			->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id')
-			->groupBy('courses.id', 'teacher_helpers_users.contest_id')
-			->select('courses.id', 'teacher_helpers_users.contest_id')
+			->groupBy('courses.id', 'teacher_helpers_users.contest_id', 'courses_teacher_helpers.type')
+			->select('courses.id', 'teacher_helpers_users.contest_id', 'courses_teacher_helpers.type')
 			->get();
 
 		// return $courses;
@@ -116,8 +118,8 @@ class TeacherHelper extends Model {
 			->whereIn('helper_id', $helper_ids_array)
 			->join('teacher_helpers_users', 'teacher_helpers_users.id', '=', 'centers_teacher_helpers.helper_id')
 			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id')
-			->groupBy('centers.id', 'teacher_helpers_users.contest_id')
-			->select('centers.id', 'teacher_helpers_users.contest_id')
+			->groupBy('centers.id', 'teacher_helpers_users.contest_id','centers_teacher_helpers.type')
+			->select('centers.id', 'teacher_helpers_users.contest_id', 'centers_teacher_helpers.type')
 			->get();
 
 		// $centers_id = array();

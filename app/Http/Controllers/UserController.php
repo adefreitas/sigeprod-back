@@ -428,7 +428,7 @@ class UserController extends Controller {
 
 				$helper = TeacherHelper::find($helper_id);
 				// Si la plaza que ya tenia asignada es mayor, se queda con esa
-				if($foundHelper->type < $helper->type){
+				if($foundHelper->type <= $helper->type){
 					TeacherHelper::where('type', '=', $preapproved->type)
 						->where('available', '=', true)
 						->where('reserved', '=', true)
@@ -477,6 +477,32 @@ class UserController extends Controller {
 
 					$foundHelper->available = false;
 
+					// 4 = subido de 1 a 2
+					// 5 = subido de 1 a 3
+					// 6 = subido de 2 a 3
+					// 7 = bajado de 2 a 1
+					// 8 = bajado de 3 a 1
+
+					if($helper->type == 1 && $foundHelper->type == 2){
+						$foundHelper->status = 4;
+					}
+					if($helper->type == 1 && $foundHelper->type == 3){
+						$foundHelper->status = 5;
+					}
+					if($helper->type == 2 && $foundHelper->type == 3){
+						$foundHelper->status = 6;
+					}
+					if($helper->type == 2 && $foundHelper->type == 1){
+						$foundHelper->status = 7;
+					}
+					if($helper->type == 3 && $foundHelper->type == 1){
+						$foundHelper->status = 8;
+					}
+					if($helper->type == 3 && $foundHelper->type == 2){
+						$foundHelper->status = 9;
+					}
+					$helper->status = 0;
+
 					foreach ($preapprovedUsers as $preapprovedUser) {
 
 						$contests = Contest::where("id", "=", $preapprovedUser->contest_id)->get();
@@ -496,10 +522,10 @@ class UserController extends Controller {
 							$foundHelper->user()->attach($user->id, ['contest_id'=> $preapprovedUser->contest_id, 'type' => $preapprovedUser->type]);
 
 							if(count($contest->center)){
-								$foundHelper->setCenter($contest->center->first()->id, $preapprovedUser->contest_id);
+								$foundHelper->setCenter($contest->center->first()->id, $preapprovedUser->contest_id, $preapprovedUser->type);
 							}
 							if(count($contest->course)){
-								$foundHelper->setCourse($contest->course->first()->id, $preapprovedUser->contest_id);
+								$foundHelper->setCourse($contest->course->first()->id, $preapprovedUser->contest_id, $preapprovedUser->type);
 							}
 						}
 					}
@@ -507,10 +533,10 @@ class UserController extends Controller {
 					$foundHelper->save();
 
 					foreach($centers as $center_item){
-						$foundHelper->setCenter($center_item->id, $preapproved->contest_id);
+						$foundHelper->setCenter($center_item->id, $preapproved->contest_id, $center_item->type);
 					}
 					foreach($courses as $course_item){
-						$foundHelper->setCourse($course_item->id, $preapproved->contest_id);
+						$foundHelper->setCourse($course_item->id, $preapproved->contest_id, $center_item->type);
 					}
 
 					$helper->clear();
@@ -559,10 +585,10 @@ class UserController extends Controller {
 						$helper->user()->attach($user->id, ['contest_id'=> $preapprovedUser->contest_id, 'type' => $preapprovedUser->type]);
 
 						if(count($contest->center)){
-							$helper->setCenter($contest->center->first()->id, $preapprovedUser->contest_id);
+							$helper->setCenter($contest->center->first()->id, $preapprovedUser->contest_id, $preapprovedUser->type);
 						}
 						if(count($contest->course)){
-							$helper->setCourse($contest->course->first()->id, $preapprovedUser->contest_id);
+							$helper->setCourse($contest->course->first()->id, $preapprovedUser->contest_id, $preapprovedUser->type);
 						}
 					}
 				}

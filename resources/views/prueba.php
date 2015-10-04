@@ -63,30 +63,30 @@
 
 				<br>
 
-				<h6 class="text-right"><b>FECHA: </b></h6>
+				<h6 class="text-right"><b>FECHA: <?php echo date('d/m/Y', time());?></b></h6>
 
 				<hr>
 
 				<h6 class="text-left">
-					<b>ASUNTO:</b> NOMBRAMIENTO DE LA Ó EL <b>BR.</b> COMO PREPARADOR II EN LA ASIGNATURA A  PARTIR DEL <b>//2015</b> PREVIA APROBACION DE CONSEJO DE ESCUELA  EN SESION DEL DIA: <b>//2015</b>
+					<b>ASUNTO:</b> NOMBRAMIENTO DE LA Ó EL <b>BR.</b> COMO PREPARADOR II EN LA ASIGNATURA A  PARTIR DEL <b> ____/____/________ </b> PREVIA APROBACION DE CONSEJO DE ESCUELA  EN SESION DEL DIA: <b> ____/____/________</b>
 				</h6>
 
 				<hr>
 
 				<h6 class="text-left"><b>DESCRIPCION:</b></h6>
 				<div class="list">
-					<h6>APELLIDOS: <span class="text-right"><?php echo $helper->user_lastname; ?></span></h6>
-					<h6>NOMBRES: <span class="text-right"><?php echo $helper->user_name; ?></span></h6>
-					<h6>CI: <span class="text-right"><?php echo $helper->user_id;?> </span></h6>
+					<h6>APELLIDOS: <span class="text-right">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $helper->user_lastname; ?></span></h6>
+					<h6>NOMBRES: <span class="text-right">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $helper->user_name; ?></span></h6>
+					<h6>CI: <span class="text-right">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $helper->user_id;?> </span></h6>
 					<?php $cargo = ''?>
 					<?php ($helper->type == 1 ? $cargo = 'PREPARADOR I' : ($helper->type == 2 ? $cargo = 'PREPARADOR II' : $cargo = 'AUXILIAR DOCENTE'))?>
-					<h6>CARGO: <span class="text-right"><?php echo $cargo ?></span></h6>
+					<h6>CARGO: <span class="text-right">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $cargo ?></span></h6>
 					<?php $dedicacion = ''?>
 					<?php ($helper->type == 1 ? $dedicacion = '6 HORAS' : ($helper->type == 2 ? $dedicacion = '12 HORAS' : $dedicacion = '16 HORAS'))?>
-					<h6>DEDICACION:</h6>
-					<h6>FECHA EFECTIVA DE NOMBRAMIENTO:</h6>
+					<h6>DEDICACION: &nbsp;&nbsp;&nbsp;&nbsp;<?php echo $dedicacion; ?></h6>
+					<h6>FECHA EFECTIVA DE NOMBRAMIENTO: &nbsp;&nbsp;&nbsp;&nbsp; ____/____/________</h6>
 					<h6>UNIDAD EJECUTORA PROGRAMA:</h6>
-					<h6>DISPONIBILIDAD PRESUPUESTARIA:</h6>
+					<h6>DISPONIBILIDAD PRESUPUESTARIA:&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $helper->teacher_helper_id;?></h6>
 				</div>
 
 				<hr>

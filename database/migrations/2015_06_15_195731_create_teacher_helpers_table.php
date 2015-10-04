@@ -50,6 +50,18 @@ class CreateTeacherHelpersTable extends Migration {
 			$table->integer('reserved_for')->unsigned()->nullable()->default(null);
 			$table->foreign('reserved_for')->references('id')->on('contests')->onDelete('cascade');
 			$table->enum('type', [1, 2, 3]);
+			/*
+				status
+				0 = por aprobar en consejo de escuela
+				1 = aprobado en consejo de escuela
+				3 = retirado
+				4 = subido de 1 a 2
+				5 = subido de 1 a 3
+				6 = subido de 2 a 3
+				7 = bajado de 2 a 1
+				8 = bajado de 3 a 1
+			*/
+			$table->enum('status', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])->default(0);
 			$table->timestamps();
 		});
 
@@ -79,6 +91,7 @@ class CreateTeacherHelpersTable extends Migration {
 			$table->integer('helper_id')->unsigned()->index();
 			$table->foreign('helper_id')->references('id')->on('teacher_helpers_users')->onDelete('cascade');
 			$table->boolean('active')->default('true');
+			$table->integer('type')->unsigned();
 			$table->timestamps();
 		});
 
@@ -89,6 +102,7 @@ class CreateTeacherHelpersTable extends Migration {
 			$table->integer('helper_id')->unsigned()->index();
 			$table->foreign('helper_id')->references('id')->on('teacher_helpers_users')->onDelete('cascade');
 			$table->boolean('active')->default('true');
+			$table->integer('type')->unsigned();
 			$table->timestamps();
 		});
 	}
