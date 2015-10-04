@@ -218,7 +218,7 @@ class TeacherHelperController extends Controller {
 			$buscar = \DB::table('teacher_helpers')
 				->where('available', '=', true)
 				->where('reserved', '=', false)
-				->orderBy('id', 'desc')
+				->orderBy('id', 'asc')
 				->select('id')
 				->get();
 
