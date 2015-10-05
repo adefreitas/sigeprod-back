@@ -152,7 +152,7 @@ class TeacherHelperController extends Controller {
 			'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
 			'users.id as user_id', 'users.local_phone', 'users.cell_phone',
 			'users.state', 'users.municipality', 'users.address',
-			'teacher_helpers.id as teacher_helper_id',
+			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status',
 			'courses.name as course_name', 'courses.id as course_id',
 			'centers.name as center_name', 'centers.id as center_id',
 			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
@@ -212,7 +212,7 @@ class TeacherHelperController extends Controller {
 			$tokenOwner = JWTAuth::toUser($token);
 
 			$user = User::where('email', $tokenOwner->email)->first();
-			
+
 			//borrar
 			if ($request->status == 2) {
 				\DB::table('teacher_helpers')
@@ -342,7 +342,7 @@ class TeacherHelperController extends Controller {
 		* @return Response
 		*/
 
-		public function prueba($id, $type, $status)
+		public function prueba($id, $type, $status, $code = null, $name = null)
 		{
 			$helper = \DB::table('teacher_helpers_users')
 			->join('teacher_helpers', 'teacher_helpers.id', '=', 'teacher_helpers_users.teacher_helper_id')
@@ -366,44 +366,73 @@ class TeacherHelperController extends Controller {
 			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
 			'teacher_helpers_users.id as thu_id',
 			'teacher_helpers.type as type', 'courses_teacher_helpers.active as course_active', 'centers_teacher_helpers.active as center_active',
-			'teacher_helpers_users.contest_id'
+			'teacher_helpers_users.contest_id',
+			'teacher_helpers.is_center as is_center', 'teacher_helpers.from as from'
 			)
 			->first();
 			$today = Carbon::now();
 			$message;
+			$submessage;
 			$type_desc;
+			$isCenter = false;
+			$isCourse = false;
+			if($code != null){
+				if(strlen($code) < 4){
+					$isCenter = true;
+				}
+				else{
+					$isCourse = true;
+				}
+				if($isCenter){
+					$submessage = 'EN EL CENTRO <b>['.$code.'] '.$name.'</b> ';
+				}
+				else if($isCourse){
+					$submessage = 'EN LA ASIGNATURA <b>['.$code.'] '.$name.'</b> ';
+				}
+			}
+			else{
+				if(!$isCenter && !$isCourse){
+					if($helper->is_center == true){
+						$submessage = 'EN EL CENTRO <b>'.$helper->from. '</b> ';
+					}
+					else{
+						$submessage = 'EN LA ASIGNATURA <b>'.$helper->from. '</b> ';
+					}
+				}
+			}
+
 			if($type == 1){
-				$type_desc = "PREPARADOR I";
+				$type_desc = "PREPARADOR I ";
 			}
 			else if($type == 2){
-				$type_desc = "PREPARADOR II";
+				$type_desc = "PREPARADOR II ";
 			}
 			else if($type == 3){
-				$type_desc = "AUXILIAR DOCENTE";
+				$type_desc = "AUXILIAR DOCENTE ";
 			}
 			if($status == 0){
-				$message = "NOMBRAMIENTO DE LA Ó EL <b>BR.</b> COMO " . $type_desc . " EN LA ASIGNATURA A  PARTIR DEL <b> ____/____/________ </b> ";
+				$message = "NOMBRAMIENTO DE LA Ó EL <b>BR.</b> COMO " . $type_desc . $submessage . " PARTIR DEL <b> ____/____/________ </b> ";
 			}
 			else if($status == 3 || $status < 0){
-				$message = "RETIRO DE LA Ó EL <b>BR.</b> COMO " . $type_desc . " EN LA ASIGNATURA A  PARTIR DEL <b> ____/____/________ </b> ";
+				$message = "RETIRO DE LA Ó EL <b>BR.</b> COMO " . $type_desc . $submessage . " A  PARTIR DEL <b> ____/____/________ </b> ";
 			}
 			else if($status == 4){
-				$message = "AUMENTO DE HORAS DE <b>PREPARADOR I</b> a <b>PREPARADOR II</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+				$message = "AUMENTO DE HORAS DE <b>PREPARADOR I</b> a <b>PREPARADOR II</b> ". $submessage ." A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
 			}
 			else if($status == 5){
-				$message = "AUMENTO DE HORAS DE <b>PREPARADOR I</b> a <b>AUXILIAR DOCENTE</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+				$message = "AUMENTO DE HORAS DE <b>PREPARADOR I</b> a <b>AUXILIAR DOCENTE</b> ". $submessage ." A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
 			}
 			else if($status == 6){
-				$message = "AUMENTO DE HORAS DE <b>PREPARADOR II</b> a <b>AUXILIAR DOCENTE</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+				$message = "AUMENTO DE HORAS DE <b>PREPARADOR II</b> a <b>AUXILIAR DOCENTE</b> ". $submessage ." A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
 			}
 			else if($status == 7){
-				$message = "DISMINUCIÓN DE HORAS DE <b>PREPARADOR II</b> a <b>PREPARADOR I</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+				$message = "DISMINUCIÓN DE HORAS DE <b>PREPARADOR II</b> a <b>PREPARADOR I</b> ". $submessage ." A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
 			}
 			else if($status == 8){
-				$message = "DISMINUCIÓN DE HORAS DE <b>AUXILIAR DOCENTE</b> a <b>PREPARADOR I</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+				$message = "DISMINUCIÓN DE HORAS DE <b>AUXILIAR DOCENTE</b> a <b>PREPARADOR I</b> ". $submessage ." A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
 			}
 			else if($status == 9){
-				$message = "DISMINUCIÓN DE HORAS DE <b>AUXILIAR DOCENTE</b> a <b>PREPARADOR II</b> EN LA ASIGNATURA A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
+				$message = "DISMINUCIÓN DE HORAS DE <b>AUXILIAR DOCENTE</b> a <b>PREPARADOR II</b> ". $submessage ." A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
 			}
 
 
@@ -418,7 +447,7 @@ class TeacherHelperController extends Controller {
 			->get();
 
 			$files = array();
-			$types = array("id","proof","bank","photo");
+			$types = array("photo");
 
 			$storagePath  = \Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
 
@@ -441,18 +470,21 @@ class TeacherHelperController extends Controller {
 			$mergerpdf->addPDF('temp.pdf', 'all');
 			$mergerpdf->addPDF('temp2.pdf', 'all');
 
-			$kardexFileName = \App\Fileentry::where('filename', '=', $id.'kardex.pdf')->orderBy('updated_at', 'desc')->first();
-			$kardexFile = \Storage::disk('local')->get($kardexFileName->filename);
+			$kardexFile = \App\Fileentry::where('filename', '=', $id.'kardex.pdf')->orderBy('updated_at', 'desc')->first();
 
-			$rifFileName = \App\Fileentry::where('filename', '=', $id.'rif.pdf')->orderBy('updated_at', 'desc')->first();
-			$rifFile = \Storage::disk('local')->get($rifFileName->filename);
 
-			// $idFileName = \App\Fileentry::where('type', '=', 'id')->where('filename', 'like', $id."%")->orderBy('updated_at', 'desc')->first();
-			// $idFile = \Storage::disk('local')->get($idFileName->filename);
+			$rifFile = \App\Fileentry::where('filename', '=', $id.'rif.pdf')->orderBy('updated_at', 'desc')->first();
+			$proofFile = \App\Fileentry::where('filename', '=', $id.'proof.pdf')->orderBy('updated_at', 'desc')->first();
+			$bankFile = \App\Fileentry::where('filename', '=', $id.'bank.pdf')->orderBy('updated_at', 'desc')->first();
+			$idFile = \App\Fileentry::where('filename', '=', $id.'id.pdf')->orderBy('updated_at', 'desc')->first();
 
-			$mergerpdf->addPDF($storagePath."/".$kardexFileName->filename);
-			$mergerpdf->addPDF($storagePath."/".$rifFileName->filename);
-			// $mergerpdf->addPDF($storagePath."/".$idFileName->filename);
+
+			$mergerpdf->addPDF($storagePath."/".$kardexFile->filename);
+			$mergerpdf->addPDF($storagePath."/".$rifFile->filename);
+			$mergerpdf->addPDF($storagePath."/".$idFile->filename);
+			$mergerpdf->addPDF($storagePath."/".$proofFile->filename);
+			$mergerpdf->addPDF($storagePath."/".$bankFile->filename);
+
 
 			// $mergerpdf->addPDF($rifFile);
 			return $mergerpdf->merge('browser','P');
@@ -616,11 +648,24 @@ class TeacherHelperController extends Controller {
 
 						foreach($old_centers_ids as $old_center_id){
 							$newhelper->setCenter($old_center_id, $request->contest_id);
+
 						}
+
 						foreach($old_courses_ids as $old_course_id){
 							$newhelper->setCourse($old_course_id, $request->contest_id);
 						}
+
+						foreach ($old_centers as $old_center) {
+							$newhelper->is_center = true;
+							$newhelper->from = '['.$old_center->id . ']' . $old_center->name;
+						}
+						foreach ($old_courses as $old_course) {
+							$newhelper->is_center = false;
+							$newhelper->from = '['.$old_course->id . ']' . $old_course->name;
+						}
+
 						$newhelper->save();
+
 						$currenthelper->clear();
 
 						\DB::table('teacher_helpers_users')

@@ -65,6 +65,8 @@ class CreateTeacherHelpersTable extends Migration {
 				Una vez se retire por consejo de escuela, se actualzia en la vista de gestion de preparadores para que vuelva a 0
 			*/
 			$table->integer('status')->default(0);
+			$table->boolean('is_center')->default(false)->nullable();
+			$table->string('from')->nullable();
 			$table->timestamps();
 		});
 

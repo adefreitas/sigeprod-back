@@ -203,6 +203,8 @@ class TeacherHelper extends Model {
 		$this->reserved_for = null;
 		$this->reserved = false;
 		$this->available = true;
+		$this->isCenter = null;
+		$this->from = null;
 
 		$this->save();
 

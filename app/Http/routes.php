@@ -165,7 +165,7 @@ Route::get('/profile', ['before' => 'jwt-auth',
 
   Route::get('fileentry', 'FileEntryController@index');
 
-  Route::get('prueba/{id}/{type}/{status}', 'TeacherHelperController@prueba');
+  Route::get('prueba/{id}/{type}/{status}/{code?}/{name?}', 'TeacherHelperController@prueba');
 
   Route::get('buscarid', 'TeacherHelperController@buscarid');
 

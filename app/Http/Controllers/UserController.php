@@ -459,9 +459,13 @@ class UserController extends Controller {
 
 							if(count($contest->center)){
 								$helper->setCenter($contest->center->first()->id, $preapprovedUser->contest_id);
+								$helper->is_center = true;
+								$helper->from = '['.$contest->center->first()->id . '] ' . $contest->center->first()->name;
 							}
 							if(count($contest->course)){
 								$helper->setCourse($contest->course->first()->id, $preapprovedUser->contest_id);
+								$helper->is_center = false;
+								$helper->from = '['.$contest->course->first()->id . '] ' . $contest->course->first()->name;
 							}
 						}
 					}
@@ -529,9 +533,13 @@ class UserController extends Controller {
 
 							if(count($contest->center)){
 								$foundHelper->setCenter($contest->center->first()->id, $preapprovedUser->contest_id, $preapprovedUser->type);
+								$foundHelper->is_center = true;
+								$foundHelper->from = '['.$contest->center->first()->id . '] ' . $contest->center->first()->name;
 							}
 							if(count($contest->course)){
 								$foundHelper->setCourse($contest->course->first()->id, $preapprovedUser->contest_id, $preapprovedUser->type);
+								$foundHelper->is_center = false;
+								$foundHelper->from = '['.$contest->course->first()->id . '] ' . $contest->course->first()->name;
 							}
 						}
 					}
@@ -592,9 +600,13 @@ class UserController extends Controller {
 
 						if(count($contest->center)){
 							$helper->setCenter($contest->center->first()->id, $preapprovedUser->contest_id, $preapprovedUser->type);
+							$helper->is_center = true;
+							$helper->from = '['.$contest->center->first()->id . '] ' . $contest->center->first()->name;
 						}
 						if(count($contest->course)){
 							$helper->setCourse($contest->course->first()->id, $preapprovedUser->contest_id, $preapprovedUser->type);
+							$helper->is_center = false;
+							$helper->from = '['.$contest->course->first()->id . '] ' . $contest->course->first()->name;
 						}
 					}
 				}
