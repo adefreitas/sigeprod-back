@@ -212,26 +212,18 @@ class TeacherHelperController extends Controller {
 			$tokenOwner = JWTAuth::toUser($token);
 
 			$user = User::where('email', $tokenOwner->email)->first();
-
-			//editar
-			if ($request->status == 1) {
-				DB::table('teacher_helpers')
-            		->where('id', '=', $request->id)
-            		->update(['id' => $request->nuevo]);
-
-            	return response()->json(['success'=>true]);
-			}
+			
 			//borrar
-			else if ($request->status == 2) {
-				DB::table('teacher_helpers')
+			if ($request->status == 2) {
+				\DB::table('teacher_helpers')
 					->where('id', '=', $request->id)->delete();
 
 				return response()->json(['success'=>true]);
 			}
 			//agregar
 			else if ($request->status == 3) {
-				DB::table('users')
-					->insert(['id' => $request->nuevo, 'available' => $request->available, 'reserved' => $request->reserved]);
+				\DB::table('teacher_helpers')
+					->insert(['id' => $request->idnuevo, 'available' => true, 'reserved' => false, 'type' => $request->type, 'status' => 0,'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
 
 				return response()->json(['success'=>true]);
 			}
