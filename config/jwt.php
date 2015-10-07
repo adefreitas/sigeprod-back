@@ -1,7 +1,7 @@
 <?php
 
 /* HEROKU */
-//$jwt = ZC4x1jZVQlUVkBtB2cxmIVdDX5OzLArD;
+$jwt = ZC4x1jZVQlUVkBtB2cxmIVdDX5OzLArD;
 /* HEROKU END */
 
 return [
