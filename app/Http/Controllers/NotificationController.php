@@ -85,12 +85,24 @@ class NotificationController extends Controller {
 			foreach($users as $receptor){
 				Notification::create([
 					'creator_id' => $user->id,
-					'receptor_id' => $receptor,
+					'receptor_id' => $receptor['id'],
 					'read' => '0',
 					'redirection' => $request->redirection,
 					'message'  => $request->message,
 					'creator_role' => 'departmenthead',
 				]);
+				\Mail::send('emails.notification', ['name' => $receptor['name'], 'lastname' => $receptor['lastname'], 'bodyMessage' => $request->message], function($message) use ($request, $receptor)
+		        {
+		             //remitente
+		            $message->from('noreply@sigeprod.com', 'SIGEPROD');
+
+		            //asunto
+		            $message->subject($request->subject);
+
+		            //receptor
+		            $message->to($receptor['email'], $receptor['name'] + ' ' + $receptor['lastname']);
+
+		        });
 			}
 
 			return response()->json([

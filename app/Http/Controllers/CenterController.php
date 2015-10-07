@@ -11,6 +11,7 @@ use App\Professor;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Nitmedia\Wkhtml2pdf\Facades\Wkhtml2pdf;
 
 class CenterController extends Controller {
 
@@ -68,6 +69,9 @@ class CenterController extends Controller {
 			$center->active = $request->active;
 
 			$center->save();
+
+			PDF::url('http://www.google.com');
+			PDF::setOutputMode('F'); // force to file
 
 			return response()->json(['id' => $center->id]);
 		}

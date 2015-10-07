@@ -12,7 +12,30 @@ use Illuminate\Http\Response;
 class FileEntryController extends Controller {
 
 	public function index(){
-		$entries = Fileentry::all();
+
+		try {
+			JWTAuth::parseToken();
+			$token = JWTAuth::getToken();
+		} catch (Exception $e){
+				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		}
+
+		$tokenOwner = JWTAuth::toUser($token);
+
+		$user = User::where('email', $tokenOwner->email)->first();
+
+		$id = \DB::table('preapproved_users')
+			->where('personal_id', '=', $user->id)
+			// ->where('activated', '=', false)
+			->orderBy('updated_at', 'desc')
+			->first()
+			->id;
+
+
+		$entries = Fileentry::where('preapproved_id', '=', $id)
+			->orderBy('updated_at', 'desc')
+			->groupBy('type')
+			->firstOrFail();
 		return response()->json([
 	            'entries' => $entries,
 	        ]);
@@ -24,7 +47,7 @@ class FileEntryController extends Controller {
 
 		$id = \DB::table('preapproved_users')
 			->where('personal_id', '=', $request["id"])
-			->where('activated', '=', false)
+			// ->where('activated', '=', false)
 			->orderBy('updated_at', 'desc')
 			->first()
 			->id;

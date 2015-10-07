@@ -44,50 +44,63 @@ class ContestController extends Controller {
 	     *  Si el usuario es coordinador de materia y coordinador de centro
 	     */
 	    if($user->is('coursecoordinator') && $user->is('centercoordinator')){
+				$centers = $user->professor->centerCoordinator;
+				$courses = $user->professor->courseCoordinator;
 
-			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
-				->join('users', 'users.id', '=', 'professors.user_id')
-				->join('contest_course', 'contest_course.contest_id', '=', 'contests.id', 'left outer')
-				->join('courses', 'courses.id', '=', 'contest_course.course_id', 'left outer')
-				->join('center_contest', 'center_contest.contest_id', '=', 'contests.id', 'left outer')
-				->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
-				->select(
-					'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
-					'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
-					'courses.name as course_name', 'courses.id as course_id',
-					'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
+				$centers_ids = array();
+				$courses_ids = array();
 
-				)
-				->orderBy('contests.created_at', 'desc')
-				->get();
+				foreach($centers as $center){
+					array_push($centers_ids, $center->id);
+				}
+				foreach($courses as $course){
+					array_push($courses_ids, $course->id);
+				}
 
-			$result = array();
-
-			foreach($everything as $item){
-				$item->observations =
-					Observation::where('contest_id', '=', $item->contest_id)
-					->join('users', 'users.id', '=', 'observations.user_id')
-					->orderBy('observations.created_at', 'desc')
+				$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
+					->join('users', 'users.id', '=', 'professors.user_id')
+					->join('contest_course', 'contest_course.contest_id', '=', 'contests.id', 'left outer')
+					->join('courses', 'courses.id', '=', 'contest_course.course_id', 'left outer')
+					->join('center_contest', 'center_contest.contest_id', '=', 'contests.id', 'left outer')
+					->join('centers', 'centers.id', '=', 'center_contest.center_id', 'left outer')
 					->select(
-						'observations.created_at', 'observations.description',
-						'users.lastname', 'users.name', 'users.id as user_id',
-						'observations.id as observation_id'
+						'contests.id as contest_id', 'contests.teacher_helpers_1', 'contests.teacher_helpers_2', 'contests.teacher_assistants', 'contests.status as contest_status',
+						'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email', 'users.id as user_id',
+						'courses.name as course_name', 'courses.id as course_id',
+						'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
 					)
+					->whereIn('contest_course.course_id', $courses_ids)
+					->orWhereIn('center_contest.center_id', $centers_ids)
+					->orderBy('contests.created_at', 'desc')
 					->get();
 
-				$item->preapproved_users =
-					PreapprovedUser::where('contest_id', '=', $item->contest_id)
-					->orderBy('preapproved_users.type', 'asc')
-					->orderBy('preapproved_users.personal_id', 'asc')
-					->select(
-						'preapproved_users.name', 'preapproved_users.lastname', 'preapproved_users.email',
-						'preapproved_users.personal_id', 'preapproved_users.name', 'preapproved_users.type',
-						'preapproved_users.contest_id'
-					)
-					->get();
+				$result = array();
 
-				array_push($result, $item);
-			}
+				foreach($everything as $item){
+					$item->observations =
+						Observation::where('contest_id', '=', $item->contest_id)
+						->join('users', 'users.id', '=', 'observations.user_id')
+						->orderBy('observations.created_at', 'desc')
+						->select(
+							'observations.created_at', 'observations.description',
+							'users.lastname', 'users.name', 'users.id as user_id',
+							'observations.id as observation_id'
+						)
+						->get();
+
+					$item->preapproved_users =
+						PreapprovedUser::where('contest_id', '=', $item->contest_id)
+						->orderBy('preapproved_users.type', 'asc')
+						->orderBy('preapproved_users.personal_id', 'asc')
+						->select(
+							'preapproved_users.name', 'preapproved_users.lastname', 'preapproved_users.email',
+							'preapproved_users.personal_id', 'preapproved_users.name', 'preapproved_users.type',
+							'preapproved_users.contest_id'
+						)
+						->get();
+
+					array_push($result, $item);
+				}
 
 	        return response()->json([
 	            'contests' => $result,
@@ -157,7 +170,6 @@ class ContestController extends Controller {
 	    else if($user->is('centercoordinator')){
 
 			$center = $user->Professor->centerCoordinator[0];
-
 			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
 				->join('users', 'users.id', '=', 'professors.user_id')
 				->join('contest_course', 'contest_course.contest_id', '=', 'contests.id', 'left outer')
@@ -418,7 +430,7 @@ class ContestController extends Controller {
 				'creator_id' => $user->id,
 				'receptor_id' => $receptor->id,
 				'read' => '0',
-				'redirection' => 'user.dashboard.departmentHead.helperContest',
+				'redirection' => 'departmentHead.helperContest',
 				'message'  => 'ha solicitado un nuevo concurso de preparadores',
 				'creator_role' => 'coordinator'
 			]);
@@ -492,7 +504,7 @@ class ContestController extends Controller {
 		$contest = Contest::find($id);
 
 		// $request = $request->all();
-
+		
 		if($user->is('coursecoordinator') || $user->is('centercoordinator') || $user->is('departmenthead')){
 			if($request->observations){
 				$observation = new Observation();
@@ -535,6 +547,7 @@ class ContestController extends Controller {
 						$helper = TeacherHelper::where('type', '=', 1)
 							->where('available', '=', true)
 							->where('reserved', '=', false)
+							->where('status', '=', 0)
 							->first();
 
 						$helper->reserved = true;
@@ -546,6 +559,7 @@ class ContestController extends Controller {
 						$helper = TeacherHelper::where('type', '=', 2)
 							->where('available', '=', true)
 							->where('reserved', '=', false)
+							->where('status', '=', 0)
 							->first();
 
 						$helper->reserved = true;
@@ -557,6 +571,7 @@ class ContestController extends Controller {
 						$helper = TeacherHelper::where('type', '=', 3)
 							->where('available', '=', true)
 							->where('reserved', '=', false)
+							->where('status', '=', 0)
 							->first();
 
 						$helper->reserved = true;
@@ -590,6 +605,39 @@ class ContestController extends Controller {
 									"created_at" => Carbon::now(),
 									"updated_at" => Carbon::now()
 							]);
+							$type;
+							if($item["type"] == 1){
+								$type = "Preparador I";
+							}
+							else if($item["type"] == 2){
+								$type = "Preparador II";
+							}
+							else{
+								$type = "Auxiliar Docente";
+							}
+							$place;
+							$placetype;
+							if(count($contest->course) > 0){
+								$place = " [".$contest->course()->first()->id."] ".$contest->course()->first()->name;
+								$placetype = " la materia ";
+							}
+							if(count($contest->center) > 0){
+								$place = " [".$contest->center()->first()->id."] ".$contest->center()->first()->name;
+								$placetype = " el centro ";
+							}
+							$message = "Usted ha resultado ganador de la plaza de ".$type." para".$placetype.$place.". Por favor ingrese al sistema SIGEPROD para completar o actualizar sus datos";
+							\Mail::send('emails.notification', ['name' => $item["name"], 'lastname' => $item["lastname"], 'bodyMessage' => $message], function($message) use ($item)
+				        {
+				             //remitente
+				            $message->from('noreply@sigeprod.com', 'SIGEPROD');
+
+				            //asunto
+				            $message->subject("Ha resultado ganador de un concurso");
+
+				            //receptor
+				            $message->to($item["email"], $item["name"] + ' ' + $item["lastname"]);
+
+				        });
 						}
 					}
 				}
@@ -604,10 +652,10 @@ class ContestController extends Controller {
 				$redirection = '';
 
 				if(count($contest->course) > 0){
-					$redirection = 'user.dashboard.courseCoordinator.helperContest';
+					$redirection = 'courseCoordinator.helperContest';
 				}
 				else{
-					$redirection = 'user.dashboard.centerCoordinator.helperContest';
+					$redirection = 'centerCoordinator.helperContest';
 				}
 
 				if($request->status == 2){
@@ -637,7 +685,7 @@ class ContestController extends Controller {
 					$message = 'ha modificado su solicitud de concurso de preparadores';
 				}
 
-				$redirection = 'user.dashboard.departmentHead.helperContests';
+				$redirection = 'departmentHead.helperContests';
 
 				$receptor = User::where('email', '=', 'jefe@ciens.ucv.ve')->get()->first();
 
@@ -664,7 +712,10 @@ class ContestController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		//
+		Contest::find($id)->delete();
+
+		return response()->json(['success' => true]);
+
 	}
 
 }

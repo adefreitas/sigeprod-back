@@ -27,6 +27,7 @@ class CreatePropositionsTable extends Migration {
 			$table->json('schedule_option_3');
 			$table->string('viewer');
 			$table->integer('status');
+			$table->boolean('active');
 			$table->timestamps();
 		});
 	}

@@ -19,6 +19,7 @@ class CreateRejectionTable extends Migration {
 			//Descripcion del rechazo de propuesta
 			$table->longText('description');
 			$table->boolean('active');
+			$table->integer('limit_days');
 
 			$table->integer('user_id')->unsigned()->index();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

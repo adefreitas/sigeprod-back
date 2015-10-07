@@ -73,6 +73,7 @@ class CreateContestsTable extends Migration {
 			$table->integer('contest_id')->unsigned()->index();
 			$table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');
 			$table->timestamps();
+			$table->softDeletes();
 		});
 
 		Schema::create('contest_results', function(Blueprint $table)

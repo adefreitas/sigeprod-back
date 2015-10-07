@@ -34,7 +34,7 @@ Route::post('/signup', function(){
 
 });
 
-Route::post('/signin', function(){
+Route::post('/signin', function() {
 
     $credentials = Input::only('email', 'password');
     $email = Input::only('email');
@@ -50,6 +50,37 @@ Route::post('/signin', function(){
 
 });
 
+Route::post('/recover', function() {
+
+    $email = Input::only('email');
+
+    $user = User::where('email', $email)->first();
+
+    // Se genera una clave de recuperación de 10 caracteres
+    $random = str_random(10);
+
+        //se envia el array y la vista lo recibe en llaves individuales {{ $name }} , {{ $lastname }}...
+       \Mail::send('emails.recover', ['name' => $user['name'], 'lastname' => $user['lastname'], 'password' => $random], function($message) use ($user)
+       {
+           //remitente
+           $message->from('noreply@sigeprod.com', 'SIGEPROD');
+
+           //asunto
+           $message->subject('Recuperación de contraseña');
+
+           //receptor
+           $message->to($user['email'], $user['name']);
+
+       });
+
+       $user = User::where('email', $user->email)->update([
+        'password' => \Hash::make($random)
+      ]);
+
+       return response()->json(['message' => 'success',
+                            'user' => $user
+                        ]);
+});
 
 Route::get('/profile', ['before' => 'jwt-auth',
     function(){
@@ -76,6 +107,14 @@ Route::get('/profile', ['before' => 'jwt-auth',
     }
 ]);
 
+  Route::resource('semesterplanning', 'SemesterPlanningController');
+
+  Route::resource('roles', 'RoleController');
+
+  Route::put('roles/{id}/addRoleToUser', 'RoleController@addRoleToUser');
+
+  Route::put('roles/{id}/deleteRoleToUser', 'RoleController@deleteRoleToUser');
+
   Route::get('users/{id}/professor', 'ProfessorController@professor');
 
   Route::get('professors/propositions', 'ProfessorController@showWithPropositions');
@@ -93,6 +132,8 @@ Route::get('/profile', ['before' => 'jwt-auth',
   Route::resource('center_coordinators', 'CenterCoordinatorController');
 
   Route::resource('contests', 'ContestController');
+
+  Route::get('contests/{id}/discard', 'ContestController@discard');
 
   Route::resource('courses', 'CourseController');
 
@@ -122,7 +163,13 @@ Route::get('/profile', ['before' => 'jwt-auth',
 
   Route::put('centers/{id}', 'CenterController@update');
 
-  Route::get('fileentry', 'FileENtryController@index');
+  Route::get('fileentry', 'FileEntryController@index');
+
+  Route::get('prueba/{id}/{type}/{status}/{code?}/{name?}', 'TeacherHelperController@prueba');
+
+  Route::get('buscarid', 'TeacherHelperController@buscarid');
+
+  Route::post('idunico/{id}', 'TeacherHelperController@idunico');
 
   Route::get('fileentry/get/{filename}', [
       'as' => 'getentry', 'uses' =>'FileEntryController@get']);

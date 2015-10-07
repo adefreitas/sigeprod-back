@@ -12,52 +12,55 @@ class TeacherHelper extends Model {
 		return $this->belongsToMany('App\User', 'teacher_helpers_users')->withTimestamps();
 	}
 
-	public function setCourse($course_id, $contest_id){
+	public function setCourse($course_id, $contest_id, $type){
+		if(count($course_id)){
+			$user = $this->user->first();
+			\Log::info($this);
+			\Log::info($user);
+			$helper = \DB::table('teacher_helpers_users')
+				->where('active', '=', true)
+				->where('user_id', '=', $user->id)
+				// ->where('contest_id', '=', $contest_id)
+				->select('id')
+				->first();
 
-		$user = $this->user->first();
-		\Log::info($this);
-		\Log::info($user);
-		$helper = \DB::table('teacher_helpers_users')
-			->where('active', '=', true)
-			->where('user_id', '=', $user->id)
-			// ->where('contest_id', '=', $contest_id)
-			->select('id')
-			->first();
+			$result = \DB::table('courses_teacher_helpers')
+				->insert([
+					"course_id" => $course_id,
+					"helper_id" => $helper->id,
+					"type" 			=> $type,
+					"created_at" => Carbon::now(),
+					"updated_at" => Carbon::now()
+			]);
 
-		$result = \DB::table('courses_teacher_helpers')
-			->insert([
-				"course_id" => $course_id,
-				"helper_id" => $helper->id,
-				"created_at" => Carbon::now(),
-				"updated_at" => Carbon::now()
-		]);
+			return $result;
 
-		return $result;
-
+		}
 	}
 
-	public function setCenter($center_id, $contest_id){
+	public function setCenter($center_id, $contest_id, $type){
+		if(count($center_id)){
+			$user = $this->user->first();
+			\Log::info($this);
+			\Log::info($this->user);
+			\Log::info($user);
+			$helper = \DB::table('teacher_helpers_users')
+				->where('active', '=', true)
+				->where('teacher_helper_id', '=', $this->id)
+				// ->where('contest_id', '=', $contest_id)
+				->select('id')
+				->first();
+			$result = \DB::table('centers_teacher_helpers')
+				->insert([
+					"center_id" => $center_id,
+					"helper_id" => $helper->id,
+					"type" 			=> $type,
+					"created_at" => Carbon::now(),
+					"updated_at" => Carbon::now()
+			]);
 
-		$user = $this->user->first();
-		\Log::info($this);
-		\Log::info($this->user);
-		\Log::info($user);
-		$helper = \DB::table('teacher_helpers_users')
-			->where('active', '=', true)
-			->where('teacher_helper_id', '=', $this->id)
-			// ->where('contest_id', '=', $contest_id)
-			->select('id')
-			->first();
-
-		$result = \DB::table('centers_teacher_helpers')
-			->insert([
-				"center_id" => $center_id,
-				"helper_id" => $helper->id,
-				"created_at" => Carbon::now(),
-				"updated_at" => Carbon::now()
-		]);
-
-		return $result;
+			return $result;
+		}
 	}
 
 	public function courses(){
@@ -79,8 +82,8 @@ class TeacherHelper extends Model {
 			->whereIn('helper_id', $helper_ids_array)
 			->join('teacher_helpers_users', 'teacher_helpers_users.id', '=', 'courses_teacher_helpers.helper_id')
 			->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id')
-			->groupBy('courses.id', 'teacher_helpers_users.contest_id')
-			->select('courses.id', 'teacher_helpers_users.contest_id')
+			->groupBy('courses.id', 'teacher_helpers_users.contest_id', 'courses_teacher_helpers.type')
+			->select('courses.id', 'teacher_helpers_users.contest_id', 'courses_teacher_helpers.type')
 			->get();
 
 		// return $courses;
@@ -115,8 +118,8 @@ class TeacherHelper extends Model {
 			->whereIn('helper_id', $helper_ids_array)
 			->join('teacher_helpers_users', 'teacher_helpers_users.id', '=', 'centers_teacher_helpers.helper_id')
 			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id')
-			->groupBy('centers.id', 'teacher_helpers_users.contest_id')
-			->select('centers.id', 'teacher_helpers_users.contest_id')
+			->groupBy('centers.id', 'teacher_helpers_users.contest_id','centers_teacher_helpers.type')
+			->select('centers.id', 'teacher_helpers_users.contest_id', 'centers_teacher_helpers.type')
 			->get();
 
 		// $centers_id = array();
@@ -200,6 +203,10 @@ class TeacherHelper extends Model {
 		$this->reserved_for = null;
 		$this->reserved = false;
 		$this->available = true;
+		$this->isCenter = null;
+		$this->from = null;
+
+		$this->save();
 
 		$helpers = \DB::table('teacher_helpers_users')
 			->where('teacher_helper_id', '=', $this->id)

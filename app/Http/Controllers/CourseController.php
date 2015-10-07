@@ -90,7 +90,11 @@ class CourseController extends Controller {
 	 */
 	public function show($id)
 	{
-		//
+		$courses = Course::orderBy('semester')->where('active', $id)->get();
+
+        return response()->json([
+			"courses" => $courses->toArray()
+		]);
 	}
 
 	/**
