@@ -126,14 +126,27 @@ class PropositionController extends Controller {
 
 			if($request->user_id != $receptorUser->id) {
 
-				$notification = Notification::create([
-					'creator_id' => $request->user_id,
-					'receptor_id' => $receptorUser->id,
-					'read' => '0',
-					'redirection' => 'centerCoordinator.semesterPlanning',
-					'message'  => 'ha enviado sus propuestas',
-					'creator_role' => 'professor'
-				]);
+				if($request->edit) {
+					$notification = Notification::create([
+						'creator_id' => $request->user_id,
+						'receptor_id' => $receptorUser->id,
+						'read' => '0',
+						'redirection' => 'centerCoordinator.semesterPlanning',
+						'message'  => 'ha modificado sus propuestas',
+						'creator_role' => 'professor'
+					]);
+				}
+
+				else {
+					$notification = Notification::create([
+						'creator_id' => $request->user_id,
+						'receptor_id' => $receptorUser->id,
+						'read' => '0',
+						'redirection' => 'centerCoordinator.semesterPlanning',
+						'message'  => 'ha enviado sus propuestas',
+						'creator_role' => 'professor'
+					]);
+				}
 
 				Log::create([
 					'user_id' => $user->id,
@@ -301,7 +314,6 @@ class PropositionController extends Controller {
 				Rejection::create([
 				'description' => $request->rejectionMessage,
 				'active' => true,
-				'limit_days' => $request->rejectionDays,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 			]);
@@ -313,7 +325,6 @@ class PropositionController extends Controller {
 				Rejection::create([
 				'description' => $request->rejectionMessage,
 				'active' => true,
-				'limit_days' => $request->rejectionDays,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 				]);
@@ -334,6 +345,21 @@ class PropositionController extends Controller {
 				'user_id' => $user->id,
 				'activity' => "Rechazó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
 				]);
+			}
+
+			if($request->rejectionEmailCheck) {
+				\Mail::send('emails.rejection', ['name' => $userModified['name'], 'role' => 'Coordinador de Centro', 'rejectionMessage' => $request->rejectionMessage, 'lastname' => $userModified['lastname']], function($message) use ($userModified)
+		        {
+		           //remitente
+		           $message->from('noreply@sigeprod.com', 'SIGEPROD');
+
+		           //asunto
+		           $message->subject('Rechazo de preferencias');
+
+		           //receptor
+		           $message->to($userModified['email'], $userModified['name']);
+
+		        });
 			}
 			
 		}
@@ -438,7 +464,6 @@ class PropositionController extends Controller {
 				Rejection::create([
 				'description' => $request->rejectionMessage,
 				'active' => true,
-				'limit_days' => $request->rejectionDays,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 			]);
@@ -450,7 +475,6 @@ class PropositionController extends Controller {
 				Rejection::create([
 				'description' => $request->rejectionMessage,
 				'active' => 'true',
-				'limit_days' => $request->rejectionDays,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 				]);
@@ -468,6 +492,21 @@ class PropositionController extends Controller {
 				'user_id' => $user->id,
 				'activity' => "Rechazó las propuestas del profesor ".$userModified->name." ".$userModified->lastname
 				]);
+			}
+
+			if($request->rejectionEmailCheck) {
+				\Mail::send('emails.rejection', ['name' => $userModified['name'], 'role' => 'Jefe de Departamento', 'rejectionMessage' => $request->rejectionMessage, 'lastname' => $userModified['lastname']], function($message) use ($userModified)
+		        {
+		           //remitente
+		           $message->from('noreply@sigeprod.com', 'SIGEPROD');
+
+		           //asunto
+		           $message->subject('Rechazo de preferencias');
+
+		           //receptor
+		           $message->to($userModified['email'], $userModified['name']);
+
+		        });
 			}
 			
 		}
