@@ -17,7 +17,7 @@ return [
     */
 
     /* LOCAL */
-    // 'secret' => env('JWT_SECRET'),
+    //  'secret' => env('JWT_SECRET'),
     /* LOCAL END /*
 
     /* HEROKU */
