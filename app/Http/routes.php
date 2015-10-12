@@ -155,6 +155,8 @@ Route::get('/profile', ['before' => 'jwt-auth',
 
   Route::resource('users', 'UserController');
 
+  Route::resource('semesters', 'SemesterController');
+
   Route::get('preapproved_users/{id}', 'UserController@showPreapprovedUser');
 
   Route::put('preapproved_users/{id}', 'UserController@updatePreapprovedUser');

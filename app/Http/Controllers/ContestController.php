@@ -504,7 +504,7 @@ class ContestController extends Controller {
 		$contest = Contest::find($id);
 
 		// $request = $request->all();
-		
+
 		if($user->is('coursecoordinator') || $user->is('centercoordinator') || $user->is('departmenthead')){
 			if($request->observations){
 				$observation = new Observation();
@@ -685,7 +685,7 @@ class ContestController extends Controller {
 					$message = 'ha modificado su solicitud de concurso de preparadores';
 				}
 
-				$redirection = 'departmentHead.helperContests';
+				$redirection = 'departmentHead.helperContest';
 
 				$receptor = User::where('email', '=', 'jefe@ciens.ucv.ve')->get()->first();
 

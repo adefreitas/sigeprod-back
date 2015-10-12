@@ -23,7 +23,7 @@ class SemesterController extends Controller {
 			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
-		return response()->json(Semester::get());
+		return response()->json(Semester::orderBy('created_at', 'desc')->get());
 
 
 	}
@@ -43,7 +43,7 @@ class SemesterController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
 		try {
 			JWTAuth::parseToken();
@@ -51,13 +51,14 @@ class SemesterController extends Controller {
 		} catch (Exception $e){
 			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
-
-		Semester::create([
-			'name' =>,
-			'beings_at' =>,
-			'ends_at' =>,
-			'intensive' =>
-		]);
+		// $request->beings_at = \Carbon\Carbon::createFromDate($request->begins_at);
+		// $request->ends_at = \Carbon\Carbon::createFromDate($request->ends_at);
+		$semester = new Semester();
+		$semester->name = $request->name;
+		$semester->begins_at = $request->begins_at;
+		$semester->ends_at = $request->ends_at;
+		$semester->intensive = $request->intensive;
+		$semester->save();
 
 	}
 
