@@ -8,6 +8,7 @@ use App\User;
 use App\Course;
 use App\Contest;
 use Carbon\Carbon;
+use App\Semester;
 use App\Professor;
 use App\Observation;
 use App\Notification;
@@ -26,7 +27,7 @@ class ContestController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index($semester_id = null)
 	{
 
 		try {
@@ -39,6 +40,15 @@ class ContestController extends Controller {
 		$tokenOwner = JWTAuth::toUser($token);
 
 		$user = User::where('email', $tokenOwner->email)->first();
+
+		if($semester_id == null){
+			$semester = \App\Semester::where('begins_at', '<=', Carbon::now())
+				->where('ends_at', '>=', Carbon::now())
+				->get()->first();
+		}
+		else{
+			$semester = Semester::find($semester_id);
+		}
 
 	    /*
 	     *  Si el usuario es coordinador de materia y coordinador de centro
@@ -71,6 +81,10 @@ class ContestController extends Controller {
 					)
 					->whereIn('contest_course.course_id', $courses_ids)
 					->orWhereIn('center_contest.center_id', $centers_ids)
+					->where('contests.created_at', '<=', $semester->ends_at)
+					->where('contests.created_at', '>=', $semester->begins_at)
+					->where('contests.updated_at', '<=', $semester->ends_at)
+					->where('contests.updated_at', '>=', $semester->begins_at)
 					->orderBy('contests.created_at', 'desc')
 					->get();
 
@@ -113,7 +127,7 @@ class ContestController extends Controller {
 	     */
 		else if($user->is('coursecoordinator')){
 
-			$course = $user->Professor->courseCoordinator[0];
+			$course = $user->Professor->courseCoordinator->first();
 
 			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
 				->join('users', 'users.id', '=', 'professors.user_id')
@@ -130,6 +144,10 @@ class ContestController extends Controller {
 
 				)
 				->orderBy('contests.created_at', 'desc')
+				->where('contests.created_at', '<=', $semester->ends_at)
+				->where('contests.created_at', '>=', $semester->begins_at)
+				->where('contests.updated_at', '<=', $semester->ends_at)
+				->where('contests.updated_at', '>=', $semester->begins_at)
 				->get();
 
 			$result = array();
@@ -169,7 +187,8 @@ class ContestController extends Controller {
 
 	    else if($user->is('centercoordinator')){
 
-			$center = $user->Professor->centerCoordinator[0];
+			$center = $user->Professor->centerCoordinator->first();
+
 			$everything = Contest::join('professors','professors.id', '=', 'contests.professor_id')
 				->join('users', 'users.id', '=', 'professors.user_id')
 				->join('contest_course', 'contest_course.contest_id', '=', 'contests.id', 'left outer')
@@ -184,6 +203,10 @@ class ContestController extends Controller {
 					'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
 
 				)
+				->where('contests.created_at', '<=', $semester->ends_at)
+				->where('contests.created_at', '>=', $semester->begins_at)
+				->where('contests.updated_at', '<=', $semester->ends_at)
+				->where('contests.updated_at', '>=', $semester->begins_at)
 				->orderBy('contests.created_at', 'desc')
 				->get();
 
@@ -246,6 +269,10 @@ class ContestController extends Controller {
 					'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
 
 				)
+				->where('contests.created_at', '<=', $semester->ends_at)
+				->where('contests.created_at', '>=', $semester->begins_at)
+				->where('contests.updated_at', '<=', $semester->ends_at)
+				->where('contests.updated_at', '>=', $semester->begins_at)
 				->orderBy('contests.created_at', 'desc')
 				->get();
 
@@ -310,6 +337,10 @@ class ContestController extends Controller {
 					'centers.id as center_id', 'centers.name as center_name', 'contests.created_at'
 
 				)
+				->where('contests.created_at', '<=', $semester->ends_at)
+				->where('contests.created_at', '>=', $semester->begins_at)
+				->where('contests.updated_at', '<=', $semester->ends_at)
+				->where('contests.updated_at', '>=', $semester->begins_at)
 				->orderBy('contests.created_at', 'desc')
 				->get();
 
