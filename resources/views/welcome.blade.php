@@ -41,7 +41,7 @@
 		<div class="container">
 			<div class="content">
 				<div class="title">SIGEPROD API</div>
-				<div class="quote">URL de la aplicacion: Proximamente</div>
+				<div class="quote">Para ir a la aplicación haga click <a href="http://home-sigeprod.rhcloud.com"> aquí</a></div>
 			</div>
 		</div>
 	</body>
