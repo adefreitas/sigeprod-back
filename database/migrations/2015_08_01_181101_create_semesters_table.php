@@ -16,7 +16,7 @@ class CreateSemestersTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name');
-			$table->dateTime('beings_at');
+			$table->dateTime('begins_at');
 			$table->dateTime('ends_at');
 			$table->boolean('intensive')->nullable()->default(null);
 			$table->timestamps();

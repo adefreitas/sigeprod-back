@@ -19,14 +19,23 @@ class SemesterTableSeeder extends Seeder {
 
         Semester::create([
             'name' => 'Semestre I-2015',
-            'beings_at' => Carbon::createFromFormat('d/m/Y', '05/01/2015'),
+            'begins_at' => Carbon::createFromFormat('d/m/Y', '05/01/2015'),
             'ends_at' => Carbon::createFromFormat('d/m/Y', '20/05/2015'),
+            'intensive' => false
+        ]);
+
+        Semester::create([
+            'name' => 'Semestre intensivo 2015',
+            'begins_at' => Carbon::createFromFormat('d/m/Y', '30/05/2015'),
+            'ends_at' => Carbon::createFromFormat('d/m/Y', '10/07/2015'),
+            'intensive' => true
         ]);
 
         Semester::create([
             'name' => 'Semestre II-2015',
-            'beings_at' => Carbon::createFromFormat('d/m/Y', '20/07/2015'),
+            'begins_at' => Carbon::createFromFormat('d/m/Y', '20/07/2015'),
             'ends_at' => Carbon::createFromFormat('d/m/Y', '19/12/2015'),
+            'intensive' => false
         ]);
 
     }

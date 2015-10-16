@@ -133,6 +133,8 @@ Route::get('/profile', ['before' => 'jwt-auth',
 
   Route::resource('contests', 'ContestController');
 
+  Route::get('contests/index/{semester_id?}', 'ContestController@index');
+
   Route::get('contests/{id}/discard', 'ContestController@discard');
 
   Route::resource('courses', 'CourseController');
@@ -154,6 +156,8 @@ Route::get('/profile', ['before' => 'jwt-auth',
   Route::resource('logs', 'LogController');
 
   Route::resource('users', 'UserController');
+
+  Route::resource('semesters', 'SemesterController');
 
   Route::get('preapproved_users/{id}', 'UserController@showPreapprovedUser');
 
