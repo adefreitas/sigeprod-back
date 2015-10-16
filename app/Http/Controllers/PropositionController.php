@@ -314,7 +314,6 @@ class PropositionController extends Controller {
 				Rejection::create([
 				'description' => $request->rejectionMessage,
 				'active' => true,
-				'limit_days' => $request->rejectionDays,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 			]);
@@ -326,10 +325,6 @@ class PropositionController extends Controller {
 				Rejection::create([
 				'description' => $request->rejectionMessage,
 				'active' => true,
-<<<<<<< HEAD
-=======
-				'limit_days' => $request->rejectionDays,
->>>>>>> 852fd647b1c7c846b36ec0cd931aa50974c74c74
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 				]);
@@ -469,7 +464,6 @@ class PropositionController extends Controller {
 				Rejection::create([
 				'description' => $request->rejectionMessage,
 				'active' => true,
-				'limit_days' => $request->rejectionDays,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 			]);
@@ -481,7 +475,6 @@ class PropositionController extends Controller {
 				Rejection::create([
 				'description' => $request->rejectionMessage,
 				'active' => 'true',
-				'limit_days' => $request->rejectionDays,
 				'user_id' => $userModified->id,
 				'proposition_id' => $propositionId->id
 				]);
