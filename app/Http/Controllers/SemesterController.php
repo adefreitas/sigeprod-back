@@ -23,7 +23,7 @@ class SemesterController extends Controller {
 			return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
 		}
 
-		return response()->json(Semester::orderBy('created_at', 'desc')->get());
+		return response()->json(Semester::orderBy('begins_at', 'desc')->get());
 
 
 	}

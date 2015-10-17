@@ -133,7 +133,7 @@ Route::get('/profile', ['before' => 'jwt-auth',
 
   Route::resource('contests', 'ContestController');
 
-  Route::get('contests/index/{semester_id?}', 'ContestController@index');
+  Route::get('contests_semester/{semester_id?}', 'ContestController@index');
 
   Route::get('contests/{id}/discard', 'ContestController@discard');
 

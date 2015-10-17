@@ -29,7 +29,6 @@ class ContestController extends Controller {
 	 */
 	public function index($semester_id = null)
 	{
-
 		try {
 			JWTAuth::parseToken();
 			$token = JWTAuth::getToken();
@@ -40,8 +39,8 @@ class ContestController extends Controller {
 		$tokenOwner = JWTAuth::toUser($token);
 
 		$user = User::where('email', $tokenOwner->email)->first();
-
-		if($semester_id == null){
+		
+		if(empty($semester_id)){
 			$semester = \App\Semester::where('begins_at', '<=', Carbon::now())
 				->where('ends_at', '>=', Carbon::now())
 				->get()->first();
@@ -177,7 +176,7 @@ class ContestController extends Controller {
 			}
 
 	        return response()->json([
-	            'contests' => $result,
+	            'contests' => $result, 'semester' => $semester_id
 	        ]);
 		}
 
@@ -480,30 +479,31 @@ class ContestController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show(Request $request, $id)
+	public function show($id)
 	{
-		try {
-			JWTAuth::parseToken();
-			$token = JWTAuth::getToken();
-		} catch (Exception $e){
-				return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
-		}
-
-
-		$tokenOwner = JWTAuth::toUser($token);
-
-		$user = User::where('email', $tokenOwner->email)->first();
-
-		Log::create([
-			'user_id' => $user->id,
-			'activity' => 'Consultó el concurso de preparadores con ID: ' . $id
-		]);
-
-		$request = $request->all();
-
-		$contest = Contest::find($id);
-
-		return response()->json(['contest' => $contest]);
+		return $this->index($id);
+		// try {
+		// 	JWTAuth::parseToken();
+		// 	$token = JWTAuth::getToken();
+		// } catch (Exception $e){
+		// 		return response()->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
+		// }
+		//
+		//
+		// $tokenOwner = JWTAuth::toUser($token);
+		//
+		// $user = User::where('email', $tokenOwner->email)->first();
+		//
+		// Log::create([
+		// 	'user_id' => $user->id,
+		// 	'activity' => 'Consultó el concurso de preparadores con ID: ' . $id
+		// ]);
+		//
+		// $request = $request->all();
+		//
+		// $contest = Contest::find($id);
+		//
+		// return response()->json(['contest' => $contest]);
 
 	}
 

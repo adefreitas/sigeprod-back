@@ -38,9 +38,6 @@ class TeacherHelperController extends Controller {
 			->join('users', 'users.id', '=', 'teacher_helpers_users.user_id')
 			->join('courses_teacher_helpers', 'courses_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id')
 			->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id')
-			// ->join('centers_teacher_helpers', 'centers_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id', 'left outer')
-			// ->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id', 'left outer')
-			// ->where('teacher_helpers_users.active', '=', true)
 			->orderBy('teacher_helpers.type', 'asc')
 			->orderBy('users.id', 'course_active', 'asc')
 			->select(
@@ -49,27 +46,19 @@ class TeacherHelperController extends Controller {
 			'users.state', 'users.municipality', 'users.address',
 			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status',
 			'courses.name as course_name', 'courses.id as course_id',
-			// 'centers.name as center_name', 'centers.id as center_id',
 			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
 			'teacher_helpers_users.id as thu_id',
-			// 'centers_teacher_helpers.type as center_type',
 			'courses_teacher_helpers.type as course_type',
 			'courses_teacher_helpers.active as course_active',
-			// 'centers_teacher_helpers.active as center_active',
 			'teacher_helpers_users.contest_id'
 			)
-			// ->groupBy('centers_teacher_helpers.type', 'courses_teacher_helpers.type')
-			// ->distinct()
 			->get();
 
 			$helpers_centers = \DB::table('teacher_helpers_users')
 			->join('teacher_helpers', 'teacher_helpers.id', '=', 'teacher_helpers_users.teacher_helper_id')
 			->join('users', 'users.id', '=', 'teacher_helpers_users.user_id')
-			// ->join('courses_teacher_helpers', 'courses_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id')
-			// ->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id')
 			->join('centers_teacher_helpers', 'centers_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id')
 			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id')
-			// ->where('teacher_helpers_users.active', '=', true)
 			->orderBy('teacher_helpers.type', 'center_active', 'asc')
 			->orderBy('users.id', 'asc')
 			->select(
@@ -77,18 +66,13 @@ class TeacherHelperController extends Controller {
 			'users.id as user_id', 'users.local_phone', 'users.cell_phone',
 			'users.state', 'users.municipality', 'users.address',
 			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status',
-			// 'courses.name as course_name', 'courses.id as course_id',
 			'centers.name as center_name', 'centers.id as center_id',
 			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
 			'teacher_helpers_users.id as thu_id',
 			'centers_teacher_helpers.type as center_type',
-			// 'courses_teacher_helpers.type as course_type',
-			// 'courses_teacher_helpers.active as course_active',
 			'centers_teacher_helpers.active as center_active',
 			'teacher_helpers_users.contest_id'
 			)
-			// ->groupBy('centers_teacher_helpers.type', 'courses_teacher_helpers.type')
-			// ->distinct()
 			->get();
 
 			$helpers = array_merge($helpers_courses, $helpers_centers);
@@ -117,9 +101,10 @@ class TeacherHelperController extends Controller {
 				->groupBy('preapproved_users.id', 'centers.id', 'courses.id')
 				->get();
 
-
 		}
+
 		else if($user->is('centercoordinator') || $user->is('coursecoordinator')){
+
 			$centers = $user->professor->centerCoordinator;
 			$courses = $user->professor->courseCoordinator;
 
@@ -149,16 +134,18 @@ class TeacherHelperController extends Controller {
 			->whereIn('courses_teacher_helpers.course_id', $courses_ids)
 			->orWhereIn('centers_teacher_helpers.center_id', $centers_ids)
 			->select(
-			'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
-			'users.id as user_id', 'users.local_phone', 'users.cell_phone',
-			'users.state', 'users.municipality', 'users.address',
-			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status',
-			'courses.name as course_name', 'courses.id as course_id',
-			'centers.name as center_name', 'centers.id as center_id',
-			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
-			'teacher_helpers_users.id as thu_id',
-			'teacher_helpers.type as type', 'courses_teacher_helpers.active as course_active', 'centers_teacher_helpers.active as center_active',
-			'teacher_helpers_users.contest_id'
+				'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
+				'users.id as user_id', 'users.local_phone', 'users.cell_phone',
+				'users.state', 'users.municipality', 'users.address',
+				'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status',
+				'courses.name as course_name', 'courses.id as course_id',
+				'centers.name as center_name', 'centers.id as center_id',
+				'teacher_helpers.updated_at', 'teacher_helpers.created_at',
+				'teacher_helpers_users.id as thu_id',
+				'teacher_helpers.type as type', 'courses_teacher_helpers.active as course_active', 'centers_teacher_helpers.active as center_active',
+				'teacher_helpers_users.contest_id',
+				\DB::raw("CASE WHEN
+					teacher_helpers.updated_at < (now() - '1 year'::interval) THEN 1 ELSE 0 END AS renew")
 			)
 			->get();
 
