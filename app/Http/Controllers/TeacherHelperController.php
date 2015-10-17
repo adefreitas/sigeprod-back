@@ -48,7 +48,7 @@ class TeacherHelperController extends Controller {
 			'courses.name as course_name', 'courses.id as course_id',
 			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
 			'teacher_helpers_users.id as thu_id',
-			'courses_teacher_helpers.type as course_type',
+			'courses_teacher_helpers.type as type',
 			'courses_teacher_helpers.active as course_active',
 			'teacher_helpers_users.contest_id'
 			)
@@ -69,7 +69,7 @@ class TeacherHelperController extends Controller {
 			'centers.name as center_name', 'centers.id as center_id',
 			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
 			'teacher_helpers_users.id as thu_id',
-			'centers_teacher_helpers.type as center_type',
+			'centers_teacher_helpers.type as type',
 			'centers_teacher_helpers.active as center_active',
 			'teacher_helpers_users.contest_id'
 			)
