@@ -398,10 +398,10 @@ class TeacherHelperController extends Controller {
 				$type_desc = "AUXILIAR DOCENTE ";
 			}
 			if($status == 0){
-				$message = "NOMBRAMIENTO DE LA Ó EL <b>BR.</b> COMO " . $type_desc . $submessage . " PARTIR DEL <b> ____/____/________ </b> ";
+				$message = "NOMBRAMIENTO DE LA Ó EL <b>BR.</b> " .$helper->user_name . " " . $helper->user_lastname. " COMO " . $type_desc . $submessage . " PARTIR DEL <b> ____/____/________ </b> ";
 			}
 			else if($status == 3 || $status < 0){
-				$message = "RETIRO DE LA Ó EL <b>BR.</b> COMO " . $type_desc . $submessage . " A  PARTIR DEL <b> ____/____/________ </b> ";
+				$message = "RETIRO DE LA Ó EL <b>BR.</b> " .$helper->user_name . " " . $helper->user_lastname. " COMO " . $type_desc . $submessage . " A  PARTIR DEL <b> ____/____/________ </b> ";
 			}
 			else if($status == 4){
 				$message = "AUMENTO DE HORAS DE <b>PREPARADOR I</b> a <b>PREPARADOR II</b> ". $submessage ." A  DEL Ó LA BR. PARTIR DEL <b> ____/____/________ </b> ";
