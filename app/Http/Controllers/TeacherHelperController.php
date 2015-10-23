@@ -464,12 +464,14 @@ class TeacherHelperController extends Controller {
 			$proofFile = \App\Fileentry::where('filename', '=', $id.'proof.pdf')->orderBy('updated_at', 'desc')->first();
 			$bankFile = \App\Fileentry::where('filename', '=', $id.'bank.pdf')->orderBy('updated_at', 'desc')->first();
 			$idFile = \App\Fileentry::where('filename', '=', $id.'id.pdf')->orderBy('updated_at', 'desc')->first();
+			$formFile = \App\Fileentry::where('filename', '=', $id.'form.pdf')->orderBy('updated_at', 'desc')->first();
 
 
 			$mergerpdf->addPDF($storagePath."/".$kardexFile->filename);
 			$mergerpdf->addPDF($storagePath."/".$rifFile->filename);
 			$mergerpdf->addPDF($storagePath."/".$idFile->filename);
 			$mergerpdf->addPDF($storagePath."/".$proofFile->filename);
+			$mergerpdf->addPDF($storagePath."/".$formFile->filename);
 			$mergerpdf->addPDF($storagePath."/".$bankFile->filename);
 
 
