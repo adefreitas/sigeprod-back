@@ -302,7 +302,7 @@ class TeacherHelperController extends Controller {
 				->get();
 
 				$files = array();
-				$types = array("id","rif","proof","kardex","bank","photo");
+				$types = array("id","rif","proof","kardex","bank","photo","form");
 
 				foreach($types as $type){
 					array_push($files, \DB::table('fileentries')
@@ -434,18 +434,12 @@ class TeacherHelperController extends Controller {
 			->get();
 
 			$files = array();
-			$types = array("photo");
 
 			$storagePath  = \Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
 
-			foreach($types as $type){
-				$file = \DB::table('fileentries')
-				->where('fileentries.preapproved_id', '=', $pre[0]->id)
-				->orderBy('updated_at', 'desc')
-				->where('type', '=', $type)
-				->first();
-				array_push($files, $storagePath."/".$file->filename);
-			}
+			$file = \App\Fileentry::where('filename', 'LIKE', $id.'photo%')->orderBy('updated_at', 'desc')->first();
+			array_push($files, $storagePath."/".$file->filename);
+
 			$data = array("files" => $files);
 			$pdf2 = \DPDF::loadView('prueba2', $data)->setPaper('a4');
 			$pdf2->save('temp2.pdf');

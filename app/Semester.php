@@ -8,4 +8,6 @@ class Semester extends Model {
 
 	protected $fillable = ['name', 'beings_at', 'ends_at', 'intensive'];
 
+	protected $dates = ['ends_at', 'beings_at'];
+
 }

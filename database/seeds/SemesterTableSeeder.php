@@ -18,6 +18,21 @@ class SemesterTableSeeder extends Seeder {
         DB::table('semesters')->delete();
 
         Semester::create([
+            'name' => 'Semestre I-2014',
+            'begins_at' => Carbon::createFromFormat('d/m/Y', '05/01/2014'),
+            'ends_at' => Carbon::createFromFormat('d/m/Y', '20/05/2014'),
+            'intensive' => false
+        ]);
+
+
+        Semester::create([
+            'name' => 'Semestre II-2014',
+            'begins_at' => Carbon::createFromFormat('d/m/Y', '30/05/2014'),
+            'ends_at' => Carbon::createFromFormat('d/m/Y', '10/07/2014'),
+            'intensive' => false
+        ]);
+
+        Semester::create([
             'name' => 'Semestre I-2015',
             'begins_at' => Carbon::createFromFormat('d/m/Y', '05/01/2015'),
             'ends_at' => Carbon::createFromFormat('d/m/Y', '20/05/2015'),

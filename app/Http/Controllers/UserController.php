@@ -550,7 +550,7 @@ class UserController extends Controller {
 						$foundHelper->setCenter($center_item->id, $preapproved->contest_id, $center_item->type);
 					}
 					foreach($courses as $course_item){
-						$foundHelper->setCourse($course_item->id, $preapproved->contest_id, $center_item->type);
+						$foundHelper->setCourse($course_item->id, $preapproved->contest_id, $course_item->type);
 					}
 
 					$helper->clear();

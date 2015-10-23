@@ -53,10 +53,11 @@ class SemesterController extends Controller {
 		}
 		// $request->beings_at = \Carbon\Carbon::createFromDate($request->begins_at);
 		// $request->ends_at = \Carbon\Carbon::createFromDate($request->ends_at);
+
 		$semester = new Semester();
 		$semester->name = $request->name;
-		$semester->begins_at = $request->begins_at;
-		$semester->ends_at = $request->ends_at;
+		$semester->begins_at = \Carbon\Carbon::createFromDate($request->beings_at);
+		$semester->ends_at = \Carbon\Carbon::createFromDate($request->ends_at);
 		$semester->intensive = $request->intensive;
 		$semester->save();
 
