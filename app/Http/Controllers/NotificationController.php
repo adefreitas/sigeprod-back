@@ -91,18 +91,18 @@ class NotificationController extends Controller {
 					'message'  => $request->message,
 					'creator_role' => 'departmenthead',
 				]);
-				\Mail::send('emails.notification', ['name' => $receptor['name'], 'lastname' => $receptor['lastname'], 'bodyMessage' => $request->message], function($message) use ($request, $receptor)
-		        {
-		             //remitente
-		            $message->from('noreply@sigeprod.com', 'SIGEPROD');
+				// \Mail::send('emails.notification', ['name' => $receptor['name'], 'lastname' => $receptor['lastname'], 'bodyMessage' => $request->message], function($message) use ($request, $receptor)
+		        //{
+		        //     //remitente
+		        //    $message->from('noreply@sigeprod.com', 'SIGEPROD');
+//
+//		            //asunto
+////		            $message->subject($request->subject);
+//
+//		            //receptor
+//		            $message->to($receptor['email'], $receptor['name'] + ' ' + $receptor['lastname']);
 
-		            //asunto
-		            $message->subject($request->subject);
-
-		            //receptor
-		            $message->to($receptor['email'], $receptor['name'] + ' ' + $receptor['lastname']);
-
-		        });
+	//	        });
 			}
 
 			return response()->json([

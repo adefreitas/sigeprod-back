@@ -657,18 +657,18 @@ class ContestController extends Controller {
 								$placetype = " el centro ";
 							}
 							$message = "Usted ha resultado ganador de la plaza de ".$type." para".$placetype.$place.". Por favor ingrese al sistema SIGEPROD para completar o actualizar sus datos";
-							\Mail::send('emails.notification', ['name' => $item["name"], 'lastname' => $item["lastname"], 'bodyMessage' => $message], function($message) use ($item)
-				        {
+							// \Mail::send('emails.notification', ['name' => $item["name"], 'lastname' => $item["lastname"], 'bodyMessage' => $message], function($message) use ($item)
+				        //{
 				             //remitente
-				            $message->from('noreply@sigeprod.com', 'SIGEPROD');
-
-				            //asunto
-				            $message->subject("Ha resultado ganador de un concurso");
-
-				            //receptor
-				            $message->to($item["email"], $item["name"] + ' ' + $item["lastname"]);
-
-				        });
+				        //    $message->from('noreply@sigeprod.com', 'SIGEPROD');
+//
+//				            //asunto
+//////////				            $message->subject("Ha resultado ganador de un concurso");
+//
+//////				            //receptor
+	//			            $message->to($item["email"], $item["name"] + ' ' + $item["lastname"]);
+//
+//				        });
 						}
 					}
 				}

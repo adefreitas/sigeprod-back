@@ -100,18 +100,18 @@ class UserController extends Controller {
 				'activity' => 'Creó el usuario con el id: ' . $userToCreate->id
 			]);
 
-		\Mail::send('emails.newuser', ['name' => $request->name, 'lastname' => $request->lastname, 'password' => $request->password], function($message) use ($request)
-        {
-           //remitente
-           $message->from('noreply@sigeprod.com', 'SIGEPROD');
+		 // \Mail::send('emails.newuser', ['name' => $request->name, 'lastname' => $request->lastname, 'password' => $request->password], function($message) use ($request)
+       // {
+       //    //remitente
+       //    $message->from('noreply@sigeprod.com', 'SIGEPROD');
 
            //asunto
-           $message->subject('Registro en SIGEPROD (Sistema de Gestión de la Programación Docente)');
+       //    $message->subject('Registro en SIGEPROD (Sistema de Gestión de la Programación Docente)');
 
            //receptor
-           $message->to($request->email, $request->name);
+       //    $message->to($request->email, $request->name);
 
-        });
+       // });
 
 		return response()->json(['success' => true]);
 	}

@@ -44,13 +44,14 @@ class TeacherHelperController extends Controller {
 			'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
 			'users.id as user_id', 'users.local_phone', 'users.cell_phone',
 			'users.state', 'users.municipality', 'users.address',
-			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status',
+			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status', 'teacher_helpers.type as id_type',
 			'courses.name as course_name', 'courses.id as course_id',
 			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
 			'teacher_helpers_users.id as thu_id',
 			'courses_teacher_helpers.type as type',
 			'courses_teacher_helpers.active as course_active',
-			'teacher_helpers_users.contest_id'
+			'teacher_helpers_users.contest_id',
+			\DB::raw("CASE WHEN teacher_helpers.updated_at < (now() - '1 year'::interval) THEN 1 ELSE 0 END AS renew")
 			)
 			->get();
 
@@ -65,13 +66,14 @@ class TeacherHelperController extends Controller {
 			'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
 			'users.id as user_id', 'users.local_phone', 'users.cell_phone',
 			'users.state', 'users.municipality', 'users.address',
-			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status',
+			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status', 'teacher_helpers.type as id_type',
 			'centers.name as center_name', 'centers.id as center_id',
 			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
 			'teacher_helpers_users.id as thu_id',
 			'centers_teacher_helpers.type as type',
 			'centers_teacher_helpers.active as center_active',
-			'teacher_helpers_users.contest_id'
+			'teacher_helpers_users.contest_id',
+			\DB::raw("CASE WHEN teacher_helpers.updated_at < (now() - '1 year'::interval) THEN 1 ELSE 0 END AS renew")
 			)
 			->get();
 
@@ -117,38 +119,53 @@ class TeacherHelperController extends Controller {
 			foreach($courses as $course){
 				array_push($courses_ids, $course->id);
 			}
-			// return response()->json([
-			// 	'response' => $courses_ids
-			// 	]);
-			$helpers = \DB::table('teacher_helpers_users')
+			$helpers_courses = \DB::table('teacher_helpers_users')
 			->join('teacher_helpers', 'teacher_helpers.id', '=', 'teacher_helpers_users.teacher_helper_id')
 			->join('users', 'users.id', '=', 'teacher_helpers_users.user_id')
-			->join('courses_teacher_helpers', 'courses_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id', 'left outer')
-			->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id', 'left outer')
-			->join('centers_teacher_helpers', 'centers_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id', 'left outer')
-			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id', 'left outer')
-			// ->where('teacher_helpers_users.active', '=', true)
-			->orderBy('teacher_helpers_users.active', 'desc')
-			->orderBy('teacher_helpers.type', 'asc')
-			->orderBy('users.id', 'asc')
+			->join('courses_teacher_helpers', 'courses_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id')
+			->join('courses', 'courses.id', '=', 'courses_teacher_helpers.course_id')
 			->whereIn('courses_teacher_helpers.course_id', $courses_ids)
-			->orWhereIn('centers_teacher_helpers.center_id', $centers_ids)
+			->orderBy('teacher_helpers.type', 'asc')
+			->orderBy('users.id', 'course_active', 'asc')
 			->select(
-				'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
-				'users.id as user_id', 'users.local_phone', 'users.cell_phone',
-				'users.state', 'users.municipality', 'users.address',
-				'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status',
-				'courses.name as course_name', 'courses.id as course_id',
-				'centers.name as center_name', 'centers.id as center_id',
-				'teacher_helpers.updated_at', 'teacher_helpers.created_at',
-				'teacher_helpers_users.id as thu_id',
-				'teacher_helpers.type as type', 'courses_teacher_helpers.active as course_active', 'centers_teacher_helpers.active as center_active',
-				'teacher_helpers_users.contest_id',
-				\DB::raw("CASE WHEN
-					teacher_helpers.updated_at < (now() - '1 year'::interval) THEN 1 ELSE 0 END AS renew")
+			'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
+			'users.id as user_id', 'users.local_phone', 'users.cell_phone',
+			'users.state', 'users.municipality', 'users.address',
+			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status', 'teacher_helpers.type as id_type',
+			'courses.name as course_name', 'courses.id as course_id',
+			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
+			'teacher_helpers_users.id as thu_id',
+			'courses_teacher_helpers.type as type',
+			'courses_teacher_helpers.active as course_active',
+			'teacher_helpers_users.contest_id',
+			\DB::raw("CASE WHEN teacher_helpers.updated_at < (now() - '1 year'::interval) THEN 1 ELSE 0 END AS renew")
 			)
 			->get();
 
+			$helpers_centers = \DB::table('teacher_helpers_users')
+			->join('teacher_helpers', 'teacher_helpers.id', '=', 'teacher_helpers_users.teacher_helper_id')
+			->join('users', 'users.id', '=', 'teacher_helpers_users.user_id')
+			->join('centers_teacher_helpers', 'centers_teacher_helpers.helper_id', '=', 'teacher_helpers_users.id')
+			->join('centers', 'centers.id', '=', 'centers_teacher_helpers.center_id')
+			->orWhereIn('centers_teacher_helpers.center_id', $centers_ids)
+			->orderBy('teacher_helpers.type', 'center_active', 'asc')
+			->orderBy('users.id', 'asc')
+			->select(
+			'users.name as user_name', 'users.lastname as user_lastname', 'users.email as user_email',
+			'users.id as user_id', 'users.local_phone', 'users.cell_phone',
+			'users.state', 'users.municipality', 'users.address',
+			'teacher_helpers.id as teacher_helper_id', 'teacher_helpers.status as teacher_helper_status', 'teacher_helpers.type as id_type',
+			'centers.name as center_name', 'centers.id as center_id',
+			'teacher_helpers.updated_at', 'teacher_helpers.created_at',
+			'teacher_helpers_users.id as thu_id',
+			'centers_teacher_helpers.type as type',
+			'centers_teacher_helpers.active as center_active',
+			'teacher_helpers_users.contest_id',
+			\DB::raw("CASE WHEN teacher_helpers.updated_at < (now() - '1 year'::interval) THEN 1 ELSE 0 END AS renew")
+			)
+			->get();
+
+			$helpers = array_merge($helpers_courses, $helpers_centers);
 			foreach($helpers as $helper){
 				$pre = \DB::table('preapproved_users')
 				->where('email', '=', $helper->user_email)
@@ -159,7 +176,6 @@ class TeacherHelperController extends Controller {
 				->orderBy('updated_at', 'desc')
 				->get();
 			}
-
 			$pendings = \DB::table("preapproved_users")
 				->join('contests', 'contests.id', '=', 'preapproved_users.contest_id', 'left outer')
 				->join('center_contest', 'center_contest.contest_id', '=', 'preapproved_users.contest_id', 'left outer')
@@ -171,8 +187,6 @@ class TeacherHelperController extends Controller {
 				'preapproved_users.type as type',
 				'centers.id as center_id', 'centers.name as center_name',
 				'courses.id as course_id', 'courses.name as course_name')
-				->whereIn('contest_course.course_id', $courses_ids)
-				->orWhereIn('center_contest.center_id', $centers_ids)
 				->where('preapproved_users.activated', '=', false)
 				->groupBy('preapproved_users.id', 'centers.id', 'courses.id')
 				->get();
